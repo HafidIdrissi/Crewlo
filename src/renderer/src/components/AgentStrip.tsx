@@ -4,6 +4,7 @@ import { AgentCard } from './AgentCard';
 import { PixelButton } from './PixelButton';
 import { Icon } from './Icon';
 import { useStore, type Agent } from '@/store/store';
+import { resolveActivity } from '@/scene/studio/activityState';
 import { type HarnessConfig } from '@/store/config';
 import { useRestoreTeam } from '@/hooks/useRestoreTeam';
 import { useRtl } from '@/i18n/useDirection';
@@ -18,6 +19,7 @@ export function AgentStrip({ config }: AgentStripProps) {
   const { t } = useTranslation();
   const rtl = useRtl();
   const agents = useStore(s => s.agents);
+  const queues = useStore(s => s.messageQueues);
   const restorableAgents = useStore(s => s.restorableAgents);
   const selectedId = useStore(s => s.selectedId);
   const select = useStore(s => s.select);
@@ -84,19 +86,19 @@ export function AgentStrip({ config }: AgentStripProps) {
   return (
     <div style={{
       display: 'flex',
-      gap: 12,
-      padding: '14px 16px',
+      gap: 8,
+      padding: '8px 16px',
       overflowX: 'auto',
       overflowY: 'hidden',
       borderTop: '1px solid var(--cth-ink-300)',
       background: 'var(--cth-cream-200)',
       // Tall enough for the god card to stand proud of the row (it's taller and
       // rides a drop shadow) plus the hover-lift on every card, without clipping.
-      height: 112,
-      minHeight: 112,
+      height: 76,
+      minHeight: 76,
       alignItems: 'center'
     }}>
-      {agents.map(a => (
+      {agents.map(a => { const activity=resolveActivity({status:a.status,action:a.action,carrying:a.carrying,onHold:a.onHold,queued:queues[a.id]?.length??0,approval:a.blockReason?.actions?.some(x=>x.kind==='approve')}); return (
         // Draggable wrapper: reorder the roster by dragging one card onto another.
         // Native HTML5 DnD (no dep). A plain click still selects — a drag only
         // starts on movement — so AgentCard's onClick is unaffected.
@@ -132,11 +134,13 @@ export function AgentStrip({ config }: AgentStripProps) {
           }}
         >
           <AgentCard
+            compact
             draggable
             name={a.name}
             character={a.character}
             accent={a.accent}
-            status={a.status}
+            status={activity.kind}
+            statusLabel={activity.label}
             ptyId={a.ptyId}
             project={a.project}
             action={a.action}
@@ -230,7 +234,7 @@ export function AgentStrip({ config }: AgentStripProps) {
             );
           })()}
         </div>
-      ))}
+      );})}
       <PixelButton
         variant="secondary"
         size="lg"

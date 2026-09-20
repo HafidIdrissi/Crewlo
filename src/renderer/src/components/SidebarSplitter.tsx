@@ -49,12 +49,23 @@ export function SidebarSplitter({
 
   return (
     <div
+      role="separator"
+      aria-label="Resize conversation panel"
+      aria-orientation="vertical"
+      aria-valuenow={width}
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'ArrowLeft' || e.key === 'ArrowRight') {
+          e.preventDefault();
+          onChange(Math.max(min, Math.min(max, viewportWidth - 360, width + (e.key === 'ArrowLeft' ? 20 : -20))));
+        }
+      }}
       onMouseDown={(e) => {
         startRef.current = { clientX: e.clientX, width };
         setActive(true);
         e.preventDefault();
       }}
-      onDoubleClick={() => onChange(420)}
+      onDoubleClick={() => onChange(Math.max(min, Math.round(viewportWidth * .3)))}
       title="Drag to resize · double-click to reset"
       style={{
         width: 10,

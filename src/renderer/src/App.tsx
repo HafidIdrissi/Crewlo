@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useStore, selectedAgent } from '@/store/store';
-import { startMockLoop, stopMockLoop } from '@/store/mockEvents';
 import type { HarnessConfig } from '@/store/config';
 import { DEFAULT_ORG_TRIGGER } from '@shared/triggers';
-import { OfficeFloor } from '@/scene/office/OfficeFloor';
+import { StudioFloor } from '@/scene/studio/StudioFloor';
+import { StudioMission } from '@/components/StudioMission';
+import { StudioResults } from '@/components/StudioResults';
 import { useHive } from '@/hooks/useHive';
 import { useResolvedGodName } from '@/hooks/useResolvedGodName';
 import { useGodNameSync } from '@/i18n/useGodNameSync';
 import { useDirectionSync } from '@/i18n/useDirection';
 import { useArabicTerminalSync } from '@/terminal/useArabicTerminalSync';
-import { MemoryPanel } from '@/components/MemoryPanel';
 import { AgentDetailPanel } from '@/components/AgentDetailPanel';
+import { AgentWorkspaceDetails } from '@/components/AgentWorkspaceDetails';
 import { AgentStrip } from '@/components/AgentStrip';
 import { AddAgentModal } from '@/components/AddAgentModal';
 import { MichaelBooting } from '@/components/MichaelBooting';
@@ -18,8 +19,6 @@ import { OnboardingWizard } from '@/components/OnboardingWizard';
 import { HivePicker } from '@/components/HivePicker';
 import { QuitWarningModal, type ClosingTimeState } from '@/components/QuitWarningModal';
 import { CompletionToast } from '@/realtime/CompletionToast';
-import { UpdateToast } from '@/components/UpdateToast';
-import { UpdateBadge } from '@/components/UpdateBadge';
 import { useAppTheme, toggleAppTheme } from '@/design/theme';
 import { SettingsModal, type Section as SettingsSection } from '@/components/SettingsModal';
 import { PixelPanel } from '@/components/PixelPanel';
@@ -31,7 +30,7 @@ import { FullscreenTerminal } from '@/components/FullscreenTerminal';
 import { TaskDetailOverlay } from '@/components/TaskDetailOverlay';
 import { IdePanel } from '@/ide/IdePanel';
 import { useHoldOptionToTalk } from '@/freeflow/holdOption';
-import brandLogo from '@brand/logo.png?url';
+import brandLogo from '@/assets/crewlo-mark.svg?url';
 
 // Injected at build time from package.json (see electron.vite.config.ts).
 declare const __APP_VERSION__: string;
@@ -53,6 +52,8 @@ export function App() {
   const godStatus = useStore(s => s.godStatus);
   const fullscreenAgentId = useStore(s => s.fullscreenAgentId);
   const appThemeNow = useAppTheme();
+  const [panelOpen,setPanelOpen]=useState(false);
+  useEffect(()=>{const open=()=>setPanelOpen(true);window.addEventListener('crewlo:open-agent',open);return()=>window.removeEventListener('crewlo:open-agent',open);},[]);
   const sidebarWidth = useStore(s => s.sidebarWidth);
   const setSidebarWidth = useStore(s => s.setSidebarWidth);
   const ideOpen = useStore(s => s.ideOpen);
@@ -66,12 +67,15 @@ export function App() {
   const [hiveOpened, setHiveOpened] = useState<boolean>(() => {
     try {
       if (window.localStorage.getItem('cth.skipHivePickerOnce')) {
-        window.localStorage.removeItem('cth.skipHivePickerOnce');
         return true;
       }
     } catch { /* localStorage unavailable — show the picker */ }
     return false;
   });
+  useEffect(() => {
+    // Consume only after commit: StrictMode invokes initializers twice in dev.
+    if (hiveOpened) window.localStorage.removeItem('cth.skipHivePickerOnce');
+  }, [hiveOpened]);
   const [settingsOpen, setSettingsOpen] = useState(false);
   /** Which tab Settings opens on. Set by a `cth:open-settings` deep link, reset
    *  to undefined (→ General) whenever the modal is opened the normal way. */
@@ -79,6 +83,22 @@ export function App() {
   const [quitWarn, setQuitWarn] = useState<{ ptyCount: number } | null>(null);
   const [closing, setClosing] = useState<ClosingTimeState | null>(null);
   const [vpWidth, setVpWidth] = useState<number>(window.innerWidth);
+  const [panelResized,setPanelResized]=useState(()=>localStorage.getItem('crewlo.panel.resized')==='true');
+  const panelWidth=Math.min(Math.max(320,vpWidth-400),panelResized?sidebarWidth:Math.max(320,Math.round(vpWidth*.3)));
+  const resizePanel=(width:number)=>{setPanelResized(true);localStorage.setItem('crewlo.panel.resized','true');setSidebarWidth(width);};
+  const lastSelection = useRef(agent?.id);
+  useEffect(() => {
+    if (lastSelection.current !== agent?.id && agent && window.innerWidth <= 800) {
+      document.querySelector('.crewlo-sidebar')?.scrollIntoView({ block: 'start', behavior: 'auto' });
+    }
+    lastSelection.current = agent?.id;
+  }, [agent?.id]);
+  const openStudioTab = (tab: string) => {
+    setPanelOpen(true);
+    const coordinator = agents.find(a => a.isGod);
+    if (coordinator) useStore.getState().select(coordinator.id);
+    useStore.getState().requestCommandCenterTab(tab);
+  };
 
   // Deep link into Settings from anywhere in the tree. Settings' open state is
   // local to App, so a nested control (e.g. "set it now" beside a disabled Talk
@@ -200,24 +220,6 @@ export function App() {
     for (const a of agents) if (a.ptyId) acquireTerminal(a.ptyId);
   }, [agents]);
 
-  // Synthetic demo loop — CAGED (#5B). It must never animate alongside a live
-  // hive (it would fire fake envelope handoffs and step seeded agents). Run it
-  // only as an explicit showcase (VITE_CTH_DEMO=1 in dev) or on a genuinely
-  // empty floor, and stop it the instant the first real PTY agent appears
-  // (Michael always spawns, so in normal operation it effectively never runs).
-  useEffect(() => {
-    if (!config?.onboardingComplete) return;
-    const DEMO = import.meta.env.DEV && import.meta.env.VITE_CTH_DEMO === '1';
-    const evaluate = () => {
-      const hasLive = useStore.getState().agents.some((a) => a.ptyId);
-      if (DEMO || !hasLive) startMockLoop();
-      else stopMockLoop();
-    };
-    evaluate();
-    const unsub = useStore.subscribe(evaluate);
-    return () => { unsub(); stopMockLoop(); };
-  }, [config?.onboardingComplete]);
-
   // Reconcile restored agents against the PTYs still alive in the main process.
   // After a renderer reload (e.g. the laptop slept and Vite reloaded the page),
   // this keeps agents whose process survived and drops any that truly died.
@@ -279,10 +281,9 @@ export function App() {
       <CompletionToast />
       {/* v0.3.4: background-update toast ("restart to update"); renders null until
           main's updater pushes a status. */}
-      <UpdateToast />
       {/* Title bar */}
       <div
-        className="cth-titlebar-drag"
+        className="cth-titlebar-drag crewlo-titlebar"
         style={{
           height: 36, minHeight: 36,
           background: 'linear-gradient(180deg, var(--cth-cream-100) 0%, var(--cth-cream-200) 100%)',
@@ -297,12 +298,12 @@ export function App() {
       >
         <img
           src={brandLogo}
-          alt="Munder Difflin"
+          alt=""
           style={{ height: 20, width: 'auto', display: 'block' }}
         />
         {/* v0.3.7: the version is no longer inert text — it doubles as the
             update control (check / download / restart to update). */}
-        <UpdateBadge />
+        <strong className="crewlo-wordmark">crewlo<span> / </span><small>creative studio</small></strong>
         <span style={{
           fontFamily: 'var(--cth-font-ui)',
           fontSize: 13,
@@ -392,15 +393,24 @@ export function App() {
 
       </div>
 
-      <div style={{
+      <div className="crewlo-workbench" style={{
         flex: 1, minHeight: 0,
         display: 'flex',
         padding: 16,
         gap: 0
       }}>
-        <div style={{ flex: 1, minHeight: 0, minWidth: 0, position: 'relative' }}>
-          <OfficeFloor />
-          <MemoryPanel />
+        <div className="crewlo-main" style={{ flex: 1, minHeight: 0, minWidth: 0, position: 'relative' }}>
+          <nav className="crewlo-nav" aria-label="Workspace navigation">
+            <span>Studio</span>
+            <button disabled={!agents.some(a => a.isGod)} onClick={() => openStudioTab('tasks')}>Tasks & results</button>
+            <button disabled={!agents.some(a => a.isGod)} onClick={() => openStudioTab('human')}>Approvals & input{agents.some(a => a.status === 'blocked' || a.status === 'looping') ? ' •' : ''}</button>
+            <button disabled={!agents.some(a => a.isGod)} onClick={() => openStudioTab('memory')}>Memory</button>
+            <button aria-expanded={panelOpen} onClick={()=>setPanelOpen(v=>!v)}>{panelOpen ? "Hide agent panel" : "Agent panel"}</button>
+            <button onClick={() => setAddAgentOpen(true)}>+ Add agent</button>
+          </nav>
+          <StudioFloor />
+          <StudioResults />
+          <StudioMission />
           {agentCount === 0 && godStatus === 'booting' && <MichaelBooting />}
           {agentCount === 0 && godStatus !== 'booting' && (
             <div style={{
@@ -409,10 +419,10 @@ export function App() {
               pointerEvents: 'none'
             }}>
               <div style={{ pointerEvents: 'auto', width: 360 }}>
-                <PixelPanel variant="dialog" title="EMPTY FLOOR" noPadding>
+                <PixelPanel variant="dialog" title="Your studio is ready" noPadding>
                   <div style={{ padding: 16, display: 'flex', flexDirection: 'column', gap: 10 }}>
                     <p style={{ margin: 0, fontSize: 13, lineHeight: '20px' }}>
-                      No agents on the floor yet. Spawn one to see real claude output stream in here.
+                      A quiet space for your next idea. Add an agent to connect a real terminal and begin.
                     </p>
                     <PixelButton variant="primary" size="md" onClick={() => setAddAgentOpen(true)}>
                       <span style={{ display: 'inline-flex', gap: 6, alignItems: 'center' }}>
@@ -426,16 +436,19 @@ export function App() {
           )}
         </div>
 
-        <SidebarSplitter
-          width={sidebarWidth}
-          onChange={setSidebarWidth}
+        {panelOpen && <SidebarSplitter
+          width={panelWidth}
+          onChange={resizePanel}
           viewportWidth={vpWidth}
-        />
+        />}
 
-        <div style={{
-          width: sidebarWidth, flexShrink: 0,
-          minHeight: 0, display: 'flex', flexDirection: 'column'
+        <div className="crewlo-sidebar" hidden={!panelOpen} style={{
+          width: panelWidth, flexShrink: 0,
+          minHeight: 0, display: panelOpen ? 'flex' : 'none', flexDirection: 'column'
         }}>
+          <button className="voxel-close-panel" onClick={()=>setPanelOpen(false)}>← Back to workplace · close panel</button>
+          <button className="crewlo-back" onClick={() => document.querySelector('.crewlo-main')?.scrollIntoView({ block: 'start' })}>← Back to studio</button>
+          {agent && <AgentWorkspaceDetails key={agent.id} agent={agent}/>}
           {agent ? (
             <AgentDetailPanel agent={agent} />
           ) : godStatus === 'booting' ? (

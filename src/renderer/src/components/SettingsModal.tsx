@@ -13,11 +13,9 @@ import {
 } from '@shared/triggers';
 import { PixelPanel } from './PixelPanel';
 import { PixelButton } from './PixelButton';
-import { UpdatesSection } from './UpdatesSection';
 import { SettingsHeroCard } from './SettingsHeroCard';
 import { SetupPanel } from './SetupPanel';
 import { Icon } from './Icon';
-import { OfficeThemePicker } from './OfficeThemePicker';
 import { McpDefaultsSettings } from './McpDefaultsSettings';
 import { IntegrationsRegistry } from './IntegrationsRegistry';
 import { AiEnginesSettings } from './AiEnginesSettings';
@@ -90,10 +88,10 @@ const slackLabelStyle: CSSProperties = {
 /** The exact connect walkthrough shown behind the i icon. Steps 6 & 7 spell out
  *  the both-lists requirement: subscribe to message.channels / message.groups in
  *  BOTH "Subscribe to bot events" AND "Subscribe to events on behalf of users". */
-const SLACK_CONNECT_STEPS = `Connect Munder Difflin to Slack
+const SLACK_CONNECT_STEPS = `Connect Crewlo to Slack
 
 1. api.slack.com/apps -> Create New App -> From scratch. Name it
-   "Munder Difflin" and pick your workspace.
+   "Crewlo" and pick your workspace.
 2. Basic Information -> Signing Secret -> copy it into the
    "Signing secret" field here.
 3. OAuth & Permissions -> Bot Token Scopes: add
@@ -115,7 +113,7 @@ const SLACK_CONNECT_STEPS = `Connect Munder Difflin to Slack
      message.channels
      message.groups
 8. Save Changes, reinstall if Slack prompts, then invite the bot
-   to your channel:  /invite @MunderDifflin`;
+   to your channel:  /invite @Crewlo`;
 
 /** The request/response contract shown behind the webhook i icon. Every webhook
  *  shares one server and one tunnel and is told apart by its id in the path, so
@@ -476,15 +474,6 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
     const next = !autoCompactOn;
     setAutoCompactOn(next);
     setAutoCompactPending(next);
-  };
-
-  // ─── Auto-update (default ON; gates main's updater checks entirely) ────────
-  const [autoUpdateOn, setAutoUpdateOn] = useState<boolean>(config.autoUpdate !== false);
-  const toggleAutoUpdate = async () => {
-    const next = !autoUpdateOn;
-    setAutoUpdateOn(next);
-    try { stage({ autoUpdate: next }); }
-    catch { setAutoUpdateOn(!next); }
   };
 
   // ─── Anonymous usage stats (default ON = opt-out; contract in TELEMETRY.md) ─
@@ -950,8 +939,8 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
                           background: active ? 'var(--cth-ink-900)' : 'transparent',
                           color: active ? 'var(--cth-cream-50)' : 'var(--cth-ink-700)',
                           fontFamily: 'var(--cth-font-display)',
-                          fontSize: 8,
-                          lineHeight: '12px',
+                          fontSize: 12,
+                          lineHeight: '18px',
                           cursor: 'pointer',
                           letterSpacing: 0
                         }}
@@ -986,7 +975,7 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
                           on the latest?" is the question people open Settings to
                           answer, and the toolbar chip says nothing at all when
                           the answer is yes. */}
-                      <UpdatesSection />
+                      <p>Crewlo · local build. Automatic updates are disabled; no Crewlo release feed is configured.</p>
 
                       <div style={{ height: 1, background: 'var(--cth-ink-300)' }} />
 
@@ -1151,15 +1140,15 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
                               {t('settings.general.autoUpdate')}
                             </span>
                             <span style={{ fontSize: 12, lineHeight: '16px', color: 'var(--cth-ink-500)' }}>
-                              {t('settings.general.autoUpdateDesc')}
+                              Crewlo has no release feed configured. Upstream downloads and installation are disabled.
                             </span>
                           </div>
                           <PixelButton
-                            variant={autoUpdateOn ? 'primary' : 'secondary'}
+                            variant="secondary"
                             size="sm"
-                            onClick={toggleAutoUpdate}
+                            disabled
                           >
-                            {autoUpdateOn ? t('common.on') : t('common.off')}
+                            {t('common.off')}
                           </PixelButton>
                         </div>
                         <div style={{ height: 10 }} />
@@ -1183,7 +1172,7 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
                       </div>
 
                       {/* Office Theme — TV-show office maps (experimental; flag tvShowOffices, default off) */}
-                      <OfficeThemePicker config={config} />
+                      <p style={{ color: 'var(--cth-ink-500)', fontSize: 12 }}>Crewlo studio · Original procedural artwork. Visual zones share one workspace.</p>
                     </>
                   )}
 

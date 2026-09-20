@@ -25,21 +25,21 @@ export interface CastMember {
 
 /** Selectable roster, in display order. */
 export const OFFICE_CAST: CastMember[] = [
-  { name: 'michael',  displayName: 'Michael',  shirt: '#5a6b8c', blurb: "World's best boss" },
-  { name: 'jim',      displayName: 'Jim',      shirt: '#6fa8dc', blurb: 'Salesman, prankster' },
-  { name: 'pam',      displayName: 'Pam',      shirt: '#9caf88', blurb: 'Receptionist, artist' },
-  { name: 'dwight',   displayName: 'Dwight',   shirt: '#b89b3e', blurb: 'Assistant (to the) RM' },
-  { name: 'kevin',    displayName: 'Kevin',    shirt: '#4a7ab5', blurb: 'Accounting' },
-  { name: 'angela',   displayName: 'Angela',   shirt: '#8a86a6', blurb: 'Head of accounting' },
-  { name: 'oscar',    displayName: 'Oscar',    shirt: '#7a4b6b', blurb: 'Accountant' },
-  { name: 'stanley',  displayName: 'Stanley',  shirt: '#8c5a4b', blurb: 'Sales, crossword' },
-  { name: 'phyllis',  displayName: 'Phyllis',  shirt: '#b08bbf', blurb: 'Sales' },
-  { name: 'andy',     displayName: 'Andy',     shirt: '#6fae6f', blurb: 'Cornell, a cappella' },
-  { name: 'kelly',    displayName: 'Kelly',    shirt: '#d16ba5', blurb: 'Customer service' },
-  { name: 'ryan',     displayName: 'Ryan',     shirt: '#3a3a44', blurb: 'The temp' },
-  { name: 'toby',     displayName: 'Toby',     shirt: '#9a8c5a', blurb: 'Human resources' },
-  { name: 'creed',    displayName: 'Creed',    shirt: '#6b7a4b', blurb: 'Quality assurance' },
-  { name: 'meredith', displayName: 'Meredith', shirt: '#b5544a', blurb: 'Supplier relations' },
+  { name: 'michael',  displayName: 'Rowan', shirt: '#bc6c50', blurb: 'Crewlo studio figurine' },
+  { name: 'jim',      displayName: 'Sage', shirt: '#849b86', blurb: 'Crewlo studio figurine' },
+  { name: 'pam',      displayName: 'Ellis', shirt: '#7899b0', blurb: 'Crewlo studio figurine' },
+  { name: 'dwight',   displayName: 'Noor', shirt: '#bc6c50', blurb: 'Crewlo studio figurine' },
+  { name: 'kevin',    displayName: 'Kit', shirt: '#849b86', blurb: 'Crewlo studio figurine' },
+  { name: 'angela',   displayName: 'Jules', shirt: '#7899b0', blurb: 'Crewlo studio figurine' },
+  { name: 'oscar',    displayName: 'Ari', shirt: '#bc6c50', blurb: 'Crewlo studio figurine' },
+  { name: 'stanley',  displayName: 'Remy', shirt: '#849b86', blurb: 'Crewlo studio figurine' },
+  { name: 'phyllis',  displayName: 'Alex', shirt: '#7899b0', blurb: 'Crewlo studio figurine' },
+  { name: 'andy',     displayName: 'Robin', shirt: '#bc6c50', blurb: 'Crewlo studio figurine' },
+  { name: 'kelly',    displayName: 'Sam', shirt: '#849b86', blurb: 'Crewlo studio figurine' },
+  { name: 'ryan',     displayName: 'Ash', shirt: '#7899b0', blurb: 'Crewlo studio figurine' },
+  { name: 'toby',     displayName: 'Lou', shirt: '#bc6c50', blurb: 'Crewlo studio figurine' },
+  { name: 'creed',    displayName: 'Mika', shirt: '#849b86', blurb: 'Crewlo studio figurine' },
+  { name: 'meredith', displayName: 'Val', shirt: '#7899b0', blurb: 'Crewlo studio figurine' },
 ];
 
 export const CAST_BY_NAME: Record<OfficeCharacterName, CastMember> =

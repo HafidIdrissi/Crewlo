@@ -1,5 +1,9 @@
 # Architecture, project structure and design system
 
+Crewlo retains the upstream engine described below. Its active presentation is in
+`src/renderer/src/scene/studio/`; the legacy `scene/office/` implementation remains
+as reference and for compatibility metadata, but is not mounted by the application.
+
 _Moved out of the README so that document can do its job of explaining the product._
 _This is the contributor's map. Start here before your first pull request._
 
@@ -82,8 +86,9 @@ docs/message-queue.md        who may type into an agent's terminal, and when
 
 ## Design system
 
-The aesthetic is **Animal Crossing × Earthbound × SNES menu UI** — pixel-snapped, chunky, friendly.
-[`DESIGN.md`](../DESIGN.md) is canonical; every component derives from its tokens. The Munder Difflin
-brand layers a **Dunder-Mifflin maroon** (`#6E1423`) and **gold** (`#F4D35E`) on top for logo and
-chrome. The 15 avatars are the cast of *The Office*, differentiated by hair/skin/shirt recipes.
+Crewlo uses a warm miniature studio, original clay-style figurines, and restrained
+application controls. [`DESIGN.md`](../DESIGN.md) is canonical. Existing `cth` tokens
+and saved character IDs remain compatible; the visible artwork and branding are new.
+Procedural Canvas artwork is rendered through the existing Pixi.js stack, with
+the React conversation panel and xterm terminal kept independent of scene zoom.
 

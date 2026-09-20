@@ -26,6 +26,7 @@ export interface HiveTask {
   id: string;
   title: string;
   description?: string;
+  result?: string;
   assignee?: string;
   status: 'todo' | 'doing' | 'blocked' | 'done';
   dependsOn: string[];
@@ -89,6 +90,7 @@ export function parseTasks(raw: unknown): HiveTask[] {
         : stableId(`${typeof t.title === 'string' ? t.title : ''}|${typeof t.createdAt === 'string' ? t.createdAt : ''}|${i}`),
       title: typeof t.title === 'string' ? t.title : '(untitled)',
       description: typeof t.description === 'string' ? t.description : undefined,
+      result: typeof t.result === 'string' ? t.result : undefined,
       assignee: typeof t.assignee === 'string' ? t.assignee : undefined,
       status: (['todo', 'doing', 'blocked', 'done'] as const).includes(t.status as Status)
         ? (t.status as Status) : 'todo',
@@ -372,6 +374,13 @@ export function TaskDetail({ task, all, assigneeName, onMove, onAssign, onClose 
             }} dir={rtl ? 'auto' : undefined}>
               {task.description?.trim() || <span style={{ color: 'var(--cth-ink-300)' }}>{t('kanban.noDescription')}</span>}
             </div>
+
+            {task.status === 'done' && task.result?.trim() && (
+              <section aria-label="Task result" style={{ padding: 12, background: 'var(--cth-mint-light)', borderRadius: 10 }}>
+                <strong>Result</strong>
+                <MarkdownPreview source={task.result} variant="card" />
+              </section>
+            )}
 
             {/* The human Q&A trail — every decision documented on the card.
                 Rendered as markdown (card variant), matching the ASK ME tab the

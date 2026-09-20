@@ -10,7 +10,7 @@ import { useSyncExternalStore } from 'react';
  *  Holding the value in one module with subscribers makes the zoom a first-class
  *  app-wide setting: PtyTerminalView writes it, anyone can read it live. */
 
-export const DEFAULT_TERMINAL_FONT_SIZE = 12;
+export const DEFAULT_TERMINAL_FONT_SIZE = 14;
 export const MIN_TERMINAL_FONT_SIZE = 8;
 export const MAX_TERMINAL_FONT_SIZE = 40;
 

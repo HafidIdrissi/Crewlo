@@ -39,6 +39,7 @@ export function PixelPanel({
   noPadding = false
 }: PixelPanelProps) {
   const baseStyle: CSSProperties = {
+    borderRadius: 14,
     background: fillByVariant[variant],
     boxShadow: borderByVariant[variant],
     padding: noPadding ? 0 : 'var(--cth-space-3)',
@@ -64,7 +65,7 @@ export function PixelPanel({
             background: accent ? `var(--cth-${accent})` : 'var(--cth-cream-200)',
             color: 'var(--cth-ink-900)',
             fontFamily: 'var(--cth-font-display)',
-            fontSize: 'var(--cth-text-display-md)',
+            fontSize: variant === 'dialog' ? 17 : 'var(--cth-text-display-md)',
             lineHeight: 'var(--cth-lh-display-md)',
             boxShadow: 'inset 0 -1px 0 var(--cth-ink-900)'
           }}

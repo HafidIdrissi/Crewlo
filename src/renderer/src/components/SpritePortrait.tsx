@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { paintCastPortrait, type OfficeCharacterName } from '@/scene/office/cast';
+import { type OfficeCharacterName } from '@/scene/office/cast';
 import { PORTRAIT_W, PORTRAIT_H } from '@/scene/office/portraitArt';
+import { voxelPortrait } from '@/scene/studio/voxelArt';
 
 const FRAME_W = PORTRAIT_W;
 const FRAME_H = PORTRAIT_H;
@@ -14,7 +15,7 @@ export interface SpritePortraitProps {
   background?: string;
 }
 
-/** Static standing portrait of an Office cast member (recolored LimeZu sprite). */
+/** Original Crewlo voxel portrait; the same recipe is used in the live studio. */
 export function SpritePortrait({
   character,
   scale = 2,
@@ -28,13 +29,13 @@ export function SpritePortrait({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
     let cancelled = false;
-    ctx.imageSmoothingEnabled = false;
+    ctx.imageSmoothingEnabled = true;
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (background !== 'transparent') {
       ctx.fillStyle = background;
       ctx.fillRect(0, 0, canvas.width, canvas.height);
     }
-    paintCastPortrait(ctx, character, scale).catch(() => { /* asset load race */ });
+    ctx.drawImage(voxelPortrait(character), 0, 0, 240, 320, 0, 0, canvas.width, canvas.height);
     return () => { cancelled = true; void cancelled; };
   }, [character, scale, background]);
 
@@ -53,7 +54,7 @@ export function SpritePortrait({
       style={{
         width: w,
         height: h,
-        imageRendering: 'pixelated'
+        imageRendering: 'auto'
       }}
     />
   );

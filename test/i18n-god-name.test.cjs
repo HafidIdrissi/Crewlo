@@ -66,7 +66,10 @@ test('strings about ONE agent interpolate {{name}}, not the orchestrator', () =>
 
 test('every per-agent string has a call site that actually passes a name', () => {
   const src = read('src/renderer/src/components/CommandCenterPanel.tsx');
-  for (const k of ['commandCenter.runsTheFloor', 'commandCenter.noTerminal',
+  // Crewlo renders the selected agent's saved name and role directly in the header.
+  assert.match(src, /\{agent\.name\}/);
+  assert.match(src, /agent\.description \|\| "Studio coordinator"/);
+  for (const k of ['commandCenter.noTerminal',
                    'commandCenter.confirmRestartEngine', 'commandCenter.restartContinueTitle']) {
     const call = new RegExp(`t\\('${k.replace('.', '\\.')}',\\s*\\{[^}]*name:`);
     assert.match(src, call, `${k} is used without passing a name`);

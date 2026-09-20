@@ -37,10 +37,13 @@ test('the one writer is saveAll, and it sends a single merged patch', () => {
 test('toggles stage their change instead of writing it', () => {
   // The specific toggles that used to persist the instant you clicked them.
   for (const key of ['strongKeepalive', 'autoMode', 'orchestratorMaySpawn',
-                     'semanticMemory', 'autoUpdate', 'telemetryEnabled']) {
+                     'semanticMemory', 'telemetryEnabled']) {
     const re = new RegExp(`stage\\(\\{ ${key}:`);
     assert.match(MODAL, re, `${key} is not staged`);
   }
+  // Crewlo intentionally has no release feed: this is no longer an editable toggle.
+  assert.doesNotMatch(MODAL, /onClick=\{toggleAutoUpdate\}/);
+  assert.doesNotMatch(MODAL, /stage\(\{ autoUpdate:/);
 });
 
 test('closing with staged changes asks first, instead of dropping them', () => {

@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PixelPanel } from './PixelPanel';
 import { PixelBadge, StatusKind } from './PixelBadge';
-import { useHasTerminalDraft } from './terminalPool';
 import { SpritePortrait } from './SpritePortrait';
 import { RealtimeMichaelToggle } from './RealtimeMichaelToggle';
 import { CostHud } from '@/realtime/CostHud';
@@ -11,10 +10,13 @@ import { OfficeCharacterName } from '@/scene/office/cast';
 import { AgentNameEditor } from './AgentNameEditor';
 
 export interface AgentCardProps {
+  compact?: boolean;
   name: string;
   character: OfficeCharacterName;
   accent: AccentColorName;
   status: StatusKind;
+  /** Canonical engine-derived wording, shared with the scene and detail panel. */
+  statusLabel?: string;
   /** This agent's pty, if it has one. Only used to notice that the USER has
    *  unsent text on its prompt — which holds the agent's queue, and otherwise
    *  looks identical to an idle agent with nothing to do. */
@@ -55,13 +57,12 @@ const fmtK = (n: number): string => `${Math.round(n / 1000)}k`;
  * and a slim gauge pinned to the bottom edge. Nothing overlaps anything.
  */
 export function AgentCard({
-  name, character, accent, status, ptyId, project, action, progress = 0,
+  compact=false, name, character, accent, status, statusLabel, ptyId, project, action, progress = 0,
   contextTokens, contextLimit, selected, isGod, onClick, onRename,
   doingCount = 0, onTaskNoteClick, draggable, note, onEditNote
 }: AgentCardProps) {
   const { t } = useTranslation();
   const [hover, setHover] = useState(false);
-  const typing = useHasTerminalDraft(ptyId);
   // IDENTITY and SELECTION are two different things, and conflating them is why
   // selecting Michael appeared to do nothing.
   //
@@ -102,8 +103,8 @@ export function AgentCard({
   // that gets cut. Widened for every card so the dock stays uniform, with enough
   // slack that Talk's info mark (which only appears when the OpenAI key is
   // missing) has somewhere to sit rather than pushing the row apart.
-  const width = 220;
-  const height = 78;
+  const width = 290;
+  const height = 88;
   const lift = (isGod ? -2 : 0) - (hover ? 1 : 0) - (selected ? 1 : 0);
   /** God's distinction: a tinted surface plus a thin accent border all the way
    *  around — NOT the 3px rule that used to sit on the top edge alone. That rule
@@ -128,16 +129,20 @@ export function AgentCard({
   const infoLine = (status !== 'idle' && action) ? action : project;
   const noteFirstLine = (note ?? '').split('\n').find((l) => l.trim()) ?? '';
 
+  if(compact)return <button className="crewlo-agent-chip" aria-current={selected?'true':undefined} aria-label={name+' · '+(statusLabel||status)} onClick={()=>{onClick?.();window.dispatchEvent(new Event('crewlo:open-agent'));}}>
+    <span className="crewlo-chip-portrait"><SpritePortrait character={character} scale={1.5}/></span>
+    <span className="crewlo-chip-info"><span className="crewlo-chip-name">{name}</span><PixelBadge status={status} label={statusLabel}/></span>
+  </button>;
   return (
     <div
       role="button"
       tabIndex={0}
-      onClick={onClick}
+      onClick={() => { onClick?.(); window.dispatchEvent(new Event('crewlo:open-agent')); }}
       onKeyDown={(event) => {
         if (event.target !== event.currentTarget) return;
         if (event.key === 'Enter' || event.key === ' ') {
           event.preventDefault();
-          onClick?.();
+          onClick?.(); window.dispatchEvent(new Event('crewlo:open-agent'));
         }
       }}
       onMouseEnter={() => setHover(true)}
@@ -146,7 +151,7 @@ export function AgentCard({
       // The ring is the visual answer to "which terminal is open"; this is the
       // same answer for a screen reader. Matches SidebarRow in fullscreen.
       aria-current={selected ? 'true' : undefined}
-      className="cth-titlebar-nodrag"
+      className="cth-titlebar-nodrag crewlo-agent-card"
       style={{
         width, minWidth: width, height,
         padding: 0, border: 'none', background: 'transparent', cursor: 'pointer', textAlign: 'left',
@@ -186,7 +191,7 @@ export function AgentCard({
         <div style={{ display: 'flex', gap: 8, height: '100%' }}>
           {/* Portrait tile — vertically centred so the card reads calm and even. */}
           <div style={{
-            width: 36, height: isGod ? 50 : 46, alignSelf: 'center',
+            width: 48, height: 60, alignSelf: 'center',
             // God's CARD is now accent-light, so the tile cannot be — it would
             // vanish into its own background. Paper reads as an inset frame
             // against the tint, which is what the tile is meant to look like.
@@ -205,7 +210,7 @@ export function AgentCard({
             <div style={{ display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'space-between', minWidth: 0 }}>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5, minWidth: 0, flex: 1 }}>
                 {onRename ? (
-                  <AgentNameEditor name={name} onCommit={onRename} uppercase />
+                  <AgentNameEditor name={name} onCommit={onRename} fontSize={14} />
                 ) : (
                   <span style={{
                     fontFamily: 'var(--cth-font-display)',
@@ -218,23 +223,23 @@ export function AgentCard({
                 )}
                 {isGod && (
                   <span style={{
-                    fontFamily: 'var(--cth-font-display)', fontSize: 7, lineHeight: '11px',
+                    fontFamily: 'var(--cth-font-display)', fontSize: 12, lineHeight: '13px',
                     background: `var(--cth-${accent})`, color: 'var(--cth-ink-900)',
                     padding: '1px 4px 0', flexShrink: 0
-                  }}>{t('agentCard.boss')}</span>                )}
+                  }}>Lead</span>                )}
               </span>
               {/* flexShrink:0 — the badge is a fixed 2-to-5 character chip; when
                   it was allowed to shrink, the browser resolved the overflow by
                   eating the NAME instead. Truncation should land on the longest,
                   most redundant thing, not on the identity. */}
-              <PixelBadge status={typing ? 'typing' : status} style={{ flexShrink: 0 }} />
+              <PixelBadge status={status} label={statusLabel} style={{ flexShrink: 0 }} />
             </div>
 
             {/* Context line: action while working, repo while idle. */}
             <div
               title={`${project}${action && status !== 'idle' ? ` — ${action}` : ''}`}
               style={{
-                fontSize: 11, lineHeight: '14px',
+                fontSize: 14, lineHeight: '14px',
                 color: 'var(--cth-ink-500)',
                 whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
               }}

@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { TasksKanban } from './TasksKanban';
 import { PixelPanel } from './PixelPanel';
+import { studioStatus } from '@/scene/studio/studioStatus';
 import { PixelBadge } from './PixelBadge';
 import { PixelButton } from './PixelButton';
 import { SpritePortrait } from './SpritePortrait';
@@ -26,6 +28,7 @@ export interface AgentDetailPanelProps {
 
 export function AgentDetailPanel({ agent }: AgentDetailPanelProps) {
   const { t } = useTranslation();
+  const queued = useStore(s => s.messageQueues[agent.id]?.length ?? 0);
   const [openTerminalState, setOpenTerminalState] = useState<'idle' | 'opening' | 'ok' | 'error'>('idle');
   const [openTerminalError, setOpenTerminalError] = useState<string | undefined>();
   const [editOpen, setEditOpen] = useState(false);
@@ -136,7 +139,7 @@ export function AgentDetailPanel({ agent }: AgentDetailPanelProps) {
       noPadding
     >
       {/* Thin header strip */}
-      <div ref={headerRef} style={{
+      <div ref={headerRef} className="crewlo-agent-header crewlo-worker-header" style={{
         display: 'flex', alignItems: 'center', gap: 8,
         padding: '6px 8px',
         background: 'var(--cth-cream-100)',
@@ -150,26 +153,25 @@ export function AgentDetailPanel({ agent }: AgentDetailPanelProps) {
           display: 'flex', alignItems: 'flex-end', justifyContent: 'center', overflow: 'hidden',
           flexShrink: 0
         }}>
-          <SpritePortrait character={agent.character} scale={1} />
+          <SpritePortrait character={agent.character} scale={2} />
         </div>
         <div style={{ flex: 1, minWidth: 0 }}>
           <div style={{ display: 'flex', minWidth: 0, lineHeight: '14px' }}>
             <AgentNameEditor
               name={agent.name}
               onCommit={(name) => renameAgent(agent.id, name)}
-              uppercase
-              fontSize={10}
+              fontSize={16}
             />
           </div>
           <div style={{
             display: 'flex', gap: 6, alignItems: 'center', marginTop: 1,
             minWidth: 0, overflow: 'hidden'
           }}>
-            <PixelBadge status={agent.status} />
+            <PixelBadge status={studioStatus({...agent,queued}).kind} label={studioStatus({...agent,queued}).label} />
             <span style={{
               fontSize: 12, color: 'var(--cth-ink-500)',
               whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis'
-            }}>{agent.project}</span>
+            }} title={agent.description || agent.project}>{agent.description || agent.project}</span>
           </div>
         </div>
         <PixelButton variant="secondary" size="sm" onClick={() => setEditOpen(true)}>
@@ -231,13 +233,13 @@ export function AgentDetailPanel({ agent }: AgentDetailPanelProps) {
       )}
 
       {/* #7C — operator control (pause / halt / steer) for live agents */}
-      {isReal && <AgentControlStrip agentId={agent.id} />}
+      {isReal && <details className="crewlo-session-controls"><summary>Session controls · pause, stop & steer</summary><AgentControlStrip agentId={agent.id} /></details>}
 
       {/* Tabs */}
       <SidebarTabs current={sidebarTab} accent={agent.accent} onChange={setSidebarTab} />
 
       {/* Active tab body — fills remaining space */}
-      <div style={{ flex: 1, minHeight: 0, display: 'flex' }}>
+      <div style={{ flex: 1, minHeight: 0, display: 'flex', flexDirection: 'column' }}>
         {sidebarTab === 'terminal' && (
           isReal && agent.ptyId ? (
             isFullscreenedHere ? (
@@ -263,7 +265,7 @@ export function AgentDetailPanel({ agent }: AgentDetailPanelProps) {
                   embedded
                 />
               </div>
-              <MessageQueueComposer agent={agent} />
+
             </div>
             )
           ) : (
@@ -273,12 +275,14 @@ export function AgentDetailPanel({ agent }: AgentDetailPanelProps) {
           )
         )}
 
+        {sidebarTab === 'threads' && <ThreadsPanel agentId={agent.id} />}
+        {sidebarTab === 'tasks' && <><p className="crewlo-conversation-note">Shared workspace task ledger</p><TasksKanban /></>}
         {sidebarTab === 'git' && (
           <GitTab cwd={agent.cwd} />
         )}
 
         {sidebarTab === 'messages' && (
-          <ThreadsPanel agentId={agent.id} />
+          <><p className="crewlo-conversation-note">Structured workspace messages. Open Terminal for the provider conversation.</p><ThreadsPanel agentId={agent.id} readOnly /></>
         )}
 
         {sidebarTab === 'traces' && (
@@ -286,6 +290,7 @@ export function AgentDetailPanel({ agent }: AgentDetailPanelProps) {
         )}
       </div>
 
+      {['terminal', 'messages'].includes(sidebarTab) && isReal && !isFullscreenedHere && <MessageQueueComposer agent={agent} />}
       {editOpen && (
         <EditAgentModal agent={agent} onClose={() => setEditOpen(false)} />
       )}

@@ -1,38 +1,38 @@
 /* Design tokens — mirrors tokens.ts. Update both together. */
 :root {
   /* Base */
-  --cth-cream-50:  #FFFDF5;
-  --cth-cream-100: #FFF8E7;
-  --cth-cream-200: #F4E9C7;
-  --cth-cream-300: #E8D9A0;
-  --cth-paper-100: #FCFAF0;
-  --cth-paper-200: #F0EAD2;
+  --cth-cream-50:  #FFFCF5;
+  --cth-cream-100: #F7F3EB;
+  --cth-cream-200: #ECE5D8;
+  --cth-cream-300: #DED4C4;
+  --cth-paper-100: #FFFCF6;
+  --cth-paper-200: #F1EADF;
 
   /* Ink */
-  --cth-ink-900: #1A1320;
-  --cth-ink-700: #3D2E4A;
-  --cth-ink-500: #6B5878;
-  --cth-ink-300: #A899B5;
-  --cth-ink-100: #D9CFE0;
+  --cth-ink-900: #303B34;
+  --cth-ink-700: #50594F;
+  --cth-ink-500: #746E63;
+  --cth-ink-300: #A49C8E;
+  --cth-ink-100: #E0D9CC;
 
   /* Accents — v0.3.4 recalibration: same hues, professional saturation.
      The originals (#FFD93D, #FF6B6B, …) were full-saturation arcade tones that
      read as noise at UI density; these sit in the calmer band that products
      like Linear/Radix use — recognizable color, no glare. */
-  --cth-coral: #D96A62;       --cth-coral-light: #F3D3CD;
-  --cth-mint:  #5CA97A;       --cth-mint-light:  #D2E7DA;
-  --cth-sky:   #4F9FAF;       --cth-sky-light:   #CFE5E9;
-  --cth-lemon: #DCAB3C;       --cth-lemon-light: #F3E4BC;
+  --cth-coral: #BB785E;       --cth-coral-light: #F3D3CD;
+  --cth-mint:  #809779;       --cth-mint-light:  #D2E7DA;
+  --cth-sky:   #7897AA;       --cth-sky-light:   #CFE5E9;
+  --cth-lemon: #C4A569;       --cth-lemon-light: #F3E4BC;
   --cth-lilac: #9482D3;       --cth-lilac-light: #E0DAF2;
   --cth-peach: #D99168;       --cth-peach-light: #F3DACA;
 
   /* Status — same recalibration; hue meanings unchanged */
   --cth-status-idle:     #A199AB;
-  --cth-status-thinking: #4F9FAF;
-  --cth-status-working:  #DCAB3C;
+  --cth-status-thinking: #7897AA;
+  --cth-status-working:  #C4A569;
   --cth-status-waiting:  #6D87D6;
-  --cth-status-blocked:  #D96A62;
-  --cth-status-success:  #5CA97A;
+  --cth-status-blocked:  #BB785E;
+  --cth-status-success:  #809779;
   --cth-status-ghost:    #D9D3DE;
   --cth-status-compacting: #8F7CC7; /* #5C — mid-/compact, "boxing up context" */
   --cth-status-looping:    #D6903F; /* #5C — circuit-breaker armed (runaway) */
@@ -54,7 +54,7 @@
      Mono (code/terminal). Pixelify/VT323 were the main readability drag. */
   /* Press Start 2P is latin-only by design. CJK and Arabic text in a display
      slot falls through to a system face rather than to generic monospace. */
-  --cth-font-display: "Press Start 2P", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Geeza Pro", "Noto Naskh Arabic", "Segoe UI Historic", monospace;
+  --cth-font-display: "Inter", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Geeza Pro", "Noto Naskh Arabic", "Segoe UI Historic", monospace;
   --cth-font-ui:      "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Noto Sans CJK SC", "Geeza Pro", "Noto Naskh Arabic", "Segoe UI Historic", sans-serif;
   --cth-font-mono:    "JetBrains Mono", ui-monospace, "SF Mono", Menlo, "PingFang SC", "Microsoft YaHei", "Noto Sans Mono CJK SC", "Noto Sans CJK SC", "Geeza Pro", "Noto Naskh Arabic", "Segoe UI Historic", monospace;
 
@@ -62,7 +62,7 @@
      at equal px, and the controls were oversized) */
   --cth-text-display-lg: 16px;
   --cth-text-display-md: 12px;
-  --cth-text-display-sm: 8px;
+  --cth-text-display-sm: 11px;
   --cth-text-body-lg:    16px;
   --cth-text-body-md:    14px;
   --cth-text-body-sm:    13px;
@@ -72,7 +72,7 @@
   /* Line heights — integer multiples */
   --cth-lh-display-lg: 24px;
   --cth-lh-display-md: 20px;
-  --cth-lh-display-sm: 12px;
+  --cth-lh-display-sm: 16px;
   --cth-lh-body-lg:    24px;
   --cth-lh-body-md:    20px;
   --cth-lh-body-sm:    18px;
@@ -89,7 +89,7 @@
      accents are LIGHT surfaces in BOTH themes, so this is dark in both — using
      ink-900 here inverts with the theme and paints near-white on a pale accent,
      which is the one place the theme switch actively hurts legibility. */
-  --cth-on-accent: #1A1320;
+  --cth-on-accent: #303B34;
 
   --cth-panel-border-inset:    inset 0 0 0 1px var(--cth-ink-100);
   --cth-panel-border-terminal: inset 0 0 0 1px var(--cth-ink-300);

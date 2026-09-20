@@ -364,6 +364,19 @@ its first newline.
 - **Agent terminals are UTF-8.** They ran with no locale at all.`;
 
 export function initAutoUpdater(getWebContents: () => WebContents | null): void {
+  // Fork boundary: Crewlo must never poll, download or install upstream releases.
+  // Keep the IPC contract so existing settings/clients receive an honest answer.
+  const disabled = () => ({ ok: false, error: 'Crewlo has no release feed configured.' });
+  ipcMain.handle('update:restartAndInstall', disabled);
+  ipcMain.handle('update:checkNow', disabled);
+  ipcMain.handle('update:download', disabled);
+  ipcMain.handle('update:openRelease', disabled);
+  ipcMain.handle('update:simulate', disabled);
+  ipcMain.handle('update:current', () => ({ state: 'idle' }));
+}
+
+// Retained upstream implementation for reference; intentionally never called.
+function initUpstreamAutoUpdater(getWebContents: () => WebContents | null): void {
   sendTo = getWebContents;
 
   // IPC surface is registered unconditionally so the renderer can always call it.

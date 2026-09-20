@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useState, type CSSProperties } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState, type CSSProperties } from 'react';
 import { useTranslation } from 'react-i18next';
 import { PixelPanel } from './PixelPanel';
 import { PixelButton } from './PixelButton';
@@ -38,11 +38,11 @@ const ossChip = (active: boolean, accent: AccentColorName): CSSProperties => ({
   padding: '3px 8px 1px',
   background: active ? `var(--cth-${accent}-light)` : 'var(--cth-cream-100)',
   boxShadow: active ? 'inset 0 0 0 1.5px var(--cth-ink-500)' : 'inset 0 0 0 1px var(--cth-ink-100)',
-  fontFamily: 'var(--cth-font-ui)', fontSize: 12,
+  fontFamily: 'var(--cth-font-ui)', fontSize: 14,
   color: 'var(--cth-ink-900)', cursor: 'pointer', border: 'none'
 });
 const ossGroupHead: CSSProperties = {
-  fontFamily: 'var(--cth-font-display)', fontSize: 8, lineHeight: '12px',
+  fontFamily: 'var(--cth-font-display)', fontSize: 14, lineHeight: '20px',
   color: 'var(--cth-ink-500)', textTransform: 'uppercase', marginBottom: 4
 };
 const ossLink: CSSProperties = { color: 'var(--cth-ink-900)', textDecoration: 'underline', cursor: 'pointer' };
@@ -83,7 +83,7 @@ const DESCRIPTION_TEMPLATES: { labelKey: string; description: string; goal: stri
 // the exact JSON shape the importer accepts and ends with a fill-in section so the
 // user adds their own details (item 7). Kept in sync with the HireManifest schema
 // (src/shared/hire.ts) — provider allowlist is claude | codex | antigravity | cursor.
-const HIRE_PROMPT = `You are designing a "hire" — a ready-to-spawn AI agent for Munder Difflin, an app that runs a team of CLI coding agents. Output ONE JSON object (a hire manifest) and nothing else.
+const HIRE_PROMPT = `You are designing a "hire" — a ready-to-spawn AI agent for Crewlo, an app that runs a team of CLI coding agents. Output ONE JSON object (a hire manifest) and nothing else.
 
 Make the agent genuinely useful: give it a sharp role, a concrete standing goal, and a description that makes it behave like an expert operator of its CLI engine (Claude Code, Codex, or Antigravity/Gemini). It should know how to use the terminal, read and edit files, run and inspect commands, lean on available skills and MCP tools, keep notes in memory, and work autonomously toward its goal without hand-holding.
 
@@ -91,7 +91,7 @@ Return EXACTLY this shape (omit optional fields you don't need; keep the spec st
 
 {
   "spec": "munder-difflin/hire@1",
-  "name": "Jim",
+  "name": "Sage",
   "description": "one-line role — what this agent is for",
   "goal": "standing directive injected on every prompt — specific and outcome-oriented",
   "provider": "claude",
@@ -188,7 +188,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
   const initialProvider = inferAgentProvider(config.defaultCommand);
   const initialModel = isClaudeProvider(initialProvider) ? config.defaultModel : undefined;
 
-  const [name, setName] = useState(pendingHire?.name ?? 'Jim');
+  const [name, setName] = useState(pendingHire?.name ?? 'Sage');
   const [character, setCharacter] = useState<OfficeCharacterName>(knownCharacter(pendingHire?.character));
   const [accent, setAccent] = useState<AccentColorName>(knownAccent(pendingHire?.accent));
   const [cwd, setCwd] = useState<string>(config.registeredRepos[0] ?? '');
@@ -202,7 +202,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
   const [command, setCommand] = useState(
     pendingHire ? hireCommand(pendingHire) : buildSpawnCommand(config, initialModel, initialProvider)
   );
-  const [description, setDescription] = useState(pendingHire?.description ?? 'a fresh harness');
+  const [description, setDescription] = useState(pendingHire?.description ?? 'Studio partner');
   const [hireMeta, setHireMeta] = useState<HireManifest | null>(pendingHire);
 
   // Picking a model rebuilds the command; the command field stays editable for
@@ -243,9 +243,18 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
   // Note shown when the folder was auto-filled from the pasted session id.
   const [folderNote, setFolderNote] = useState<string | undefined>();
   const [error, setError] = useState<string | undefined>();
+  const dialogRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const previous = document.activeElement as HTMLElement | null;
+    dialogRef.current?.querySelector<HTMLInputElement>('input')?.focus();
+    return () => previous?.focus();
+  }, []);
   const [busy, setBusy] = useState(false);
   // Which config section the left sidebar index is showing.
   const [section, setSection] = useState<SectionKey>('identity');
+  useEffect(() => {
+    if (error) dialogRef.current?.querySelector<HTMLInputElement>('input:not(:disabled), textarea:not(:disabled)')?.focus();
+  }, [error, section]);
   // "Generate a hire with AI" helper — reveals a copy-paste prompt (item 7).
   const [showHirePrompt, setShowHirePrompt] = useState(false);
   const [copiedPrompt, setCopiedPrompt] = useState(false);
@@ -393,7 +402,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
     // A required field can live in a section the user hasn't opened, so jump to
     // the offending section as we surface the error — the field is never hidden.
     if (!name.trim()) { setError(tr('addAgent.errName')); setSection('identity'); return; }
-    if (!cwd) { setError(tr('addAgent.errFolder')); setSection('workspace'); return; }
+    if (!cwd.trim()) { setError(tr('addAgent.errFolder')); setSection('workspace'); return; }
     if (!command.trim()) { setError(tr('addAgent.errCommand')); setSection('engine'); return; }
 
     setBusy(true);
@@ -516,10 +525,19 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
         zIndex: 500
       }}
     >
-      <div onClick={(e) => e.stopPropagation()} style={{ width: 940, maxWidth: '95vw' }}>
+      <div ref={dialogRef} className="crewlo-add-agent" role="dialog" aria-modal="true" aria-label="Create agent"
+        onKeyDown={e => {
+          if (e.key !== 'Tab') return;
+          const nodes = Array.from(e.currentTarget.querySelectorAll<HTMLElement>('button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), summary'))
+            .filter(el => el.getClientRects().length);
+          const first = nodes[0], last = nodes[nodes.length - 1];
+          if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last?.focus(); }
+          if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first?.focus(); }
+        }}
+        onClick={(e) => e.stopPropagation()} style={{ width: 980, maxWidth: '95vw' }}>
         <PixelPanel
           variant="dialog"
-          title={tr('addAgent.title')}
+          title="Create an agent"
           style={{ padding: 16 }}
           noPadding
         >
@@ -535,7 +553,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                 padding: '6px 10px',
                 background: 'var(--cth-lemon-light, #fdf3cf)',
                 boxShadow: 'inset 0 0 0 1px var(--cth-ink-100)',
-                fontSize: 12,
+                fontSize: 14,
                 color: 'var(--cth-ink-900)',
                 display: 'flex', flexDirection: 'column', gap: 2
               }}>
@@ -547,13 +565,13 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                 <span>{tr('addAgent.reviewFields')}</span>
                 {hireMeta.commandFlags && hireMeta.commandFlags.length > 0 && (
                   <span style={{ display: 'flex', gap: 4, alignItems: 'baseline', flexWrap: 'wrap', marginTop: 2 }}>
-                    <span style={{ fontSize: 12 }}>{tr('addAgent.hireFlags')}</span>
+                    <span style={{ fontSize: 14 }}>{tr('addAgent.hireFlags')}</span>
                     {hireMeta.commandFlags.map((f, i) => (
                       <code
                         key={`${f}-${i}`}
                         style={{
                           fontFamily: 'var(--cth-font-mono)',
-                          fontSize: 12,
+                          fontSize: 14,
                           padding: '0 4px',
                           background: 'var(--cth-paprika-light, #f6d3c4)',
                           boxShadow: 'inset 0 0 0 1px var(--cth-paprika-700, #b3502e)',
@@ -567,13 +585,13 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                 )}
                 {hireMeta.skills && hireMeta.skills.length > 0 && (
                   <span style={{ display: 'flex', gap: 4, alignItems: 'baseline', flexWrap: 'wrap', marginTop: 2 }}>
-                    <span style={{ fontSize: 12 }}>{tr('addAgent.hireSkills')}</span>
+                    <span style={{ fontSize: 14 }}>{tr('addAgent.hireSkills')}</span>
                     {hireMeta.skills.map((s) => (
                       <code
                         key={s}
                         style={{
                           fontFamily: 'var(--cth-font-mono)',
-                          fontSize: 12,
+                          fontSize: 14,
                           padding: '0 4px',
                           background: 'var(--cth-mint-light, #d0f0e0)',
                           boxShadow: 'inset 0 0 0 1px var(--cth-mint-700, #1f7a4d)',
@@ -596,10 +614,10 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                     <div style={{ display: 'flex', flexDirection: 'column', gap: 3, marginTop: 2 }}>
                       {safe.length > 0 && (
                         <span style={{ display: 'flex', gap: 4, alignItems: 'baseline', flexWrap: 'wrap' }}>
-                          <span style={{ fontSize: 12 }}>{tr('addAgent.mcpSafe')}:</span>
+                          <span style={{ fontSize: 14 }}>{tr('addAgent.mcpSafe')}:</span>
                           {safe.map((id) => (
                             <code key={id} style={{
-                              fontFamily: 'var(--cth-font-mono)', fontSize: 12, padding: '0 4px',
+                              fontFamily: 'var(--cth-font-mono)', fontSize: 14, padding: '0 4px',
                               background: 'var(--cth-sky-light, #d0e8f8)',
                               boxShadow: 'inset 0 0 0 1px var(--cth-sky-700, #1f5a8a)',
                               color: 'var(--cth-ink-900)'
@@ -609,16 +627,16 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                       )}
                       {consent.length > 0 && (
                         <span style={{ display: 'flex', gap: 4, alignItems: 'baseline', flexWrap: 'wrap' }}>
-                          <span style={{ fontSize: 12 }}>{tr('addAgent.mcpConsent')}:</span>
+                          <span style={{ fontSize: 14 }}>{tr('addAgent.mcpConsent')}:</span>
                           {consent.map((id) => (
                             <code key={id} style={{
-                              fontFamily: 'var(--cth-font-mono)', fontSize: 12, padding: '0 4px',
+                              fontFamily: 'var(--cth-font-mono)', fontSize: 14, padding: '0 4px',
                               background: 'var(--cth-paprika-light, #f6d3c4)',
                               boxShadow: 'inset 0 0 0 1px var(--cth-paprika-700, #b3502e)',
                               color: 'var(--cth-ink-900)'
                             }}>{id}</code>
                           ))}
-                          <span style={{ fontSize: 11, color: 'var(--cth-ink-700)' }}>
+                          <span style={{ fontSize: 14, color: 'var(--cth-ink-700)' }}>
                             {tr('addAgent.mcpEnableInSettings')}
                           </span>
                         </span>
@@ -630,7 +648,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
             )}
 
             {/* sidebar index + the active section's fields */}
-            <div style={{ display: 'flex', gap: 16, alignItems: 'flex-start' }}>
+            <div className="crewlo-setup-layout" style={{ display: 'flex', gap: 24, alignItems: 'flex-start' }}>
               {/* LEFT — section index. Capabilities isn't a nav item: it isn't a
                   user field, it rides the imported hire manifest (banner above). */}
               <nav style={{ width: 168, flexShrink: 0, display: 'flex', flexDirection: 'column', gap: 4 }}>
@@ -639,6 +657,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                   return (
                     <button
                       key={s.key}
+                      aria-current={active ? "step" : undefined}
                       onClick={() => setSection(s.key)}
                       style={{
                         textAlign: 'left', padding: '6px 9px 5px', border: 'none', cursor: 'pointer',
@@ -650,14 +669,14 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                       }}
                     >
                       <span style={{
-                        fontFamily: 'var(--cth-font-display)', fontSize: 9, lineHeight: '13px',
+                        fontFamily: 'var(--cth-font-display)', fontSize: 15, lineHeight: '21px',
                         color: 'var(--cth-ink-900)', textTransform: 'uppercase',
                         display: 'flex', alignItems: 'baseline', gap: 6
                       }}>
                         <span style={{ color: active ? 'var(--cth-ink-900)' : 'var(--cth-ink-500)' }}>{i + 1}</span>
                         {tr(s.labelKey)}
                       </span>
-                      <span style={{ fontFamily: 'var(--cth-font-ui)', fontSize: 11, color: 'var(--cth-ink-500)' }}>
+                      <span style={{ fontFamily: 'var(--cth-font-ui)', fontSize: 14, color: 'var(--cth-ink-500)' }}>
                         {tr(s.hintKey)}
                       </span>
                     </button>
@@ -684,11 +703,13 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                     </Row>
 
                     <Row label={tr('addAgent.character')}>
-                      <div style={{ display: 'flex', gap: 6, flexWrap: 'wrap' }}>
+                      <div className="crewlo-character-grid">
                         {OFFICE_CAST.map(c => (
                           <button
                             key={c.name}
-                            onClick={() => { setCharacter(c.name); setName(c.displayName); }}
+                            aria-pressed={character === c.name}
+                            className="crewlo-character-choice"
+                            onClick={() => { setCharacter(c.name); if (OFFICE_CAST.some(item => item.displayName === name)) setName(c.displayName); }}
                             title={c.blurb}
                             style={{
                               padding: 4,
@@ -702,9 +723,9 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                             }}
                           >
                             <div style={{ width: 44, height: 56, display: 'flex', alignItems: 'flex-end', justifyContent: 'center', overflow: 'hidden' }}>
-                              <SpritePortrait character={c.name} scale={2} />
+                              <SpritePortrait character={c.name} scale={3} />
                             </div>
-                            <span style={{ fontSize: 11, color: 'var(--cth-ink-700)' }}>{c.displayName}</span>
+                            <span style={{ fontSize: 14, color: 'var(--cth-ink-700)' }}>{c.displayName}</span>
                           </button>
                         ))}
                       </div>
@@ -715,6 +736,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                         {ACCENTS.map(a => (
                           <button
                             key={a}
+                            aria-pressed={accent === a}
                             onClick={() => setAccent(a)}
                             style={{
                               width: 32, height: 32,
@@ -737,7 +759,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                   <>
                     <Row label={tr('addAgent.project')}>
                       <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8, marginBottom: 6 }}>
-                        <span style={{ fontSize: 12, color: 'var(--cth-ink-500)' }}>
+                        <span style={{ fontSize: 14, color: 'var(--cth-ink-500)' }}>
                           {repos.length > 0 ? tr('addAgent.pickProject') : tr('addAgent.noProjects')}
                         </span>
                         <button
@@ -746,7 +768,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                           style={{
                             flexShrink: 0, padding: '2px 8px 1px', border: 'none', cursor: 'pointer',
                             background: 'var(--cth-cream-200)', boxShadow: 'inset 0 0 0 1px var(--cth-ink-100)',
-                            fontFamily: 'var(--cth-font-ui)', fontSize: 12, color: 'var(--cth-ink-900)',
+                            fontFamily: 'var(--cth-font-ui)', fontSize: 14, color: 'var(--cth-ink-900)',
                             display: 'inline-flex', alignItems: 'center', gap: 4
                           }}
                         >
@@ -778,7 +800,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                                   padding: '3px 4px 1px 8px',
                                   background: 'transparent',
                                   fontFamily: 'var(--cth-font-ui)',
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   cursor: 'pointer',
                                   border: 'none'
                                 }}
@@ -793,7 +815,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                                   padding: '3px 6px 1px 2px',
                                   background: 'transparent',
                                   fontFamily: 'var(--cth-font-ui)',
-                                  fontSize: 12,
+                                  fontSize: 14,
                                   lineHeight: 1,
                                   color: 'var(--cth-ink-500)',
                                   cursor: 'pointer',
@@ -811,7 +833,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                           value={cwd}
                           onChange={(e) => setCwd(e.target.value)}
                           placeholder={tr('addAgent.projectPlaceholder')}
-                          style={{ ...inputStyle, flex: 1, fontFamily: 'var(--cth-font-mono)', fontSize: 13 }}
+                          style={{ ...inputStyle, flex: 1, fontFamily: 'var(--cth-font-mono)', fontSize: 14 }}
                         />
                         <PixelButton variant="secondary" size="md" onClick={pickFolder}>
                           <span style={{ display: 'inline-flex', gap: 4, alignItems: 'center' }}>
@@ -827,7 +849,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                             alignSelf: 'flex-start', marginTop: 2,
                             padding: '2px 8px 1px', border: 'none', cursor: 'pointer',
                             background: 'var(--cth-mint-light)', boxShadow: 'inset 0 0 0 1px var(--cth-ink-100)',
-                            fontFamily: 'var(--cth-font-ui)', fontSize: 12, color: 'var(--cth-ink-900)',
+                            fontFamily: 'var(--cth-font-ui)', fontSize: 14, color: 'var(--cth-ink-900)',
                             display: 'inline-flex', alignItems: 'center', gap: 4
                           }}
                         >
@@ -844,7 +866,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                         onChange={(e) => setIsolate(e.target.checked)}
                         style={{ width: 16, height: 16, cursor: resuming ? 'not-allowed' : 'pointer' }}
                       />
-                      <span style={{ fontFamily: 'var(--cth-font-ui)', fontSize: 13, color: 'var(--cth-ink-900)' }}>
+                      <span style={{ fontFamily: 'var(--cth-font-ui)', fontSize: 14, color: 'var(--cth-ink-900)' }}>
                         {tr('addAgent.gitIsolation')}
                       </span>
                     </label>
@@ -855,15 +877,15 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                         onChange={(e) => { setResumeSessionId(e.target.value); setFolderNote(undefined); }}
                         onBlur={resolveFolderFromSession}
                         placeholder={tr('addAgent.resumePlaceholder')}
-                        style={{ ...inputStyle, fontFamily: 'var(--cth-font-mono)', fontSize: 13 }}
+                        style={{ ...inputStyle, fontFamily: 'var(--cth-font-mono)', fontSize: 14 }}
                       />
                       {folderNote && (
-                        <span style={{ fontFamily: 'var(--cth-font-ui)', fontSize: 12, color: 'var(--cth-mint, var(--cth-ink-700))' }}>
+                        <span style={{ fontFamily: 'var(--cth-font-ui)', fontSize: 14, color: 'var(--cth-mint, var(--cth-ink-700))' }}>
                           {folderNote}
                         </span>
                       )}
                       {resuming && (
-                        <span style={{ fontFamily: 'var(--cth-font-ui)', fontSize: 12, color: 'var(--cth-ink-700)' }}>
+                        <span style={{ fontFamily: 'var(--cth-font-ui)', fontSize: 14, color: 'var(--cth-ink-700)' }}>
                           {tr('addAgent.resumeNote')}
                         </span>
                       )}
@@ -896,7 +918,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                                 boxShadow: active
                                   ? 'inset 0 0 0 1.5px var(--cth-ink-500)'
                                   : 'inset 0 0 0 1px var(--cth-ink-100)',
-                                fontFamily: 'var(--cth-font-ui)', fontSize: 12,
+                                fontFamily: 'var(--cth-font-ui)', fontSize: 14,
                                 color: 'var(--cth-ink-900)', cursor: 'pointer', border: 'none',
                                 display: 'inline-flex', alignItems: 'center', gap: 6
                               }}
@@ -933,7 +955,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                                 boxShadow: active
                                   ? 'inset 0 0 0 1.5px var(--cth-ink-500)'
                                   : 'inset 0 0 0 1px var(--cth-ink-100)',
-                                fontFamily: 'var(--cth-font-ui)', fontSize: 12,
+                                fontFamily: 'var(--cth-font-ui)', fontSize: 14,
                                 color: 'var(--cth-ink-900)', cursor: 'pointer', border: 'none'
                               }}
                             >
@@ -994,7 +1016,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                     )}
 
                     {(provider === 'opencode' || provider === 'crush' || provider === 'pi' || provider === 'qwen') && (
-                      <div style={{ fontSize: 12, color: 'var(--cth-ink-500)', lineHeight: '16px', margin: '2px 0 6px' }}>
+                      <div style={{ fontSize: 14, color: 'var(--cth-ink-500)', lineHeight: '16px', margin: '2px 0 6px' }}>
                         {tr('addAgent.byokNote')}
                         {' '}
                         <a
@@ -1043,7 +1065,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                               padding: '3px 8px 1px',
                               background: 'var(--cth-cream-100)',
                               boxShadow: 'inset 0 0 0 1px var(--cth-ink-100)',
-                              fontFamily: 'var(--cth-font-ui)', fontSize: 12,
+                              fontFamily: 'var(--cth-font-ui)', fontSize: 14,
                               color: 'var(--cth-ink-900)', cursor: 'pointer', border: 'none'
                             }}
                           >
@@ -1082,14 +1104,15 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                 padding: '6px 10px',
                 background: 'var(--cth-coral-light)',
                 boxShadow: 'inset 0 0 0 1px var(--cth-coral)',
-                fontSize: 13,
+                fontSize: 14,
                 color: 'var(--cth-ink-900)'
               }}>
-                {error}
+                <span role="alert">{error}</span>
               </div>
             )}
 
-            {/* Import-hire explainer + AI prompt generator (item 7) */}
+            {/* Import never starts an agent without review. */}
+            <details className="crewlo-advanced"><summary>Advanced · import an agent setup</summary>
             <div style={{
               padding: '8px 10px',
               background: 'var(--cth-cream-100)',
@@ -1097,7 +1120,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
               display: 'flex', flexDirection: 'column', gap: 6
             }}>
               <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 8, flexWrap: 'wrap' }}>
-                <span style={{ fontSize: 12, color: 'var(--cth-ink-700)', lineHeight: '17px' }}>
+                <span style={{ fontSize: 14, color: 'var(--cth-ink-700)', lineHeight: '17px' }}>
                   {tr('addAgent.importHireDesc')}
                 </span>
                 <button
@@ -1107,7 +1130,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                     padding: '2px 8px 1px', border: 'none', cursor: 'pointer',
                     background: showHirePrompt ? 'var(--cth-lemon-light)' : 'var(--cth-cream-200)',
                     boxShadow: 'inset 0 0 0 1px var(--cth-ink-100)',
-                    fontFamily: 'var(--cth-font-ui)', fontSize: 12, color: 'var(--cth-ink-900)'
+                    fontFamily: 'var(--cth-font-ui)', fontSize: 14, color: 'var(--cth-ink-900)'
                   }}
                 >
                   {showHirePrompt ? tr('addAgent.hideAIPrompt') : tr('addAgent.generateWithAI')}
@@ -1115,7 +1138,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
               </div>
               {showHirePrompt && (
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <span style={{ fontSize: 12, color: 'var(--cth-ink-500)', lineHeight: '16px' }}>
+                  <span style={{ fontSize: 14, color: 'var(--cth-ink-500)', lineHeight: '16px' }}>
                     {tr('addAgent.aiPromptHint')}
                   </span>
                   <textarea
@@ -1126,7 +1149,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
                     style={{
                       ...inputStyle,
                       width: '100%',
-                      fontFamily: 'var(--cth-font-mono)', fontSize: 12, lineHeight: '16px',
+                      fontFamily: 'var(--cth-font-mono)', fontSize: 14, lineHeight: '16px',
                       resize: 'vertical', background: 'var(--cth-paper-100)'
                     }}
                   />
@@ -1139,7 +1162,7 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
               )}
             </div>
 
-            <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 4 }}>
+
               <PixelButton
                 variant="secondary"
                 size="md"
@@ -1149,13 +1172,14 @@ export function AddAgentModal({ onClose, config, onConfigChange }: AddAgentModal
               >
                 {tr('addAgent.importHireBtn')}
               </PixelButton>
-              <div style={{ flex: 1 }} />
+            </details>
+            <div className="crewlo-create-footer" style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 4 }}>
               {pendingHire && (
                 <PixelButton variant="secondary" size="md" onClick={skipHire} disabled={busy}>{tr('addAgent.skipHire')}</PixelButton>
               )}
               <PixelButton variant="ghost" size="md" onClick={onClose} disabled={busy}>{tr('common.cancel')}</PixelButton>
               <PixelButton variant="primary" size="md" onClick={submit} disabled={busy}>
-                {busy ? tr('addAgent.spawning') : tr('addAgent.spawn')}
+                {busy ? "Creating…" : "Create agent"}
               </PixelButton>
             </div>
           </div>
@@ -1182,7 +1206,7 @@ function Row({ label, children }: { label: string; children: React.ReactNode }) 
     <label style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
       <span style={{
         fontFamily: 'var(--cth-font-display)',
-        fontSize: 8, lineHeight: '12px',
+        fontSize: 14, lineHeight: '20px',
         color: 'var(--cth-ink-700)',
         textTransform: 'uppercase'
       }}>{label}</span>

@@ -189,6 +189,7 @@ export function MessageQueueComposer({ agent }: MessageQueueComposerProps) {
 
   return (
     <div
+      className="crewlo-composer"
       onDragOver={(e) => { e.preventDefault(); if (!dragOver) setDragOver(true); }}
       onDragLeave={(e) => {
         // Only clear when the cursor actually leaves the composer, not on child enter.
@@ -213,6 +214,7 @@ export function MessageQueueComposer({ agent }: MessageQueueComposerProps) {
         }}>{t('queueComposer.dropToAttach')}</span>
       )}
       {/* Header: label, count, status, clear-all */}
+      <p className="crewlo-delivery-note">Queued for {agent.name}; sent when ready. Holds and approvals still apply.</p>
       <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
         <span style={{
           fontFamily: 'var(--cth-font-display)',
@@ -352,7 +354,7 @@ export function MessageQueueComposer({ agent }: MessageQueueComposerProps) {
           onChange={(e) => setText(e.target.value)}
           onKeyDown={onKey}
           onPaste={onPaste}
-          rows={5}
+          rows={2}
           placeholder={idle ? t('queueComposer.messagePlaceholder', { name: agent.name }) : t('queueComposer.busyPlaceholder', { name: agent.name })}
           style={{
             width: '100%',
@@ -361,7 +363,7 @@ export function MessageQueueComposer({ agent }: MessageQueueComposerProps) {
             // buttons) instead of a hardcoded 13px. On a large display the
             // terminal text scaled up while this box stayed tiny; box height is
             // derived from the same size so the visible line count is stable.
-            minHeight: composerLineHeight * 5 + 14,
+            minHeight: composerLineHeight * 2 + 14,
             maxHeight: composerLineHeight * 18,
             padding: '6px 8px',
             background: 'var(--cth-paper-100)',

@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Munder Difflin</title>
+    <title>Crewlo</title>
     <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://api.openai.com https://*.openai.com wss://api.openai.com wss://*.openai.com; media-src 'self' blob: mediastream:;" />
     <!-- v0.3.4 type revamp: Press Start 2P stays as the BRAND display face
          (small caps labels only); body/UI moves to Inter and code/terminal to
@@ -20,20 +20,20 @@
       }
       #cth-splash .mk {
         display: grid; place-items: center; width: 56px; height: 56px;
-        background: #6E1423; color: #F4F1EA; border: 4px solid #4A0D17;
-        font-family: "Press Start 2P", monospace; font-size: 16px; letter-spacing: -2px;
+        background: #a65d43; color: #F4F1EA; border-radius: 16px; border: 0;
+        font-family: "Inter", sans-serif; font-size: 16px; letter-spacing: -2px;
         box-shadow: 4px 4px 0 rgba(26,19,32,0.25);
       }
-      #cth-splash .title { font-family: "Press Start 2P", monospace; font-size: 13px; }
+      #cth-splash .title { font-family: "Inter", sans-serif; font-size: 13px; }
       #cth-splash .hint { font-size: 15px; color: #6B5878; }
     </style>
   </head>
   <body>
     <div id="root">
       <div id="cth-splash">
-        <div class="mk">MD</div>
-        <div class="title">MUNDER DIFFLIN</div>
-        <div class="hint">booting the hive…</div>
+        <div class="mk">C</div>
+        <div class="title">CREWLO</div>
+        <div class="hint">opening your studio…</div>
       </div>
     </div>
     <script type="module" src="./src/main.tsx"></script>

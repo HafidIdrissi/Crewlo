@@ -14,7 +14,7 @@ export interface PixelButtonProps {
   title?: string;
 }
 
-const heightBySize: Record<Size, number> = { sm: 24, md: 32, lg: 40 };
+const heightBySize: Record<Size, number> = { sm: 32, md: 38, lg: 44 };
 const padBySize: Record<Size, string> = { sm: '0 8px', md: '0 12px', lg: '0 16px' };
 
 export function PixelButton({
@@ -80,6 +80,7 @@ export function PixelButton({
 
   return (
     <button
+      className="crewlo-button"
       title={title}
       onClick={disabled ? undefined : onClick}
       onMouseDown={() => setPressed(true)}
@@ -117,13 +118,14 @@ export function PixelButton({
         background: palette.fill,
         color: palette.text,
         border: 'none',
+        borderRadius: 9,
         // v0.3.4: 1px hairline + 1px lift — the 2px chrome read as heavy boxes
         boxShadow: pressed && !disabled
           ? `inset 0 0 0 1px ${palette.border}`
           : `inset 0 0 0 1px ${palette.border}, 0 1px 0 ${palette.shadow}`,
         transform: pressed && !disabled ? 'translateY(1px)' : 'none',
         fontFamily: 'var(--cth-font-ui)',
-        fontSize: size === 'lg' ? 'var(--cth-text-body-md)' : 'var(--cth-text-body-sm)',
+        fontSize: 14,
         cursor: disabled ? 'not-allowed' : 'pointer',
         width: fullWidth ? '100%' : 'auto',
         userSelect: 'none',

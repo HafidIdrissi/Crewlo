@@ -15,6 +15,7 @@ type HiveMessage = Awaited<ReturnType<Window['cth']['hiveInbox']>>[number];
  */
 export interface ThreadsPanelProps {
   agentId: string;
+  readOnly?: boolean;
 }
 
 interface Thread {
@@ -47,7 +48,7 @@ function groupThreads(msgs: HiveMessage[], noSubject: string): Thread[] {
     });
 }
 
-export function ThreadsPanel({ agentId }: ThreadsPanelProps) {
+export function ThreadsPanel({ agentId, readOnly = false }: ThreadsPanelProps) {
   const { t } = useTranslation();
   const rtl = useRtl();
   const [messages, setMessages] = useState<HiveMessage[]>([]);
@@ -83,7 +84,7 @@ export function ThreadsPanel({ agentId }: ThreadsPanelProps) {
   if (threads.length === 0) {
     return (
       <div style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 16, background: 'var(--cth-paper-200)' }}>
-        <p style={{ margin: 0, fontSize: 13, color: 'var(--cth-ink-700)', textAlign: 'center', maxWidth: 280 }}>
+        <p style={{ margin: 0, fontSize: 14, color: 'var(--cth-ink-700)', textAlign: 'center', maxWidth: 280 }}>
           {t('threads.empty')}
         </p>
       </div>
@@ -102,7 +103,7 @@ export function ThreadsPanel({ agentId }: ThreadsPanelProps) {
               style={{
                 display: 'flex', alignItems: 'center', gap: 8, width: '100%', textAlign: 'left',
                 padding: '6px 10px', border: 'none', cursor: 'pointer', background: 'var(--cth-cream-200)',
-                fontFamily: 'var(--cth-font-display)', fontSize: 'var(--cth-text-display-sm)',
+                fontFamily: 'var(--cth-font-display)', fontSize: 14,
                 lineHeight: '14px', color: 'var(--cth-ink-900)', boxShadow: 'inset 0 -1px 0 var(--cth-ink-900)'
               }}
             >
@@ -122,7 +123,7 @@ export function ThreadsPanel({ agentId }: ThreadsPanelProps) {
                   return (
                     <div key={m.id} style={{ borderLeft: '2px solid var(--cth-ink-100)', paddingLeft: 8 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
-                        <span style={{ fontFamily: 'var(--cth-font-ui)', fontSize: 13, fontWeight: 700, color: 'var(--cth-ink-900)' }}>{m.from}</span>
+                        <span style={{ fontFamily: 'var(--cth-font-ui)', fontSize: 14, fontWeight: 700, color: 'var(--cth-ink-900)' }}>{m.from}</span>
                         <span style={{
                           fontFamily: 'var(--cth-font-ui)', fontSize: 12, lineHeight: '16px', padding: '0 6px',
                           background: 'var(--cth-cream-100)', boxShadow: `inset 0 0 0 1px ${ACT_COLOR[m.act] ?? 'var(--cth-ink-300)'}`,
@@ -132,7 +133,7 @@ export function ThreadsPanel({ agentId }: ThreadsPanelProps) {
                           {new Date(m.created_at).toLocaleString()}
                         </span>
                       </div>
-                      <div dir={rtl ? 'auto' : undefined} style={{ fontFamily: 'var(--cth-font-ui)', fontSize: 13, lineHeight: '18px', color: 'var(--cth-ink-700)', marginTop: 2, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+                      <div dir={rtl ? 'auto' : undefined} style={{ fontFamily: 'var(--cth-font-ui)', fontSize: 14, lineHeight: '18px', color: 'var(--cth-ink-700)', marginTop: 2, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
                         {shown}
                         {long && (
                           <button
@@ -145,7 +146,7 @@ export function ThreadsPanel({ agentId }: ThreadsPanelProps) {
                   );
                 })}
 
-                <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
+                {!readOnly && <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
                   <textarea
                     dir={rtl ? 'auto' : undefined}
                     value={drafts[thread.conversation] ?? ''}
@@ -154,7 +155,7 @@ export function ThreadsPanel({ agentId }: ThreadsPanelProps) {
                     rows={2}
                     style={{
                       resize: 'vertical', width: '100%', boxSizing: 'border-box', padding: '6px 8px',
-                      fontFamily: 'var(--cth-font-ui)', fontSize: 13, lineHeight: '18px',
+                      fontFamily: 'var(--cth-font-ui)', fontSize: 14, lineHeight: '18px',
                       color: 'var(--cth-ink-900)', background: 'var(--cth-cream-50)',
                       border: 'none', boxShadow: 'inset 0 0 0 2px var(--cth-ink-700)'
                     }}
@@ -164,7 +165,7 @@ export function ThreadsPanel({ agentId }: ThreadsPanelProps) {
                       {t('threads.send')}
                     </PixelButton>
                   </div>
-                </div>
+                </div>}
               </div>
             )}
           </PixelPanel>
