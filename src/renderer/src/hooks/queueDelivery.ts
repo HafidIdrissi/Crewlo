@@ -2,13 +2,15 @@
  * Rejections deliberately leave the queue item untouched for the next retry. */
 export async function deliverWithAcknowledgement(
   send: () => Promise<void>,
-  acknowledge: () => void
+  acknowledge: () => void,
+  onError?: (error: unknown) => void
 ): Promise<boolean> {
   try {
     await send();
     acknowledge();
     return true;
-  } catch {
+  } catch (error) {
+    onError?.(error);
     return false;
   }
 }

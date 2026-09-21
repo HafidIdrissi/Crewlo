@@ -13,6 +13,7 @@ export type { HeroPayload } from '../shared/heroPayload';
 import type { ModelCatalog } from '../shared/modelCatalogPayload';
 export type { ModelCatalog, CatalogModel } from '../shared/modelCatalogPayload';
 import type { HookEvent } from '../shared/hookEvents';
+const replaySubscribers = new Map<string, number>();
 export type { HookEvent } from '../shared/hookEvents';
 import type { LocalSkill, CatalogSkill } from '../main/skills';
 export type { LocalSkill, CatalogSkill } from '../main/skills';
@@ -583,6 +584,42 @@ const api = {
     ipcRenderer.invoke('pty:spawn', opts),
   writePty: (id: string, data: string): Promise<{ ok: boolean; error?: string }> =>
     ipcRenderer.invoke('pty:write', id, data),
+  submitPty: (arg: { id: string; key: string; text: string; provider: string; inboxIds?: string[]; manual?: boolean }): Promise<{ ok: boolean; state: string; error?: string }> =>
+    ipcRenderer.invoke('pty:submit', arg),
+  submitMission: (arg: { id: string; body: string }): Promise<{ ok: boolean; error?: string; mission?: import('../shared/missionExecution').MissionExecution }> =>
+    ipcRenderer.invoke('mission:submit', arg),
+  missionExecutions: (): Promise<import('../shared/missionExecution').MissionExecution[]> => ipcRenderer.invoke('mission:list'),
+  onPtyReplayData: (id: string, cb: (data: string) => void, onError: (error: string) => void): (() => void) => {
+    replaySubscribers.set(id, (replaySubscribers.get(id) ?? 0) + 1);
+    const channel = `pty:stream:${id}`;
+    let alive = true, ready = false, sequence = -1;
+    const pending: { sequence: number; data: string }[] = [];
+    const accept = (frame: { sequence: number; data: string }) => {
+      if (frame.sequence <= sequence) return;
+      sequence = frame.sequence;
+      cb(frame.data);
+    };
+    const listener = (_e: IpcRendererEvent, frame: { sequence: number; data: string }) => {
+      if (ready) accept(frame); else pending.push(frame);
+    };
+    ipcRenderer.on(channel, listener);
+    void ipcRenderer.invoke('pty:subscribe', id).then(snapshot => {
+      if (!alive) return;
+      if (!snapshot.ok) { ready = true; onError(snapshot.error); return; }
+      sequence = snapshot.sequence;
+      if (snapshot.data) cb(snapshot.data);
+      ready = true;
+      for (const frame of pending) accept(frame);
+      pending.length = 0;
+    }).catch(e => { if (alive) onError(String(e)); });
+    return () => {
+      alive = false;
+      ipcRenderer.removeListener(channel, listener);
+      const remaining = (replaySubscribers.get(id) ?? 1) - 1;
+      if (remaining > 0) replaySubscribers.set(id, remaining);
+      else { replaySubscribers.delete(id); ipcRenderer.send('pty:unsubscribe', id); }
+    };
+  },
   resizePty: (id: string, cols: number, rows: number): Promise<{ ok: boolean; error?: string }> =>
     ipcRenderer.invoke('pty:resize', id, cols, rows),
   redrawPty: (id: string): Promise<{ ok: boolean; error?: string }> =>

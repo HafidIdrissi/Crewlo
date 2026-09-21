@@ -70,6 +70,8 @@ interface PtySession {
   /** True after the child has emitted at least one frame. Automation waits for
    *  this before typing, so startup prompts cannot outrun the TUI subscription. */
   hasOutput: boolean;
+  sequence: number;
+  observers: Set<WebContents>;
 }
 
 export interface SpawnOptions {
@@ -325,6 +327,8 @@ export function parseNpmCmdShim(shimPath: string, content: string): NpmShimTarge
 
 export class PtyManager {
   private sessions = new Map<string, PtySession>();
+  private observers = new Map<string, Set<WebContents>>();
+  private sequence = 0;
   private webContents: WebContents | null = null;
   /** Fired when a PTY exits on its OWN (child finished/crashed/killed
    *  externally), so the main process can run the SAME lifecycle teardown
@@ -691,10 +695,14 @@ export class PtyManager {
         command: resolved,
         lastOutputAt: Date.now(),
         hasOutput: false,
+        sequence: ++this.sequence,
+        observers: new Set([...(this.observers.get(opts.id) ?? [])].filter(w => !w.isDestroyed() && (!owner || w.session === owner.session))),
         tail: '',
         owner
       };
       this.sessions.set(opts.id, session);
+      this.observers.set(opts.id, session.observers);
+      for (const viewer of session.observers) this.safeSend(`pty:relaunch:${opts.id}`, undefined, viewer);
 
       proc.onData((data) => {
         // Drop trailing output from a process whose id was already reclaimed by
@@ -705,6 +713,11 @@ export class PtyManager {
         // Keep only the trailing window; slice AFTER appending so a single
         // oversized write still leaves us its end (the part that explains a death).
         session.tail = (session.tail + data).slice(-TAIL_MAX);
+        session.sequence = ++this.sequence;
+        for (const observer of session.observers) {
+          if (observer.isDestroyed()) { session.observers.delete(observer); continue; }
+          this.safeSend(`pty:stream:${opts.id}`, { sequence: session.sequence, data }, observer);
+        }
         // Route to the session's owner window (multi-window owner routing).
         this.safeSend(`pty:data:${opts.id}`, data, session.owner);
       });
@@ -713,6 +726,9 @@ export class PtyManager {
         // NOT touch the live session or tell the renderer the new pty died.
         if (this.sessions.get(opts.id) !== session) return;
         this.safeSend(`pty:exit:${opts.id}`, { exitCode, signal }, session.owner);
+        for (const observer of session.observers) {
+          if (observer !== session.owner) this.safeSend(`pty:exit:${opts.id}`, { exitCode, signal }, observer);
+        }
         this.sessions.delete(opts.id);
         // Natural exit must run the same lifecycle teardown as an explicit kill.
         // Guarded so a teardown error can never crash node-pty's exit callback.
@@ -787,6 +803,29 @@ export class PtyManager {
     } catch (e) {
       return { ok: false, error: e instanceof Error ? e.message : String(e) };
     }
+  }
+
+  /** Attach a viewer without moving process ownership. Separate floor partitions
+   * cannot observe one another. Snapshot and registration share one event-loop turn. */
+  subscribe(id: string, viewer: WebContents): { ok: boolean; error?: string; sequence?: number; data?: string } {
+    const session = this.sessions.get(id);
+    if (!session) {
+      const waiting = this.observers.get(id) ?? new Set<WebContents>();
+      waiting.add(viewer);
+      this.observers.set(id, waiting);
+      return { ok: false, error: `Provider disconnected (${id}). Reconnect the agent; the mission is preserved.` };
+    }
+    if (session.owner && session.owner.session !== viewer.session) {
+      return { ok: false, error: 'This terminal belongs to another studio window.' };
+    }
+    session.observers.add(viewer);
+    this.observers.set(id, session.observers);
+    return { ok: true, sequence: session.sequence, data: session.tail };
+  }
+
+  unsubscribe(id: string, viewer: WebContents): void {
+    this.sessions.get(id)?.observers.delete(viewer);
+    this.observers.get(id)?.delete(viewer);
   }
 
   list(): Array<{ id: string; cwd: string; command: string; pid: number; lastOutputAt: number; hasOutput: boolean }> {

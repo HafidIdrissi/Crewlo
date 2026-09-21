@@ -1,5 +1,6 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useStore } from "@/store/store";
+import type { MissionExecution } from '../../../shared/missionExecution';
 
 export function StudioMission() {
   const agents = useStore((s) => s.agents),
@@ -8,6 +9,15 @@ export function StudioMission() {
     [sending, setSending] = useState(false),
     [message, setMessage] = useState("");
   const lock = useRef(false);
+  const requestId = useRef<string>();
+  const [missions, setMissions] = useState<MissionExecution[]>([]);
+  useEffect(() => {
+    let active = true;
+    const refresh = () => window.cth.missionExecutions?.().then(rows => { if (active) setMissions(rows); }).catch(() => {});
+    refresh();
+    const timer = setInterval(refresh, 2000);
+    return () => { active = false; clearInterval(timer); };
+  }, []);
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!text.trim() || !god?.ptyId || lock.current) return;
@@ -15,18 +25,14 @@ export function StudioMission() {
     setSending(true);
     setMessage("");
     try {
-      const res = await window.cth.hiveSend(
-        {
-          to: "god",
-          act: "request",
-          subject: "Mission from human",
-          body: text.trim(),
-        },
-        "human",
-      );
+      if (!window.cth.submitMission) throw new Error('Restart Crewlo to load the updated mission dispatcher. Your existing mission is preserved.');
+      requestId.current ??= crypto.randomUUID();
+      const res = await window.cth.submitMission({ id: requestId.current, body: text.trim() });
       if (!res.ok) throw new Error(res.error || "Mission could not be sent.");
       setText("");
-      setMessage(`Sent to ${god.name}. Follow the response in the terminal.`);
+      requestId.current = undefined;
+      setMessage(`Queued for ${god.name}. Waiting for provider delivery.`);
+      if (res.mission) setMissions(previous => [...previous.filter(m => m.id !== res.mission!.id), res.mission!]);
       useStore.getState().select(god.id);
     } catch (e) {
       setMessage(e instanceof Error ? e.message : String(e));
@@ -59,6 +65,10 @@ export function StudioMission() {
             ? `Routed through ${god.name} · Your existing permissions apply`
             : "Add or connect your coordinator to start a mission.")}
       </span>
+      {missions.slice(-3).map(m => <div key={m.id} role={m.error ? 'alert' : 'status'}>
+        {m.state === 'queued' ? 'Queued' : m.state === 'delivered' ? 'Delivered · awaiting provider acknowledgement' : m.state === 'running' ? 'Running · provider acknowledged the mission' : m.state === 'completed' ? 'Completed' : 'Failed'}
+        {' · '}{m.body.split('\n')[0].slice(0, 100)}{m.error ? ` — ${m.error}` : ''}
+      </div>)}
     </form>
   );
 }

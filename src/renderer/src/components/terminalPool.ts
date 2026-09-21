@@ -51,6 +51,8 @@ export interface TerminalEntry {
   /** xterm is only `open()`ed once its host is first attached to the document. */
   opened: boolean;
   exited: boolean;
+  connectionError?: string;
+  receivedOutput?: boolean;
   /** Stream subscriptions to tear down on dispose. */
   unsub: Array<() => void>;
   /** Current consumer callbacks — set by whichever view is mounted. */
@@ -183,9 +185,11 @@ export function acquireTerminal(ptyId: string, theme?: ThemeMap, fontSize = 14):
 
   // Subscribe to the pty stream ONCE for the terminal's whole lifetime, so the
   // buffer keeps filling even while this terminal isn't mounted in any view.
-  entry.unsub.push(window.cth.onPtyData(ptyId, (rawChunk) => {
+  entry.unsub.push((window.cth.onPtyReplayData ?? window.cth.onPtyData)(ptyId, (rawChunk) => {
     const chunk = normalizePtyChunk(rawChunk);
     if (!chunk) return;
+    entry.connectionError = undefined;
+    entry.receivedOutput = true;
     const active = term.buffer.active;
     const follow = shouldFollowTerminalOutput(active.viewportY, active.baseY);
     term.write(chunk, () => {
@@ -194,6 +198,10 @@ export function acquireTerminal(ptyId: string, theme?: ThemeMap, fontSize = 14):
       }
     });
     entry.onData?.(chunk);
+  }, error => {
+    entry.connectionError = error;
+    entry.exited = true;
+    term.writeln(`\r\nTerminal unavailable: ${error}\r\n`);
   }));
   // A restart does killPty() then spawnPty() under the SAME pty id, so a stale
   // exit from the killed process could in principle latch `exited` on its
@@ -212,6 +220,7 @@ export function acquireTerminal(ptyId: string, theme?: ThemeMap, fontSize = 14):
   // onto a clean, typeable grid. Mirrors resetTerminal but works on this closure.
   entry.unsub.push(window.cth.onPtyRelaunch(ptyId, () => {
     entry.exited = false;
+    entry.connectionError = undefined;
     try { term.reset(); } catch { /* not yet open */ }
   }));
 

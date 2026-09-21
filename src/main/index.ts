@@ -10,6 +10,9 @@ import { join, resolve, sep, basename, dirname, isAbsolute } from 'node:path';
 import { homedir } from 'node:os';
 import { request as httpsRequest } from 'node:https';
 import { PtyManager, type SpawnOptions } from './pty';
+import { PromptDelivery } from './promptDelivery';
+import { withoutResumedSeed } from '../shared/promptSubmission';
+import { acknowledgesMission, type MissionExecution } from '../shared/missionExecution';
 import { resolveCommand as resolveCliCommand, isSafeCommandName } from './shellEnv';
 import { initAutoUpdater, abortPendingRestart } from './updater';
 import { RealtimeFloorWatcher } from './realtimeFloorWatcher';
@@ -303,7 +306,20 @@ const hookServer = new HookServer(
   control,
   breaker,
   standingGoalFromRoster,
-  (agentId, event, message) => workerWake.noteHook(agentId, event, message)
+  (agentId, event, message, prompt) => {
+    workerWake.noteHook(agentId, event, message);
+    if (agentId && (event === 'UserPromptSubmit' || event === 'PreToolUse')) {
+      const pending = new Set(hive.inbox(agentId).map(m => m.id));
+      for (const mission of readMissions()) {
+        // A turn alone is not proof that this particular mission was picked up.
+        if (mission.agentId === agentId && acknowledgesMission(mission, event, prompt, pending.has(mission.id))) {
+          saveMission({ ...mission, state: 'running', updatedAt: Date.now() });
+          const task = (hive.tasks() as { tasks?: HiveTask[] }).tasks?.find(t => t.id === mission.id);
+          if (task?.status === 'todo') hive.patchTask(mission.id, { status: 'doing' });
+        }
+      }
+    }
+  }
 );
 const memory = new MemoryManager(
   () => readConfig().harnessHome,
@@ -2749,6 +2765,7 @@ async function spawnAgentCore(opts: AgentSpawnOptions, owner: Electron.WebConten
   // seedDelivery:'type-into-tui') rather than passed on argv. Surfaced in the spawn
   // result so the renderer types it through the per-pty write-chain. (ondev-b)
   let seedPrompt: string | undefined;
+  let codexPositionalSeed: string | undefined;
   if (opts.hive && hive.enabled()) {
     try {
       const inj = await hive.ensureAgent(
@@ -2771,6 +2788,7 @@ async function spawnAgentCore(opts: AgentSpawnOptions, owner: Electron.WebConten
         }
       );
       opts.args = [...(opts.args ?? []), ...inj.args];
+      if (provider === 'codex') codexPositionalSeed = inj.args.at(-1);
       seedPrompt = inj.seedPrompt;
       // A degraded spawn (proxy bridge never bound) is told to the user the same
       // way breaker escalations are: a native toast, gated on the notifications
@@ -2913,6 +2931,7 @@ async function spawnAgentCore(opts: AgentSpawnOptions, owner: Electron.WebConten
       ...(resumeNotFound ? { resumeNotFound: true } : {})
     };
   }
+  if (provider === 'codex' && didResume) opts.args = withoutResumedSeed(opts.args ?? [], codexPositionalSeed);
   // Remember which agent owns this PTY so closing the tab can archive it. A
   // live terminal means active — ensureAgent above already cleared `archived`.
   if (opts.hive?.id) {
@@ -3010,6 +3029,44 @@ ipcMain.handle('pty:write', (_evt, id: string, data: string) => {
   if (typeof id !== 'string' || typeof data !== 'string') return { ok: false, error: 'invalid args' };
   return ptyManager.write(id, data);
 });
+ipcMain.handle('pty:subscribe', (evt, id: string) => ptyManager.subscribe(id, evt.sender));
+ipcMain.on('pty:unsubscribe', (evt, id: string) => ptyManager.unsubscribe(id, evt.sender));
+const promptDelivery = new PromptDelivery(
+  (id, text) => ptyManager.write(id, text),
+  id => {
+    const session = ptyManager.list().find(p => p.id === id);
+    if (!session) return 'Provider disconnected. Reconnect the agent';
+    if (!session.hasOutput) return 'Provider has not produced its initial output. Open Terminal to check startup or authentication';
+    const agentId = ptyToAgent.get(id);
+    const gate = agentId && control.snapshot(agentId);
+    if (gate && (gate.paused || gate.halted)) return 'Agent is paused or halted. Resume it before delivery';
+    return undefined;
+  },
+  undefined,
+  id => ptyManager.list().find(p => p.id === id)?.pid
+);
+interface PromptRequest { id: string; key: string; text: string; provider: string; inboxIds?: string[]; manual?: boolean }
+ipcMain.handle('pty:submit', async (evt, arg: PromptRequest) => {
+  if (!arg || typeof arg.id !== 'string' || typeof arg.key !== 'string' || typeof arg.text !== 'string') return { ok: false, state: 'failed', error: 'Invalid submission' };
+  const access = ptyManager.subscribe(arg.id, evt.sender);
+  if (!access.ok) return { ...access, state: 'failed' };
+  return dispatchPrompt(arg);
+});
+async function dispatchPrompt(arg: PromptRequest) {
+  const agentId = ptyToAgent.get(arg.id);
+  if (agentId && control.snapshot(agentId).autoDeliveryPaused && !arg.manual) return { ok: false, state: 'failed', error: 'Automatic delivery is paused. Resume delivery when ready.' };
+  const ids = Array.isArray(arg.inboxIds) ? arg.inboxIds.filter(id => typeof id === 'string') : [];
+  const missions = readMissions().filter(m => ids.includes(m.id));
+  // Durable receipts survive renderer reloads and prevent replaying accepted work.
+  if (missions.length && missions.every(m => m.state !== 'queued')) {
+    const failed = missions.find(m => m.state === 'failed');
+    return failed ? { ok: false, state: 'failed', error: failed.error } : { ok: true, state: 'delivered' };
+  }
+  for (const mission of missions) saveMission({ ...mission, state: 'failed', error: 'Submission in progress or interrupted. Inspect Terminal before retrying; the mission will not be submitted twice.', updatedAt: Date.now() });
+  const result = await promptDelivery.submit(arg.id, ids.length ? `inbox:${[...ids].sort().join(',')}` : arg.key, arg.text, arg.provider);
+  for (const mission of missions) saveMission({ ...mission, state: result.state, error: result.error, updatedAt: Date.now() });
+  return result;
+}
 ipcMain.handle('pty:resize', (_evt, id: string, cols: number, rows: number) => {
   if (typeof id !== 'string' || typeof cols !== 'number' || typeof rows !== 'number') return { ok: false, error: 'invalid args' };
   return ptyManager.resize(id, cols, rows);
@@ -3484,6 +3541,49 @@ ipcMain.handle('hive:send', (_evt, partial: Partial<HiveMessage>, from: unknown)
   // number. Counted AFTER the send so a rejected message is never counted.
   if (sender === 'human') analytics.trackMessageSent('hive');
   return { ok: true, message: msg };
+});
+function missionKey(): string { return `missions:${hive.root()}`; }
+function readMissions(): MissionExecution[] {
+  const saved = persist.getKv<MissionExecution[]>(missionKey()) ?? [];
+  // Surface pre-upgrade missions without resending or changing their identity.
+  for (const message of hive.inbox('god')) {
+    if (message.from === 'human' && message.subject === 'Mission from human' && !saved.some(m => m.id === message.id)) {
+      saved.push({ id: message.id, body: message.body, agentId: 'god', state: 'queued', updatedAt: Date.parse(message.created_at) });
+    }
+  }
+  return saved;
+}
+function saveMission(mission: MissionExecution): void {
+  const all = readMissions();
+  persist.setKv(missionKey(), [...all.filter(m => m.id !== mission.id), mission]);
+}
+ipcMain.handle('mission:list', () => readMissions().map(m => {
+  const ptyId = ptyForAgent(m.agentId);
+  const session = ptyManager.list().find(p => p.id === ptyId);
+  const gate = control.snapshot(m.agentId);
+  const task = (hive.tasks() as { tasks?: HiveTask[] }).tasks?.find(t => t.id === m.id);
+  if (task?.status === 'done') return { ...m, state: 'completed', error: undefined };
+  return { ...m, state: !session && m.state !== 'queued' ? 'failed' : m.state, error: m.error || (!session ? 'Provider disconnected. Reconnect the agent; this mission is preserved. Inspect the terminal before any retry.' : gate.autoDeliveryPaused || gate.paused || gate.halted ? 'Delivery paused. Resume the agent when ready.' : !session.hasOutput ? 'Provider starting. Open Terminal to check authentication or startup.' : m.state === 'delivered' && Date.now() - m.updatedAt > 30000 ? 'No provider acknowledgement yet. Inspect Terminal for pending input or an approval; do not resend the mission.' : undefined) };
+}));
+ipcMain.handle('mission:submit', (_evt, arg: { id: string; body: string }) => {
+  if (!hive.enabled()) return { ok: false, error: 'Open a studio before starting a mission.' };
+  if (!arg || !/^[\w-]{1,100}$/.test(arg.id) || typeof arg.body !== 'string' || !arg.body.trim()) return { ok: false, error: 'Invalid mission' };
+  const existing = readMissions().find(m => m.id === arg.id);
+  if (existing) return { ok: true, mission: existing };
+  const mission: MissionExecution = { id: arg.id, body: arg.body.trim(), agentId: 'god', state: 'queued', updatedAt: Date.now() };
+  // Save identity first: an uncertain IPC response must never mint a second mission.
+  saveMission({ ...mission, state: 'failed', error: 'Dispatch was interrupted before confirmation. Inspect the inbox before retrying; the mission identity is preserved.' });
+  try {
+    hive.send({ id: arg.id, to: 'god', act: 'request', subject: 'Mission from human', body: mission.body }, 'human');
+    hive.addTask({ id: arg.id, title: mission.body.split('\n')[0].slice(0, 120), description: mission.body, assignee: 'god', status: 'todo', dependsOn: [], priority: 0, createdAt: new Date().toISOString() });
+    saveMission(mission);
+    analytics.trackMessageSent('hive');
+    return { ok: true, mission };
+  } catch (error) {
+    const failed: MissionExecution = { ...mission, state: 'failed', error: `Mission saved, but dispatch failed: ${String(error)}. Inspect the inbox before retrying.` };
+    saveMission(failed);
+    return { ok: true, mission: failed };
+  }
 });
 ipcMain.handle('hive:addTask', (_evt, task: unknown) => {
   if (!task || typeof task !== 'object' || Array.isArray(task)
@@ -5117,14 +5217,10 @@ function nudgeWorker(ptyId: string, ids: string[] = []): void {
   // produce byte-identical nudges: the queue's one-pending rule recognises either
   // via isInboxNudge, and a watchdog nudge names its ids so the agent can still
   // tell "I filed this last turn" from "woken for nothing".
-  const wrote = ptyManager.write(ptyId, inboxNudgeText(ids));
-  if (!wrote.ok) { console.warn(`[worker-wake] write failed for ${ptyId}: ${wrote.error}`); return; }
-  setTimeout(() => {
-    try {
-      const submitted = ptyManager.write(ptyId, '\r');
-      if (!submitted.ok) console.warn(`[worker-wake] submit failed for ${ptyId}: ${submitted.error}`);
-    } catch (e) { console.error('[worker-wake] submit threw:', e); }
-  }, 140);
+  const command = ptyManager.list().find(p => p.id === ptyId)?.command ?? '';
+  void dispatchPrompt({ id: ptyId, key: `wake:${ids.join(',')}`, text: inboxNudgeText(ids), provider: /codex/i.test(command) ? 'codex' : 'claude', inboxIds: ids })
+    .then(result => { if (!result.ok) console.warn(`[worker-wake] ${result.error}`); })
+    .catch(error => console.error('[worker-wake]', error));
 }
 
 /** Main-process inbox-wake beat (issue #151, fix A): the renderer's idle nudge

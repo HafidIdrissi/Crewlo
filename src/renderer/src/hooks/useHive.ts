@@ -130,7 +130,8 @@ function submitToPty(
   ptyId: string,
   text: string,
   provider: AgentProvider,
-  settleMs = 250
+  settleMs = 250,
+  delivery?: { key: string; inboxIds?: string[]; manual?: boolean }
 ): Promise<void> {
   const prev = writeChains.get(ptyId) ?? Promise.resolve();
   const next = prev.catch(() => { /* a failed prior write must not stall the chain */ }).then(async () => {
@@ -139,16 +140,12 @@ function submitToPty(
     // stray "\n" doesn't submit early (#24). Single-line text (nudges, slash
     // commands) is sent raw — some TUIs (Antigravity's agy) treat the paste
     // markers as literal input and never submit, so skipping them is more robust.
-    const payload = text.includes('\n') ? `\x1b[200~${text}\x1b[201~` : text;
     // writePty NEVER rejects for a dead pty — it resolves { ok:false, error:
     // 'no pty: …' } — so an unchecked await here made every failed delivery look
     // successful (the queue-drain then destroyed the message it had already
     // popped, #36). Surface the failure as a rejection; the chain itself is
     // immune (the prev.catch above absorbs it for the next writer).
-    const wrote = await window.cth.writePty(ptyId, payload);
-    if (!wrote?.ok) throw new Error(wrote?.error ?? `pty write failed: ${ptyId}`);
-    await new Promise((r) => setTimeout(r, 140));
-    const submitted = await window.cth.writePty(ptyId, '\r');
+    const submitted = await window.cth.submitPty({ id: ptyId, text, provider, key: delivery?.key ?? crypto.randomUUID(), ...delivery });
     if (!submitted?.ok) throw new Error(submitted?.error ?? `pty write failed: ${ptyId}`);
     await new Promise((r) => setTimeout(r, settleMs));
   });
@@ -782,19 +779,15 @@ export function useHive(config: HarnessConfig | null): void {
   useEffect(() => {
     if (!config?.onboardingComplete) return;
     const FLUSH_COOLDOWN_MS = 4500;
-    // A message that fails this many PTY writes (dead/crashed pty that the store
-    // still thinks is idle) is dropped WITH a console.warn — bounded so the drain
-    // never spins forever on a corpse, loud so the loss is diagnosable. (#113)
-    const MAX_SEND_ATTEMPTS = 3;
+    // A failed submission stays visible. Replaying text after an ambiguous Enter
+    // failure can execute twice or concatenate a duplicate into the draft.
     const inFlight = new Set<string>();
-    const sendFailures: Record<string, number> = {};
 
 
     // Send the front of `srcId`'s queue into `target`'s pty (verbatim or wrapped),
     // gated on the target being idle, free of interactive menus, and off
     // cooldown. The queue item is acknowledged only after BOTH PTY writes
-    // succeed; failures stay visible and retry automatically (bounded by
-    // MAX_SEND_ATTEMPTS so the drain never spins forever on a corpse).
+    // succeed; failures stay visible for inspection, without automatic replay.
     const dispatch = async (
       srcId: string,
       target: Agent | undefined,
@@ -802,7 +795,7 @@ export function useHive(config: HarnessConfig | null): void {
     ): Promise<{ sent: boolean; message?: QueuedMessage }> => {
       const { messageQueues, removeQueuedMessage } = useStore.getState();
       const next = messageQueues[srcId]?.[0];
-      if (!next || !target?.ptyId) return { sent: false };
+      if (!next || next.deliveryError || !target?.ptyId) return { sent: false };
       const now = Date.now();
       // Idle, or breaker-pinned with a terminal that has genuinely gone quiet.
       // This gate is a don't-type-mid-stream safety check, so `manual` does NOT
@@ -842,13 +835,15 @@ export function useHive(config: HarnessConfig | null): void {
         const sent = await deliverWithAcknowledgement(
           // `instruction` (when present) is the authoritative text to type into
           // the PTY; UI/card surfaces continue to show the readable `text`.
-          () => submitToPty(
+          async () => submitToPty(
             target.ptyId!,
             withStandingGoal(
               target,
               wrap ? wrap(next) : (next.instruction ?? next.text)
             ),
-            inferAgentProvider(target.command, target.provider)
+            inferAgentProvider(target.command, target.provider),
+            250,
+            { key: next.id, manual: next.manual, inboxIds: next.precondition === 'inbox-nonempty' ? (await window.cth.hiveInbox(srcId)).map(m => m.id) : undefined }
           ),
           () => {
             removeQueuedMessage(srcId, next.id);
@@ -862,25 +857,14 @@ export function useHive(config: HarnessConfig | null): void {
                 progress: 0
               });
             }
-          }
+          },
+          error => useStore.getState().failQueuedMessage(srcId, next.id, error instanceof Error ? error.message : String(error))
         );
         if (sent) {
-          delete sendFailures[next.id];
           return { sent: true, message: next };
         }
-        // Failed write (dead/crashed pty the store still thinks is idle): retry
-        // on the next cooldown-spaced flush, but only MAX_SEND_ATTEMPTS times —
-        // then drop LOUDLY so the loss is diagnosable. (#113/#36)
-        const attempts = (sendFailures[next.id] ?? 0) + 1;
-        sendFailures[next.id] = attempts;
-        if (attempts >= MAX_SEND_ATTEMPTS) {
-          delete sendFailures[next.id];
-          removeQueuedMessage(srcId, next.id);
-          console.warn(
-            `[queue-drain] dropping message ${next.id} for ${target.id} after ${attempts} failed pty writes ` +
-            `("${next.text.slice(0, 80)}${next.text.length > 80 ? '…' : ''}")`
-          );
-        }
+        // A failed or uncertain submission stays in the queue for inspection.
+        console.warn(`[queue-drain] preserved failed message ${next.id} for ${target.id}`);
         return { sent: false };
       } finally {
         inFlight.delete(flightKey);

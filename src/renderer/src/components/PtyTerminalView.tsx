@@ -125,6 +125,21 @@ export interface PtyTerminalViewProps {
 }
 
 export function PtyTerminalView({ ptyId, onStreamData, onUserPrompt, onToggleFullscreen, fullscreen, embedded }: PtyTerminalViewProps) {
+  const [connection, setConnection] = useState('Checking provider');
+  useEffect(() => {
+    let active = true;
+    const refresh = async () => {
+      try {
+        const session = (await window.cth.listPtys()).find(p => p.id === ptyId);
+        const terminal = acquireTerminal(ptyId);
+        if (active) setConnection(!session ? 'Disconnected · reconnect agent' : terminal.connectionError ?? (!window.cth.onPtyReplayData ? 'Output connection unverified · restart Crewlo' : terminal.receivedOutput ? `Connected · PID ${session.pid}` : 'Waiting for terminal output'));
+      } catch { if (active) setConnection('Connection check failed'); }
+    };
+    void refresh();
+    const timer = setInterval(refresh, 2000);
+    const off = window.cth.onPtyExit(ptyId, () => setConnection('Exited · reconnect agent'));
+    return () => { active = false; clearInterval(timer); off(); };
+  }, [ptyId]);
   const hostRef = useRef<HTMLDivElement | null>(null);
   const onStreamDataRef = useRef(onStreamData);
   onStreamDataRef.current = onStreamData;
@@ -373,11 +388,11 @@ export function PtyTerminalView({ ptyId, onStreamData, onUserPrompt, onToggleFul
         paddingTop: embedded ? 6 : 0
       }}>
         <span style={{
-          width: 8, height: 8, background: 'var(--cth-mint)',
+          width: 8, height: 8, background: connection.startsWith('Connected') ? 'var(--cth-mint)' : 'var(--cth-ink-300)',
           boxShadow: 'inset 0 0 0 1px var(--cth-ink-300)',
-          animation: 'cth-pulse 1200ms steps(2, end) infinite'
+          animation: connection.startsWith('Connected') ? 'cth-pulse 1200ms steps(2, end) infinite' : undefined
         }} />
-        live · pty {ptyId}
+        {connection} · {ptyId}
         <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 2 }}>
           {/* v0.3.4: the theme + enter-fullscreen buttons moved to the TITLE BAR
               (top right) — more accessible, and the theme now darkens the whole

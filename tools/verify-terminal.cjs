@@ -1,0 +1,41 @@
+// Real Electron/IPC/PTY replay test, with a harmless local output process.
+const { app, BrowserWindow } = require('electron');
+const fs = require('fs'), path = require('path'), assert = require('assert/strict');
+const root = path.resolve('node_modules/.cache/terminal-verification');
+fs.mkdirSync(root, { recursive: true });
+app.setPath('userData', path.join(root, 'profile'));
+fs.mkdirSync(app.getPath('userData'), { recursive: true });
+process.env.ELECTRON_RENDERER_URL = 'http://localhost:5173';
+require('../out/main/index.js');
+const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
+(async () => {
+  await app.whenReady();
+  await sleep(3000);
+  const owner = BrowserWindow.getAllWindows()[0];
+  const run = code => owner.webContents.executeJavaScript(code);
+  const spawned = await run(`window.cth.spawnPty(${JSON.stringify({ id: 'pty-replay-test', command: 'node', args: ['-e', "let n=0;setInterval(()=>console.log('REPLAY_PROOF_'+(++n)),200)"], cwd: root })})`);
+  assert.equal(spawned.ok, true, spawned.error);
+  await run(`window.raw='';window.cth.onPtyData('pty-replay-test',d=>window.raw+=d);true`);
+  owner.hide();
+  await sleep(1000);
+  const visible = new BrowserWindow({ show: true, webPreferences: { preload: path.resolve('out/preload/index.js'), contextIsolation: true, sandbox: true, backgroundThrottling: false } });
+  visible.webContents.on('console-message', (_e, level, message) => { if (level >= 2) console.error(message); });
+  await visible.loadURL('http://localhost:5173');
+  const inspect = code => visible.webContents.executeJavaScript(code);
+  const first = await inspect(`(async()=>{try{window.pool=await import('/src/components/terminalPool.ts');window.entry=pool.acquireTerminal('pty-replay-test');window.host=document.createElement('div');Object.assign(host.style,{width:'800px',height:'350px'});document.body.append(host);pool.attachTerminal(entry,host);await new Promise(r=>setTimeout(r,600));return Array.from({length:entry.term.buffer.active.length},(_,i)=>entry.term.buffer.active.getLine(i)?.translateToString(true)).join('\\n')}catch(e){console.error(e.stack);throw e}})()`);
+  const flushed = await inspect(`new Promise(resolve=>entry.term.write('',()=>resolve(Array.from({length:entry.term.buffer.active.length},(_,i)=>entry.term.buffer.active.getLine(i)?.translateToString(true)).join('\\n'))))`);
+  assert.match(flushed, /REPLAY_PROOF_/);
+  await inspect(`pool.detachTerminal(entry,host);true`);
+  await sleep(1000);
+  const second = await inspect(`(()=>{pool.attachTerminal(entry,host);return Array.from({length:entry.term.buffer.active.length},(_,i)=>entry.term.buffer.active.getLine(i)?.translateToString(true)).join('\\n')})()`);
+  assert.ok(second.length > flushed.length, 'output continues while tab is detached');
+  // A temporary second subscription must not unsubscribe the pooled terminal.
+  await inspect(`new Promise(resolve=>{const off=window.cth.onPtyReplayData('pty-replay-test',()=>{},()=>{});setTimeout(()=>{off();resolve(true)},100)})`);
+  await sleep(500);
+  const third = await inspect(`Array.from({length:entry.term.buffer.active.length},(_,i)=>entry.term.buffer.active.getLine(i)?.translateToString(true)).join('\\n')`);
+  assert.ok(third.length > second.length);
+  fs.writeFileSync(path.join(root, 'verification.json'), JSON.stringify({ hiddenOwnerReplay: true, detachedOutput: true, reattach: true, independentSubscribers: true, first: flushed, second, third }, null, 2));
+  console.log('PASS hidden-owner replay, tab detach/reattach, independent subscriptions');
+  await run(`window.cth.killPty('pty-replay-test')`);
+  app.exit(0);
+})().catch(error => { console.error(error); app.exit(1); });

@@ -120,6 +120,7 @@ export interface FeedEntry {
  *  Queued messages are drained one at a time when the agent next goes idle (see
  *  useHive's flush loop). */
 export interface QueuedMessage {
+  deliveryError?: string;
   id: string;
   text: string;
   /** epoch ms the message was queued — drives ordering and the "queued 2m ago" hint */
@@ -303,6 +304,7 @@ interface State {
     enqueueMessage: (agentId: string, text: string, meta?: { slack?: { channel: string; thread_ts: string }; instruction?: string; precondition?: QueuedMessage['precondition']; compactUsed?: number }) => void;
   /** Drop a single queued message (user removed it, or it was just delivered). */
   removeQueuedMessage: (agentId: string, messageId: string) => void;
+  failQueuedMessage: (agentId: string, messageId: string, error: string) => void;
   /** "Send now" while floor auto-delivery is paused: marks the message manual
    *  (drain bypasses the pause gate for it) and moves it to the queue front. */
   releaseQueuedMessage: (agentId: string, messageId: string) => void;
@@ -931,6 +933,11 @@ export const useStore = create<State>((set, get) => ({
       persistQueues(messageQueues);
       return { messageQueues };
     }),
+  failQueuedMessage: (agentId, messageId, error) => set(s => {
+    const messageQueues = { ...s.messageQueues, [agentId]: (s.messageQueues[agentId] ?? []).map(m => m.id === messageId ? { ...m, deliveryError: error } : m) };
+    persistQueues(messageQueues);
+    return { messageQueues };
+  }),
   removeQueuedMessage: (agentId, messageId) =>
     set((s) => {
       const current = s.messageQueues[agentId];

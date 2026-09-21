@@ -503,6 +503,7 @@ function QueuedMessageRow(
                 })
           }}
         >{message.text}</div>
+        {message.deliveryError && <div role="alert">Failed: {message.deliveryError}</div>}
         {(clipped || expanded || paused) && (
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             {(clipped || expanded) && (
@@ -516,7 +517,7 @@ function QueuedMessageRow(
                 }}
               >{expanded ? t('queueComposer.seeLess') : t('queueComposer.seeMore')}</button>
             )}
-            {paused && !message.manual && (
+            {paused && !message.manual && !message.deliveryError && (
               <button
                 onClick={onSendNow}
                 title={t('queueComposer.sendNowTitle')}
@@ -527,7 +528,7 @@ function QueuedMessageRow(
                 }}
               >{t('queueComposer.sendNow')}</button>
             )}
-            {paused && message.manual && (
+            {paused && message.manual && !message.deliveryError && (
               <span style={{ fontSize: 12, lineHeight: '16px', color: 'var(--cth-ink-500)' }}>
                 {t('queueComposer.sendingWhenFree')}
               </span>
