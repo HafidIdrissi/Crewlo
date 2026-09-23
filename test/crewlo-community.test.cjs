@@ -41,6 +41,7 @@ test('source-first CI and release automation do not claim an unverified download
   const release = read('.github/workflows/release.yml');
   assert.match(ci, /node-version: 22\.22\.0/);
   assert.match(ci, /npm run test:crewlo/);
+  assert.match(ci, /^  workflow_dispatch:\s*$/m);
   assert.doesNotMatch(release, /^  push:\s*$/m);
   assert.match(release, /^  workflow_dispatch:\s*$/m);
   assert.match(read('RELEASE.md'), /Historical upstream release note/);
