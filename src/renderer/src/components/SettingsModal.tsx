@@ -15,6 +15,8 @@ import { PixelPanel } from './PixelPanel';
 import { PixelButton } from './PixelButton';
 import { SettingsHeroCard } from './SettingsHeroCard';
 import { SetupPanel } from './SetupPanel';
+import { TelegramSettings } from './TelegramSettings';
+import { WhatsAppSettings } from './WhatsAppSettings';
 import { Icon } from './Icon';
 import { McpDefaultsSettings } from './McpDefaultsSettings';
 import { IntegrationsRegistry } from './IntegrationsRegistry';
@@ -38,6 +40,7 @@ export interface SettingsModalProps {
    *  elsewhere in the UI — "set it now" beside a disabled Talk button lands on
    *  the tab that actually holds the field, rather than making the user hunt. */
   initialSection?: Section;
+  initialConnection?: 'telegram' | 'whatsapp';
 }
 
 /**
@@ -191,12 +194,21 @@ const NAV_SECTION_KEYS: Record<Section, string> = {
   'Memory & Knowledge': 'settings.nav.memoryKnowledge'
 };
 
-export function SettingsModal({ config, onClose, initialSection }: SettingsModalProps) {
+export function SettingsModal({ config, onClose, initialSection, initialConnection }: SettingsModalProps) {
   const { t, i18n } = useTranslation();
   const godName = useStore((s) => s.agents.find((a) => a.isGod)?.name) ?? 'the orchestrator';
   const [confirming, setConfirming] = useState(false);
   const [busy, setBusy] = useState(false);
   const [activeSection, setActiveSection] = useState<Section>(initialSection ?? 'General');
+  useEffect(() => {
+    if (activeSection !== 'Connections' || !initialConnection) return;
+    const frame = requestAnimationFrame(() => {
+      const panel = document.getElementById(`crewlo-${initialConnection}-settings`);
+      panel?.scrollIntoView({ block: 'start' });
+      panel?.focus({ preventScroll: true });
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [activeSection, initialConnection]);
 
   // Change-home flow: null until the user picks a new folder, then the sub-modal
   // confirms move-vs-fresh. Pre-selects 'move' (recommended - keeps the data).
@@ -1416,6 +1428,8 @@ export function SettingsModal({ config, onClose, initialSection }: SettingsModal
                   {/* CONNECTIONS — everything external (MCP + Slack + webhook + REST) */}
                   {activeSection === 'Connections' && (
                     <>
+                      <div id="crewlo-telegram-settings" tabIndex={-1}><TelegramSettings /></div>
+                      <div id="crewlo-whatsapp-settings" tabIndex={-1}><WhatsAppSettings /></div>
                       <McpDefaultsSettings config={config} />
                       <div style={{ height: 1, background: 'var(--cth-ink-300)' }} />
                     </>

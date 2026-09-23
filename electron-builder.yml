@@ -1,6 +1,6 @@
 appId: in.munderdiffl.app
 productName: Crewlo
-copyright: Copyright © 2026 Chaitanya Giri
+copyright: Copyright © 2026 Hafid Idrissi and contributors; portions © 2026 Chaitanya Giri
 
 # Where electron-updater looks for new versions (latest*.yml + assets on GitHub
 # releases). The release workflow still uploads assets itself (--publish never);
@@ -33,10 +33,10 @@ releaseInfo:
 # (the hook no-ops otherwise, so contributor builds still work). Root-level hook.
 afterSign: build/notarize.cjs
 
-# Register the munderdifflin:// URL scheme (shareable-hires deep link) in the
-# packaged app: CFBundleURLTypes on macOS, registry entries via NSIS on Windows.
+# Keep the legacy deep-link scheme for compatibility with existing shared hires.
+# The app's public product name is Crewlo.
 protocols:
-  - name: Munder Difflin
+  - name: Crewlo (legacy hire links)
     schemes:
       - munderdifflin
 
@@ -90,15 +90,15 @@ mac:
   # the privacy prompt and, for a signed app, remembers the grant — so the user
   # is asked ONCE instead of on every agent action.
   extendInfo:
-    NSDocumentsFolderUsageDescription: "Munder Difflin runs your Claude Code agents, which read and write files in the project folders you point them at."
-    NSDesktopFolderUsageDescription: "Munder Difflin's agents may work on projects located on your Desktop."
-    NSDownloadsFolderUsageDescription: "Munder Difflin's agents may work on projects located in your Downloads."
-    NSRemovableVolumesUsageDescription: "Munder Difflin's agents may work on projects located on external volumes."
-    NSNetworkVolumesUsageDescription: "Munder Difflin's agents may work on projects located on network volumes."
+    NSDocumentsFolderUsageDescription: "Crewlo runs your configured agent CLIs, which may read and write files in project folders you choose."
+    NSDesktopFolderUsageDescription: "Crewlo agents may work on projects located on your Desktop."
+    NSDownloadsFolderUsageDescription: "Crewlo agents may work on projects located in your Downloads."
+    NSRemovableVolumesUsageDescription: "Crewlo agents may work on projects located on external volumes."
+    NSNetworkVolumesUsageDescription: "Crewlo agents may work on projects located on network volumes."
     # The microphone is used by two opt-in, off-by-default voice features: Free
     # Flow dictation (Groq transcription) and Realtime Michael (live voice chat
     # with the orchestrator via OpenAI). Mic access only happens while one is on.
-    NSMicrophoneUsageDescription: "Munder Difflin uses your microphone only for its opt-in voice features: Free Flow dictation (transcribed by Groq into the message queue) and talking to Michael in real time (streamed to OpenAI). The mic is off unless you turn one of these on."
+    NSMicrophoneUsageDescription: "Crewlo uses your microphone only for opt-in voice features. The microphone is off unless you enable one of them."
   # Hardened runtime + entitlements so the spawned `claude` agents inherit this
   # app's TCC responsibility (one grant covers them all) and node-pty can load.
   hardenedRuntime: true
@@ -128,10 +128,10 @@ mac:
       arch: [universal]
     - target: zip
       arch: [universal]
-  artifactName: Munder-Difflin-${version}-mac-${arch}.${ext}
+  artifactName: Crewlo-${version}-mac-${arch}.${ext}
 
 dmg:
-  title: Munder Difflin ${version}
+  title: Crewlo ${version}
 
 # ---- Windows ----
 win:
@@ -146,11 +146,11 @@ nsis:
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
-  artifactName: Munder-Difflin-${version}-win-x64-setup.exe
-  shortcutName: Munder Difflin
+  artifactName: Crewlo-${version}-win-x64-setup.exe
+  shortcutName: Crewlo
 
 portable:
-  artifactName: Munder-Difflin-${version}-win-x64-portable.exe
+  artifactName: Crewlo-${version}-win-x64-portable.exe
 
 # ---- Linux ----
 linux:
@@ -159,4 +159,4 @@ linux:
   target:
     - target: AppImage
       arch: [x64]
-  artifactName: Munder-Difflin-${version}-linux-x86_64.AppImage
+  artifactName: Crewlo-${version}-linux-x86_64.AppImage

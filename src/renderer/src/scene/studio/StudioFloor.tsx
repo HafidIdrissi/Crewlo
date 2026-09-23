@@ -17,9 +17,9 @@ export function StudioFloor() {
   const [smoking,setSmoking]=useState(readSmoking),[breaks,setBreaks]=useState(true);
   const [reduced,setReduced]=useState(()=>matchMedia('(prefers-reduced-motion: reduce)').matches);
   const [zoom,setZoom]=useState(1);
-  const [cameraMode,setCameraMode]=useState<'overview'|'follow'>('overview');
-  const chooseView=(mode:'overview'|'follow')=>{setCameraMode(mode);setZoom(1);pan.current={x:0,y:0};if(stage.current){stage.current.pan={x:0,y:0};stage.current.zoom=1;stage.current.cameraMode=mode;stage.current.layout();}};
-  useEffect(()=>{chooseView(selected?'follow':'overview');},[selected]);
+  const [cameraMode,setCameraMode]=useState<'team'|'overview'|'follow'>('team');
+  const chooseView=(mode:'team'|'overview'|'follow')=>{setCameraMode(mode);setZoom(1);pan.current={x:0,y:0};if(stage.current){stage.current.pan={x:0,y:0};stage.current.zoom=1;stage.current.cameraMode=mode;stage.current.layout();}};
+  useEffect(()=>{chooseView(selected?'follow':'team');},[selected]);
   useEffect(()=>{const follow=()=>{if(useStore.getState().selectedId)chooseView('follow');};window.addEventListener('crewlo:open-agent',follow);return()=>window.removeEventListener('crewlo:open-agent',follow);},[]);
   const pan=useRef({x:0,y:0}),drag=useRef<{x:number;y:number}|null>(null),suppressSelect=useRef(false);
   const selectedAgent=agents.find(a=>a.id===selected);
@@ -64,6 +64,7 @@ export function StudioFloor() {
         queued:queues[a.id]?.length??0,connected:!!a.ptyId&&a.status!=='ghost',
         approval:a.blockReason?.actions?.some(x=>x.kind==='approve')});
       return {id:a.id,name:a.name,character:a.character,status:a.status,action:a.action,
+        activity:activity.working&&ev?.phase==='busy'?ev.activity:undefined,
         carrying:a.carrying,queued:queues[a.id]?.length??0,held:a.onHold,
         connected:!!a.ptyId&&a.status!=='ghost',
         confirmedIdle:breaks&&ev?.phase==='idle',smoking:smoking[a.id]===true,
@@ -73,9 +74,9 @@ export function StudioFloor() {
   },[visibleKey,revision,ready,selected,reduced,smoking,breaks]);
   useEffect(()=>{if(stage.current){stage.current.zoom=zoom;stage.current.cameraMode=cameraMode;stage.current.layout();}},[zoom,ready,cameraMode]);
   function move(x:number,y:number){pan.current.x+=x;pan.current.y+=y;if(stage.current){stage.current.pan={...pan.current};stage.current.layout();}}
-  function fit(){chooseView('overview');}
+  function fit(){chooseView('team');}
   return <section className="crewlo-scene crewlo-voxel" aria-label="Crewlo voxel workplace">
-    <div className="crewlo-scene-heading"><div><h1>A place to build.</h1><span className="voxel-subtitle">WORKSHOP / BREAK ROOM / PLAY ROOM / TERRACE</span></div><div className="voxel-camera-modes" role="group" aria-label="Mode de caméra"><button aria-pressed={cameraMode==='overview'} onClick={()=>chooseView('overview')}>Vue d’ensemble</button><button disabled={!selectedAgent} aria-pressed={cameraMode==='follow'} onClick={()=>chooseView('follow')}>Suivre l’agent</button></div><span className="crewlo-live">{agents.length} {agents.length===1?'agent':'agents'} · live roster</span></div>
+    <div className="crewlo-scene-heading"><div><h1>Your team, at work.</h1><span className="voxel-subtitle">LIVE ACTIVITY</span></div><div className="voxel-camera-modes" role="group" aria-label="Camera view"><button aria-pressed={cameraMode==='team'} onClick={()=>chooseView('team')}>Team</button><button aria-pressed={cameraMode==='overview'} onClick={()=>chooseView('overview')}>Studio</button><button disabled={!selectedAgent} aria-pressed={cameraMode==='follow'} onClick={()=>chooseView('follow')}>Follow</button></div><span className="crewlo-live">{agents.length} {agents.length===1?'agent':'agents'}</span></div>
     <div ref={host} className="crewlo-canvas" tabIndex={0} role="region" aria-label="Workplace camera. Arrow keys pan, plus and minus zoom, zero fits."
       onKeyDown={e=>{if(['ArrowLeft','ArrowRight','ArrowUp','ArrowDown','+','-','0'].includes(e.key))e.preventDefault();if(e.key==='ArrowLeft')move(40,0);if(e.key==='ArrowRight')move(-40,0);if(e.key==='ArrowUp')move(0,40);if(e.key==='ArrowDown')move(0,-40);if(e.key==='+')setZoom(z=>Math.min(2.5,z+.15));if(e.key==='-')setZoom(z=>Math.max(.6,z-.15));if(e.key==='0')fit();}}
       onPointerDown={e=>{suppressSelect.current=e.button===1||e.shiftKey;if(suppressSelect.current){e.preventDefault();drag.current={x:e.clientX,y:e.clientY};e.currentTarget.setPointerCapture(e.pointerId);}}}

@@ -13,6 +13,7 @@ export type { HeroPayload } from '../shared/heroPayload';
 import type { ModelCatalog } from '../shared/modelCatalogPayload';
 export type { ModelCatalog, CatalogModel } from '../shared/modelCatalogPayload';
 import type { HookEvent } from '../shared/hookEvents';
+import type { MessagingResult, RemoteExchange, TelegramStatus, WhatsAppConnect, WhatsAppStatus } from '../shared/messaging';
 const replaySubscribers = new Map<string, number>();
 export type { HookEvent } from '../shared/hookEvents';
 import type { LocalSkill, CatalogSkill } from '../main/skills';
@@ -1189,6 +1190,19 @@ const api = {
    *  the Slack app's Event Subscriptions → Request URL. */
   slackStart: (): Promise<{ ok: boolean; url?: string; error?: string }> =>
     ipcRenderer.invoke('slack:start'),
+  telegramStatus: (): Promise<TelegramStatus> => ipcRenderer.invoke('telegram:status'),
+  telegramConnect: (token: string): Promise<MessagingResult> => ipcRenderer.invoke('telegram:connect', token),
+  telegramDisconnect: (): Promise<MessagingResult> => ipcRenderer.invoke('telegram:disconnect'),
+  telegramPair: (): Promise<MessagingResult> => ipcRenderer.invoke('telegram:pair'),
+  telegramConfirm: (id: string, accept: boolean): Promise<MessagingResult> => ipcRenderer.invoke('telegram:confirm', id, accept),
+  telegramDefaultAgent: (id: string): Promise<MessagingResult> => ipcRenderer.invoke('telegram:defaultAgent', id),
+  whatsappStatus: (): Promise<WhatsAppStatus> => ipcRenderer.invoke('whatsapp:status'),
+  whatsappConnect: (input: WhatsAppConnect): Promise<MessagingResult> => ipcRenderer.invoke('whatsapp:connect', input),
+  whatsappDisconnect: (): Promise<MessagingResult> => ipcRenderer.invoke('whatsapp:disconnect'),
+  whatsappPair: (): Promise<MessagingResult> => ipcRenderer.invoke('whatsapp:pair'),
+  whatsappConfirm: (id: string, accept: boolean): Promise<MessagingResult> => ipcRenderer.invoke('whatsapp:confirm', id, accept),
+  whatsappDefaultAgent: (id: string): Promise<MessagingResult> => ipcRenderer.invoke('whatsapp:defaultAgent', id),
+  messagingHistory: (agentId: string): Promise<RemoteExchange[]> => ipcRenderer.invoke('messaging:history', agentId),
   /** Stop the Slack webhook server + tunnel. */
   slackStop: (): Promise<{ ok: boolean }> =>
     ipcRenderer.invoke('slack:stop'),

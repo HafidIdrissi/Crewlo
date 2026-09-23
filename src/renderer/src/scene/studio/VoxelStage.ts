@@ -3,11 +3,11 @@ import { block, iso, drawProp, drawVoxelPerson, type Painter } from './voxelArt'
 import { createWorld, type VoxelWorld } from './voxelWorld';
 import { VoxelLife, type Execution } from './voxelLife';
 
-export interface SceneAgent extends Execution { name:string; character:string }
+export interface SceneAgent extends Execution { name:string; character:string; activity?:string }
 const painter=(g:Graphics):Painter=>(points,color)=>{g.poly(points).fill(color);};
 export class VoxelStage {
   root=new Container(); floor=new Graphics(); objects=new Container(); captions=new Container();
-  cameraMode:'overview'|'follow'='overview';
+  cameraMode:'team'|'overview'|'follow'='team';
   life:VoxelLife; world:VoxelWorld; zoom=1; pan={x:0,y:0}; agents:SceneAgent[]=[]; selected:string|null=null;
   private people=new Map<string,{body:Graphics;ring:Graphics;caption:Container;name:Text;status:Text;nameTag:Text;plate:Graphics;key:string;captionKey:string}>();
   private hovered:string|null=null;
@@ -45,7 +45,7 @@ export class VoxelStage {
         else block(gp,x,y,1.35,1,1,1,'#bca684');
         block(gp,x,y,2.25,1,1,.12,'#e7dcc5');
       } else block(gp,x,y,0,.8,.8,.32,'#baa88b');
-      g.zIndex=(x+y)*100+60;this.objects.addChild(g);
+      g.alpha=.65;g.zIndex=(x+y)*100+60;this.objects.addChild(g);
     }
     for(const prop of w.props) {
       const g=new Graphics();g.position.set(...iso(prop.x,prop.y));g.zIndex=(prop.x+prop.y)*100+Math.max(prop.w,prop.d)*35;
@@ -62,7 +62,7 @@ export class VoxelStage {
     const labels=[['01 / WORKSHOP',5,.8],['02 / COFFEE & COMPANY',20,1],['03 / PLAY ROOM',5,w.split+1],['04 / OPEN AIR',20,w.split+1],['SMOKING CORNER',26,w.split+9]] as const;
     for(const [name,x,y] of labels) {
       const t=new Text({text:name,style:{fontFamily:'Inter',fontSize:name==='SMOKING CORNER'?12:17,fontWeight:'700',fill:y>w.split&&x<14?0xe9efec:0x394636,letterSpacing:1}});
-      t.anchor.set(.5);t.position.set(...iso(x,y,name==='SMOKING CORNER'?.1:2.8));this.captions.addChild(t);
+      t.alpha=.45;t.anchor.set(.5);t.position.set(...iso(x,y,name==='SMOKING CORNER'?.1:2.8));this.captions.addChild(t);
     }
     this.layout();
   }
@@ -77,13 +77,13 @@ export class VoxelStage {
     this.elapsed+=Math.min(dt,.1)*1000;this.syncElapsed+=dt;
     if(this.syncElapsed>.2){this.life.sync(this.agents,this.elapsed,this.reduced);this.syncElapsed=0;}
     if(!this.reduced)this.life.step(dt,this.elapsed);
-    if(this.cameraMode==='follow')this.frame();
+    if(this.cameraMode!=='overview')this.frame();
     this.draw(false);
     if(this.elapsed-this.publishedAt>500){this.publish();this.publishedAt=this.elapsed;}
   }
   private publish() {
     // Read-only rendering diagnostics, useful for accessibility/automated visual verification.
-    this.host.dataset.voxelActors=JSON.stringify([...this.life.actors.values()].map(a=>({id:a.id,x:a.x,y:a.y,mode:a.mode,label:a.label,destination:a.destination?.id})));
+    this.host.dataset.voxelActors=JSON.stringify([...this.life.actors.values()].map(a=>({id:a.id,x:a.x,y:a.y,mode:a.mode,label:this.agents.find(e=>e.id===a.id)?.activity??a.label,destination:a.destination?.id})));
   }
   private draw(force:boolean) {
     const alive=new Set(this.agents.map(a=>a.id));
@@ -96,7 +96,7 @@ export class VoxelStage {
         const nameTag=new Text({text:agent.name,style:{fontFamily:'Inter',fontSize:12,fontWeight:'600',fill:0x303b34,stroke:{color:0xfffaf0,width:3}}});
         const name=new Text({text:agent.name,style:{fontFamily:'Inter',fontSize:14,fontWeight:'600',fill:0x303b34}});
         const status=new Text({text:'',style:{fontFamily:'Inter',fontSize:12,fill:0x526657}});
-        nameTag.anchor.set(.5);name.anchor.set(.5);status.anchor.set(.5);name.y=9;status.y=26;
+        nameTag.anchor.set(.5);name.anchor.set(.5);status.anchor.set(.5);name.y=14;status.visible=false;
         const hover=()=>{this.hovered=agent.id;};const leave=()=>{if(this.hovered===agent.id)this.hovered=null;};
         caption.addChild(plate,name,status);caption.eventMode='static';caption.cursor='pointer';caption.on('pointertap',()=>this.select(agent.id));caption.on('pointerover',hover);caption.on('pointerout',leave);
         nameTag.eventMode='static';nameTag.cursor='pointer';nameTag.on('pointertap',()=>this.select(agent.id));nameTag.on('pointerover',hover);nameTag.on('pointerout',leave);
@@ -105,7 +105,7 @@ export class VoxelStage {
         view={body,ring,caption,plate,name,status,nameTag,key:'',captionKey:''};this.people.set(agent.id,view);
       }
       const [x,y]=iso(a.x+.4,a.y+.35);
-      view.body.position.set(x,y);view.body.scale.set(1.18);view.body.zIndex=(a.x+a.y)*100+85;
+      view.body.position.set(x,y);view.body.scale.set(1.55);view.body.zIndex=(a.x+a.y)*100+85;
       view.ring.position.set(...iso(a.x,a.y));view.ring.zIndex=(a.x+a.y)*100-5;
       const phase=this.reduced?0:Math.floor(this.elapsed/100)/10;
       const animated=['walking','typing','coffee','gaming','smoking'].includes(a.mode);
@@ -119,18 +119,20 @@ export class VoxelStage {
         view.key=key;
       }
       const warning=a.mode==='attention';
-      const text=(warning?'! ':a.label==='Finished'?'✓ ':'')+a.label;
+      const text=(warning?'! ':a.label==='Finished'?'✓ ':'')+(agent.activity??a.label);
       if(view.captionKey!==agent.name+'|'+text) {
       view.captionKey=agent.name+'|'+text;
-      view.name.text=agent.name.length>21?agent.name.slice(0,20)+'…':agent.name;
+      const label=`${agent.name} · ${text}`;
+      view.name.text=label.length>48?label.slice(0,47)+'…':label;
       view.status.text=text;view.status.style.fill=warning?0xa34831:0x526657;
-      const width=Math.max(view.name.width,view.status.width)+14;
-      view.plate.clear().rect(-width/2,-1,width,37).fill({color:0xfffaf0,alpha:.94});
+      const width=view.name.width+24;
+      view.plate.clear().roundRect(-width/2,-1,width,30,9).fill({color:warning?0xffeee2:0xfffcf5,alpha:.98}).stroke({color:warning?0xc48655:0xb3bda8,width:1});
       }
       const detailed=agent.id===this.selected||agent.id===this.hovered;
       view.nameTag.text=agent.name.length>16?agent.name.slice(0,15)+'…':agent.name;
-      view.nameTag.position.set(x,y+12/this.root.scale.x);view.nameTag.scale.set(1/this.root.scale.x);view.nameTag.visible=!detailed;
-      view.caption.position.set(x,y-92-42/this.root.scale.x);view.caption.scale.set(1/this.root.scale.x);view.caption.visible=detailed;
+      view.nameTag.position.set(x,y+12/this.root.scale.x);view.nameTag.scale.set(1/this.root.scale.x);view.nameTag.visible=false;
+      view.caption.position.set(x,y-110-36/this.root.scale.x);view.caption.scale.set(1/this.root.scale.x);view.caption.visible=true;
+      view.name.style.fill=warning?0xa34831:detailed?0x87482f:0x303b34;
       const desk=this.monitors[index], prop=this.world.props.find(p=>p.desk===index);
       const active=a.mode==='typing';
       if(desk&&prop && (force||desk.label!==String(active))) {desk.clear();drawProp(painter(desk),prop,active);desk.label=String(active);}
@@ -139,13 +141,14 @@ export class VoxelStage {
     const placed:Array<{x:number;y:number;w:number}>=[];
     const scale=this.root.scale.x;
     for(const v of [...this.people.values()].filter(v=>v.caption.visible).sort((a,b)=>a.caption.y-b.caption.y)) {
-      const width=Math.max(v.name.width,v.status.width)+14;
-      const x=v.caption.x*scale;
+      const width=v.name.width+24;
+      const x=Math.max(width/2+6-this.root.x,Math.min(this.host.clientWidth-width/2-6-this.root.x,v.caption.x*scale));
+      v.caption.x=x/scale;
       let y=v.caption.y*scale;
       for(let attempt=0;attempt<this.people.size;attempt++) {
         const conflict=placed.find(p=>Math.abs(x-p.x)<(width+p.w)/2+4&&Math.abs(y-p.y)<41);
         if(!conflict)break;
-        y=conflict.y+41;
+        y=conflict.y-36;
       }
       v.caption.y=y/scale;placed.push({x,y,w:width});
     }
@@ -160,6 +163,16 @@ export class VoxelStage {
     const width=(this.world.width+this.world.height)*32+50,height=(this.world.width+this.world.height)*14+130;
     const actor=this.selected?this.life.actors.get(this.selected):undefined;
     const following=this.cameraMode==='follow'&&actor;
+    if(this.cameraMode==='team'&&this.life.actors.size) {
+      const points=[...this.life.actors.values()].map(a=>iso(a.x+.4,a.y+.35));
+      const left=Math.min(...points.map(p=>p[0]))-140,right=Math.max(...points.map(p=>p[0]))+140;
+      const top=Math.min(...points.map(p=>p[1]))-190,bottom=Math.max(...points.map(p=>p[1]))+70;
+      const scale=Math.min(1.65,w/(right-left),h/(bottom-top))*this.zoom;
+      this.root.scale.set(scale);
+      this.root.position.set(w/2-(left+right)/2*scale+this.pan.x,h/2-(top+bottom)/2*scale+this.pan.y);
+      this.host.dataset.cameraMode='team';this.host.dataset.cameraScale=scale.toFixed(3);
+      return;
+    }
     const scale=(following?Math.max(1.35,Math.min(2.2,w/480,h/310)):Math.min(w/width,h/height))*this.zoom;
     this.root.scale.set(scale);
     if(following){

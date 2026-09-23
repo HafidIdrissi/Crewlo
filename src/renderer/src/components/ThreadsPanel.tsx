@@ -6,7 +6,7 @@ import { useRtl } from '@/i18n/useDirection';
 
 // Derive the message shape from the preload-exposed API so the renderer never
 // reaches across project boundaries for a type (window.cth is globally typed).
-type HiveMessage = Awaited<ReturnType<Window['cth']['hiveInbox']>>[number];
+type HiveMessage = Awaited<ReturnType<Window['cth']['hiveInbox']>>[number] & { channel?: 'telegram' | 'whatsapp'; deliveryStatus?: string };
 
 /**
  * Human-readable threaded view of an agent's hive inbox. Groups messages by
@@ -60,8 +60,20 @@ export function ThreadsPanel({ agentId, readOnly = false }: ThreadsPanelProps) {
     let alive = true;
     const load = async () => {
       try {
-        const inbox = await window.cth.hiveInbox(agentId);
-        if (alive) setMessages(inbox);
+        const [inbox, remote] = await Promise.all([window.cth.hiveInbox(agentId), window.cth.messagingHistory(agentId).catch(() => [])]);
+        const labels: Record<string, string> = { queued: 'Queued', paused: 'Message delivery paused', waiting_session: 'Session unavailable · message held', routing: 'Submitting', awaiting_reply: 'Awaiting agent reply', replied: 'Agent replied', sending: 'Sending', failed: 'Delivery failed', uncertain: 'Delivery uncertain · inspect before resending', cancelled: 'Cancelled', waiting_window: 'Reply held · send a WhatsApp message to reopen the 24-hour window', accepted: 'Accepted by Meta · delivery not confirmed', delivered: 'Delivered to WhatsApp', read: 'Read on WhatsApp' };
+        const exchanges: HiveMessage[] = remote.map(r => {
+          const channelName = r.channel === 'whatsapp' ? 'WhatsApp' : 'Telegram';
+          const deliveryStatus = r.status === 'sent'
+            ? r.channel === 'whatsapp' ? 'Sent by WhatsApp · delivery not confirmed' : 'Sent to Telegram'
+            : r.status === 'detached' ? `${channelName} disconnected · submitted work may continue` : labels[r.status] ?? r.status;
+          return {
+            id: r.id, conversation: `remote:${r.replyTo ?? r.id}`, from: r.direction === 'in' ? 'You' : r.agentName,
+            to: r.agentId, subject: `${channelName} conversation`, body: r.text, act: 'inform', in_reply_to: r.replyTo ?? null,
+            hops: 0, requires_reply: false, needs_human: false, created_at: new Date(r.createdAt).toISOString(), channel: r.channel, deliveryStatus
+          };
+        });
+        if (alive) setMessages([...inbox.filter(m => !/^remote:(tg|wa)-/.test(m.conversation)), ...exchanges]);
       } catch { /* keep last good state */ }
     };
     load();
@@ -124,11 +136,12 @@ export function ThreadsPanel({ agentId, readOnly = false }: ThreadsPanelProps) {
                     <div key={m.id} style={{ borderLeft: '2px solid var(--cth-ink-100)', paddingLeft: 8 }}>
                       <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexWrap: 'wrap' }}>
                         <span style={{ fontFamily: 'var(--cth-font-ui)', fontSize: 14, fontWeight: 700, color: 'var(--cth-ink-900)' }}>{m.from}</span>
-                        <span style={{
+                        <span className={m.channel ? `crewlo-${m.channel}-badge` : undefined} style={{
                           fontFamily: 'var(--cth-font-ui)', fontSize: 12, lineHeight: '16px', padding: '0 6px',
                           background: 'var(--cth-cream-100)', boxShadow: `inset 0 0 0 1px ${ACT_COLOR[m.act] ?? 'var(--cth-ink-300)'}`,
                           color: 'var(--cth-ink-900)'
-                        }}>{m.act}</span>
+                        }}>{m.channel === 'whatsapp' ? 'WhatsApp' : m.channel === 'telegram' ? 'Telegram' : m.act}</span>
+                        {m.deliveryStatus && <span style={{ fontSize: 12, color: 'var(--cth-ink-500)' }}>{m.deliveryStatus}</span>}
                         <span style={{ marginLeft: 'auto', fontSize: 12, color: 'var(--cth-ink-500)' }}>
                           {new Date(m.created_at).toLocaleString()}
                         </span>
@@ -146,7 +159,7 @@ export function ThreadsPanel({ agentId, readOnly = false }: ThreadsPanelProps) {
                   );
                 })}
 
-                {!readOnly && <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
+                {!readOnly && !last.channel && <div style={{ display: 'flex', flexDirection: 'column', gap: 6, marginTop: 4 }}>
                   <textarea
                     dir={rtl ? 'auto' : undefined}
                     value={drafts[thread.conversation] ?? ''}

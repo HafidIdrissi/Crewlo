@@ -1,0 +1,12 @@
+{
+  "date": "2026-09-23",
+  "channel": "Telegram Web",
+  "bot": "@Crewlo_bot",
+  "agent": "Remy",
+  "request": "Hey Remy! Say hello from the Crewlo studio in one short sentence. No file changes.",
+  "acknowledgement": "Crewlo · Remy · Queued. Waiting for an agent reply.",
+  "reply": "Remy · Hello from Remy in the Crewlo studio!",
+  "observedTime": "10:16 Europe/Paris",
+  "verification": "Request, queue acknowledgement and actual named reply observed in the authenticated Telegram Web chat. An earlier same-session marker test was also matched in Crewlo Conversation.",
+  "presentation": "Recreated phone UI using the verbatim exchange, with condensed timing. Studio crop is from the earlier verified marker test. Not a continuous screen recording or a physical-phone test."
+}

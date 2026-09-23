@@ -19,6 +19,7 @@ import type { ControlRegistry } from './control';
 import type { CircuitBreaker } from './breaker';
 import { estimateCostUsd } from './pricing';
 import { validateHookEvent } from '../shared/hookEvents';
+import { toolActivity } from '../shared/toolActivity';
 
 /** Maximum JSON payload bytes in one newline-delimited hook frame. */
 const MAX_HOOK_FRAME_BYTES = 256 * 1024;
@@ -386,6 +387,7 @@ export class HookServer {
       agentId,
       event,
       tool: p.tool_name,
+      activity: event === 'PreToolUse' ? toolActivity(p.tool_name, p.tool_input) : undefined,
       notificationType: p.notification_type,
       source: p.source,
       message: p.message,

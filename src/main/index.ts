@@ -28,7 +28,10 @@ import {
   getLogGraph, getCommitFiles, getFileAtRev, compareRefs, listWorktrees, checkoutRef
 } from './git';
 import { linkWorktreeDeps, unlinkWorktreeDeps } from './worktreeDeps';
-import { HiveManager, type AgentMeta, type HiveMessage, type HiveTask } from './hive';
+import { HiveManager, redactSecrets, type AgentMeta, type HiveMessage, type HiveTask } from './hive';
+import { installTelegram } from './messaging/telegramIntegration';
+import { installWhatsApp } from './messaging/whatsappIntegration';
+import { remoteRequest, type MessagingGateway } from './messaging/gateway';
 import { HookServer } from './hooks';
 import { CircuitBreaker, type BreakerInput } from './breaker';
 import type { UsageProvider } from './usage';
@@ -77,6 +80,8 @@ import {
   argsWithAutoModeFlag,
   inferAgentProvider,
   isClaudeProvider,
+  canReceiveInbox,
+  bridgeOf,
   nonInteractiveEnvForProvider,
   providerPreset,
   installInfoForProvider,
@@ -352,6 +357,21 @@ const reflector = new MemoryReflector(
 // Durable harness state (SQLite, main process). Phase A: window bounds (kv) +
 // net-new command history. Opened in whenReady, closed in the teardown blocks.
 const persist = new PersistStore();
+const messagingGateway: MessagingGateway = {
+  scope: () => hive.root() ?? '',
+  clean: redactSecrets,
+  agents: () => Object.values(hive.registry().agents).filter(a => !a.isAssistant).map(a => {
+    const gate = control.snapshot(a.id);
+    const connected = !!ptyForAgent(a.id) && !a.archived && canReceiveInbox(a.provider) && bridgeOf(a.provider)?.kind !== 'proxy';
+    return { id: a.id, name: a.name, state: !connected ? 'unavailable' as const : gate.autoDeliveryPaused || gate.paused || gate.halted || a.onHold ? 'paused' as const : 'ready' as const };
+  }),
+  enqueue: message => {
+    if (!hive.enabled() || message.scope !== hive.root()) throw Error('Studio changed.');
+    hive.send(remoteRequest(message), 'human');
+  }
+};
+const whatsapp = installWhatsApp(persist, messagingGateway);
+const telegram = installTelegram(persist, messagingGateway, id => whatsapp.history(id));
 /** The PRIMARY window — the one running the hive/god orchestration and the sink
  *  for process-global timer events (missions, breaker, Slack ingestion). It is
  *  the most-recently-focused live window, so global events follow the user.
@@ -3863,6 +3883,8 @@ function teardownAndQuit(): void {
   try { stopWebhookServer(); } catch (e) { console.error('[quit] webhook.stop:', e); }
   try { memory.stop(); } catch (e) { console.error('[quit] memory.stop:', e); }
   try { reflector.stop(); } catch (e) { console.error('[quit] reflector.stop:', e); }
+  telegram.stop();
+  whatsapp.stop();
   try { persist.close(); } catch (e) { console.error('[quit] persist.close:', e); }
   try { hive.stopAllProxyBridges(); } catch (e) { console.error('[quit] stopAllProxyBridges:', e); }
   try { ptyManager.killAll(); } catch (e) { console.error('[quit] killAll:', e); }
@@ -3904,12 +3926,17 @@ const closingTime = new ClosingTimeController(
   // at their next hook boundary instead of waiting for a Stop.
   control
 );
-hive.setRoutedObserver((msg, targets) => closingTime.onRouted(msg, targets));
+hive.setRoutedObserver((msg, targets) => {
+  closingTime.onRouted(msg, targets);
+});
+hive.setRemoteReplyObserver(msg => { telegram.reply(msg); whatsapp.reply(msg); });
 ipcMain.handle('app:startClosingTime', () => closingTime.start());
 ipcMain.handle('app:cancelClosingTime', () => closingTime.cancel());
 
 // ─── IPC: full reset (wipe data + config, relaunch into onboarding) ──────────
 ipcMain.handle('app:resetAll', () => {
+  telegram.stop();
+  whatsapp.stop();
   allowQuit = true;
   // Tear everything down first so nothing writes back into the dirs we wipe.
   try { clearMissionTimers(); } catch (e) { console.error('[reset] clearMissionTimers:', e); }
@@ -5401,6 +5428,8 @@ app.whenReady().then(() => {
   // Guarded: a DB failure (e.g. a bad native build) must degrade to defaults,
   // never block app startup.
   try { persist.open(); } catch (e) { console.error('[db] open failed:', e); }
+  telegram.start();
+  whatsapp.start();
   // Auto-update from GitHub releases (packaged builds only; gated on the
   // `autoUpdate` config flag). Download-in-background + restart-to-apply toast;
   // never restarts on its own. Falls back to a notify-only releases/latest

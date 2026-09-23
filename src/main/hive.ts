@@ -25,6 +25,7 @@ import {
 } from 'node:fs';
 import { join, dirname, basename, isAbsolute, relative } from 'node:path';
 import { homedir } from 'node:os';
+import { shareCodexWindowsSandbox } from './codexSandbox';
 import { spawnSync, spawn, type ChildProcess } from 'node:child_process';
 import { randomBytes, createHash } from 'node:crypto';
 import type { AgentUsageSample } from './usage';
@@ -54,6 +55,8 @@ type McpDefaultsMap = { [id: string]: { enabled: boolean } } | undefined;
 export type MessageAct = 'request' | 'inform' | 'propose' | 'query' | 'agree' | 'refuse' | 'done';
 
 export interface HiveMessage {
+  /** Explicit public answer for a correlated remote request; never inferred from body. */
+  public_reply?: string;
   id: string;
   conversation: string;
   in_reply_to: string | null;
@@ -1528,6 +1531,7 @@ export class HiveManager {
       act,
       subject: partial.subject ?? '',
       body: partial.body ?? '',
+      public_reply: typeof partial.public_reply === 'string' ? partial.public_reply : undefined,
       hops: typeof partial.hops === 'number' ? partial.hops : 0,
       requires_reply: partial.requires_reply ?? ['request', 'query', 'propose'].includes(act),
       needs_human: partial.needs_human ?? false,
@@ -1553,7 +1557,7 @@ export class HiveManager {
     return msg;
   }
 
-  private routeMessage(msg: HiveMessage): void {
+  private routeMessage(msg: HiveMessage, origin: 'direct' | 'outbox' = 'direct'): void {
     if (msg.hops > HOP_CAP) {
       // loop guard — drop a runaway message rather than let agents ping-pong.
       // There's no human queue to fall back on; the god agent owns conflicts.
@@ -1642,14 +1646,79 @@ export class HiveManager {
     this.emitMessage(msg, targets);
     // Main-process observer (e.g. the closing-time controller watching for the
     // team's ACKs and the god's COMPLETE). Best-effort, never breaks routing.
-    try { this.routedObserver?.(msg, targets); } catch { /* observer error */ }
+    try { this.routedObserver?.(msg, targets, origin); } catch { /* observer error */ }
   }
 
   /** Observer invoked for EVERY routed message with its resolved targets.
    *  Used by main-process features that react to hive traffic (closing time). */
-  private routedObserver: ((msg: HiveMessage, targets: string[]) => void) | null = null;
-  setRoutedObserver(cb: ((msg: HiveMessage, targets: string[]) => void) | null): void {
+  private routedObserver: ((msg: HiveMessage, targets: string[], origin: 'direct' | 'outbox') => void) | null = null;
+  setRoutedObserver(cb: ((msg: HiveMessage, targets: string[], origin: 'direct' | 'outbox') => void) | null): void {
     this.routedObserver = cb;
+  }
+
+  /** Unlike cosmetic/closing-time observers, this synchronous handoff must
+   * persist or throw. Failed public replies stay in an on-disk retry journal. */
+  private remoteReplyObserver: ((msg: HiveMessage) => void) | null = null;
+  setRemoteReplyObserver(cb: ((msg: HiveMessage) => void) | null): void {
+    this.remoteReplyObserver = cb;
+  }
+
+  private isRemoteReply(msg: HiveMessage): boolean {
+    return msg.to === 'human' && ['inform', 'done', 'refuse'].includes(msg.act)
+      && typeof msg.id === 'string' && typeof msg.in_reply_to === 'string'
+      && typeof msg.conversation === 'string' && /^remote:(?:tg|wa)-/.test(msg.conversation)
+      && msg.conversation === `remote:${msg.in_reply_to}`
+      && typeof msg.public_reply === 'string' && !!msg.public_reply.trim()
+      && Number.isFinite(msg.hops) && msg.hops <= HOP_CAP;
+  }
+
+  /** Persist BEFORE the local delivery attempt. An existing journal prevents a
+   * failed archive/restart from replaying inbox, PTY or renderer side effects.
+   * A crash between this checkpoint and local routing leaves local delivery
+   * uncertain (at-most-once), but never loses the recoverable public answer. */
+  private checkpointRemoteReply(outbox: string, sourceFile: string, raw: string, msg: HiveMessage): boolean {
+    const dir = join(outbox, '.remote-pending');
+    const key = createHash('sha256').update(sourceFile).update('\0').update(raw).digest('hex');
+    const file = join(dir, `${key}.json`);
+    if (existsSync(file)) return false;
+    mkdirSync(dir, { recursive: true });
+    this.atomicWriteJson(file, {
+      version: 1, sourceFile, localDelivery: 'attempted',
+      // Deliberately omit generic body/subject, which may contain internal text.
+      reply: { id: msg.id, from: msg.from, to: msg.to, act: msg.act,
+        conversation: msg.conversation, in_reply_to: msg.in_reply_to,
+        public_reply: msg.public_reply, hops: msg.hops, created_at: msg.created_at }
+    });
+    return true;
+  }
+
+  private retryRemoteReplies(outbox: string, sender: string): void {
+    if (!this.remoteReplyObserver) return; // Startup is not an acknowledgement.
+    const dir = join(outbox, '.remote-pending');
+    if (!existsSync(dir)) return;
+    for (const file of readdirSync(dir)) {
+      if (!/^[a-f0-9]{64}\.json$/.test(file)) continue;
+      const full = join(dir, file);
+      try {
+        const record = JSON.parse(readFileSync(full, 'utf8'));
+        if (record?.version !== 1 || typeof record.sourceFile !== 'string'
+          || basename(record.sourceFile) !== record.sourceFile || !record.sourceFile.endsWith('.json')
+          || !record.reply || typeof record.reply !== 'object') continue;
+        // Keep the checkpoint until archival succeeds; removing it earlier
+        // could make the still-present source appear new on the next poll.
+        if (existsSync(join(outbox, record.sourceFile))) continue;
+        const msg = this.normalize({ ...record.reply, body: '', subject: '' }, sender);
+        msg.from = sender; // Same authoritative directory boundary as live outbox.
+        if (!this.isRemoteReply(msg)) continue;
+        const result: unknown = this.remoteReplyObserver(msg);
+        if (result && typeof (result as Promise<unknown>).then === 'function') {
+          // Do not acknowledge an accidentally async callback before persistence.
+          void Promise.resolve(result).catch(() => undefined);
+          continue;
+        }
+        unlinkSync(full);
+      } catch { /* Storage/transport unavailable: retain for this or the next process. */ }
+    }
   }
 
   /** Tell the renderer a message was routed, with its resolved recipients, so
@@ -1718,6 +1787,7 @@ export class HiveManager {
       for (const f of readdirSync(outbox)) {
         if (!f.endsWith('.json')) continue;
         const full = join(outbox, f);
+        let recoverableReply = false;
         try {
           const raw = readFileSync(full, 'utf8');
           let partial: Partial<HiveMessage>;
@@ -1746,14 +1816,27 @@ export class HiveManager {
           }
           const msg = this.normalize(partial, id);
           msg.from = id; // sender is authoritative — the owning directory
-          this.routeMessage(msg);
-          renameSync(full, join(outbox, '.sent', f)); // archive, don't reprocess
-          routed++;
+          recoverableReply = this.isRemoteReply(msg);
+          if (recoverableReply) {
+            if (this.checkpointRemoteReply(outbox, f, raw, msg)) {
+              this.routeMessage(msg, 'outbox');
+              routed++;
+            }
+            renameSync(full, join(outbox, '.sent', f));
+          } else {
+            this.routeMessage(msg, 'outbox');
+            renameSync(full, join(outbox, '.sent', f)); // archive, don't reprocess
+            routed++;
+          }
         } catch {
+          // Valid remote replies are never quarantined for storage failures.
+          // Before the checkpoint nothing ran; afterwards only archival retries.
+          if (recoverableReply) continue;
           // malformed file — quarantine so we don't spin on it
           try { renameSync(full, join(outbox, '.sent', `bad-${f}`)); } catch { /* noop */ }
         }
       }
+      this.retryRemoteReplies(outbox, id);
     }
     if (routed > 0) this.commit(`hive: routed ${routed} message(s)`);
     return routed;
@@ -2059,6 +2142,7 @@ export class HiveManager {
    *  Returns the CODEX_HOME path for the caller to put in the worker's env. */
   private installCodexHooks(dir: string, agentId: string): string {
     const home = join(dir, '.codex');
+    shareCodexWindowsSandbox(home, join(homedir(), '.codex'));
     try {
       mkdirSync(home, { recursive: true });
       const userHome = join(homedir(), '.codex');

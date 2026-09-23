@@ -21,6 +21,7 @@ import { QuitWarningModal, type ClosingTimeState } from '@/components/QuitWarnin
 import { CompletionToast } from '@/realtime/CompletionToast';
 import { useAppTheme, toggleAppTheme } from '@/design/theme';
 import { SettingsModal, type Section as SettingsSection } from '@/components/SettingsModal';
+import { CommunityLinks } from '@/components/CommunityLinks';
 import { PixelPanel } from '@/components/PixelPanel';
 import { PixelButton } from '@/components/PixelButton';
 import { Icon } from '@/components/Icon';
@@ -80,6 +81,7 @@ export function App() {
   /** Which tab Settings opens on. Set by a `cth:open-settings` deep link, reset
    *  to undefined (→ General) whenever the modal is opened the normal way. */
   const [settingsSection, setSettingsSection] = useState<SettingsSection | undefined>(undefined);
+  const [settingsConnection, setSettingsConnection] = useState<'telegram' | 'whatsapp'>();
   const [quitWarn, setQuitWarn] = useState<{ ptyCount: number } | null>(null);
   const [closing, setClosing] = useState<ClosingTimeState | null>(null);
   const [vpWidth, setVpWidth] = useState<number>(window.innerWidth);
@@ -109,6 +111,7 @@ export function App() {
     const onOpenSettings = (e: Event): void => {
       const section = (e as CustomEvent<{ section?: SettingsSection }>).detail?.section;
       setSettingsSection(section);
+      setSettingsConnection(undefined);
       setSettingsOpen(true);
     };
     window.addEventListener('cth:open-settings', onOpenSettings);
@@ -304,13 +307,6 @@ export function App() {
         {/* v0.3.7: the version is no longer inert text — it doubles as the
             update control (check / download / restart to update). */}
         <strong className="crewlo-wordmark">crewlo<span> / </span><small>creative studio</small></strong>
-        <span style={{
-          fontFamily: 'var(--cth-font-ui)',
-          fontSize: 13,
-          color: 'var(--cth-ink-500)'
-        }}>
-          {config.autoMode ? 'auto mode on' : 'auto mode off'}
-        </span>
         {/* v0.3.4: theme + fullscreen live HERE (top right), not buried in the
             terminal header — and the theme darkens the whole app, terminals
             included (design/theme.ts + tokens.css dark block). */}
@@ -345,11 +341,36 @@ export function App() {
         >
           {appThemeNow === 'dark' ? '☀' : '☾'}
         </button>
+        <button
+          className="cth-titlebar-nodrag crewlo-telegram-shortcut"
+          onClick={() => { setSettingsSection('Connections'); setSettingsConnection('telegram'); setSettingsOpen(true); }}
+          aria-label="Telegram"
+          title="Configurer Telegram"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M21 3 3 10l7 3 3 7 8-17Z" />
+            <path d="m10 13 6-5" />
+          </svg>
+          Telegram
+        </button>
+        <button
+          className="cth-titlebar-nodrag crewlo-telegram-shortcut crewlo-whatsapp-shortcut"
+          onClick={() => { setSettingsSection('Connections'); setSettingsConnection('whatsapp'); setSettingsOpen(true); }}
+          aria-label="WhatsApp"
+          title="Configurer WhatsApp"
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <path d="M21 11.5a9 9 0 0 1-13.3 7.9L3 21l1.6-4.7A9 9 0 1 1 21 11.5Z" />
+            <path d="M8.5 7.5c-.8 2.8 2.2 5.8 5 6.5l1.5-1.5-2-1-1 1-2.5-2.5 1-1-1-2Z" />
+          </svg>
+          WhatsApp
+        </button>
+        <CommunityLinks />
         {/* v0.3.4: the IDE button moved to agent level — every agent's header
             (sidebar detail, god Command Center, fullscreen) carries it. */}
         <button
           className="cth-titlebar-nodrag cth-settings-btn cth-tip"
-          onClick={() => { setSettingsSection(undefined); setSettingsOpen(true); }}
+          onClick={() => { setSettingsSection(undefined); setSettingsConnection(undefined); setSettingsOpen(true); }}
           data-tip="Settings"
           aria-label="Settings"
           style={{
@@ -504,7 +525,8 @@ export function App() {
         <SettingsModal
           config={config}
           initialSection={settingsSection}
-          onClose={() => { setSettingsOpen(false); setSettingsSection(undefined); }}
+          initialConnection={settingsConnection}
+          onClose={() => { setSettingsOpen(false); setSettingsSection(undefined); setSettingsConnection(undefined); }}
         />
       )}
 

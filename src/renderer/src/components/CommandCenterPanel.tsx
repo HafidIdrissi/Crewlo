@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+import { useMessageDelivery } from '@/hooks/useMessageDelivery';
 import { useTranslation } from 'react-i18next';
 import { StudioPanelNav } from './StudioPanelNav';
 import { ThreadsPanel } from './ThreadsPanel';
@@ -111,7 +112,8 @@ export function CommandCenterPanel({ agent, fullscreen = false }: { agent: Agent
   useEffect(() => {
     if (!ccTabRequest) return;
     const key = ccTabRequest.tab as CCTab;
-    if (!TABS.some((t) => t.key === key)) return;
+    // Conversation is a primary StudioPanelNav tab, not an entry in Tools.
+    if (key !== 'messages' && !TABS.some((t) => t.key === key)) return;
     // Read the gate live rather than depending on it — as a dependency it would
     // re-fire a stale request the moment the tab appeared.
     if (key === 'trigger-history' && !triggerHistoryVisible(useStore.getState())) return;
@@ -138,20 +140,9 @@ export function CommandCenterPanel({ agent, fullscreen = false }: { agent: Agent
   // control strips — toggling applies to every live agent, god included.
   // Seeded from the god's own control state (the floor is kept in sync by
   // this single control, so any agent's state reflects the floor's).
-  const [floorDeliveryPaused, setFloorDeliveryPaused] = useState(false);
-  useEffect(() => {
-    let alive = true;
-    window.cth.controlSnapshot(agent.id)
-      .then((s) => { if (alive && s) setFloorDeliveryPaused(s.autoDeliveryPaused); })
-      .catch(() => { /* none */ });
-    return () => { alive = false; };
-  }, [agent.id]);
-  const toggleFloorDelivery = async () => {
-    const next = !floorDeliveryPaused;
-    setFloorDeliveryPaused(next);
-    const all = useStore.getState().agents;
-    await Promise.all(all.map((a) => window.cth.controlAutoDelivery(a.id, next).catch(() => null)));
-  };
+  const delivery = useMessageDelivery();
+  const floorDeliveryPaused = delivery.paused;
+  const toggleFloorDelivery = () => delivery.setDeliveryPaused(!floorDeliveryPaused);
 
   return (
     <PixelPanel
@@ -193,9 +184,11 @@ export function CommandCenterPanel({ agent, fullscreen = false }: { agent: Agent
             agent's queue), and the IDE opens from agent level, not the toolbar.
             Short labels — the tooltips carry the full explanation. */}
         <div style={{ display: 'flex', gap: 6, alignItems: 'center', flexShrink: 0 }}>
+          {floorDeliveryPaused && <span style={{ fontSize: 12 }}>Message delivery paused</span>}
           <PixelButton
             variant={floorDeliveryPaused ? 'primary' : 'secondary'}
             size="sm"
+            disabled={delivery.busy}
             onClick={() => { void toggleFloorDelivery(); }}
           >
             <span
@@ -209,7 +202,7 @@ export function CommandCenterPanel({ agent, fullscreen = false }: { agent: Agent
               style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}
             >
               <Icon name={floorDeliveryPaused ? 'pause' : 'play'} />
-              {floorDeliveryPaused ? t('commandCenter.deliveryPaused') : t('commandCenter.deliveryAuto')}
+              {delivery.busy ? 'Updating…' : floorDeliveryPaused ? 'Resume' : 'Pause messages'}
             </span>
           </PixelButton>
           {/* Floor-level surface with no agent of its own: the honest target is
@@ -231,6 +224,7 @@ export function CommandCenterPanel({ agent, fullscreen = false }: { agent: Agent
         </div>
       </div>
 
+      {delivery.error && <p role="alert" className="crewlo-delivery-note">{delivery.error}</p>}
       <StudioPanelNav current={tab} onChange={key => setTab(key as CCTab)}
         tools={visibleTabs.filter(t => !['terminal', 'tasks'].includes(t.key))
           .map(item => ({ key: item.key, label: item.key === 'floor' ? 'Agents & dispatch' : item.key === 'threads' ? 'Thread replies' : t(item.labelKey) }))} />

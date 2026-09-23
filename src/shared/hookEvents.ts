@@ -3,13 +3,14 @@ export interface HookEvent {
   agentId?: string;
   event: string;
   tool?: string;
+  activity?: string;
   notificationType?: string;
   source?: string;
   message?: string;
   blocked?: boolean;
 }
 
-const OPTIONAL_STRING_FIELDS = ['tool', 'notificationType', 'source', 'message'] as const;
+const OPTIONAL_STRING_FIELDS = ['tool', 'activity', 'notificationType', 'source', 'message'] as const;
 
 /** Validate an untrusted payload before it crosses the Electron IPC boundary. */
 export function validateHookEvent(value: unknown): value is HookEvent {

@@ -3,6 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { PixelButton } from './PixelButton';
 import { AgentHoldButton } from './AgentHoldButton';
 import { isComposingKey } from '@shared/imeGuard';
+import { useMessageDelivery } from '@/hooks/useMessageDelivery';
 
 /**
  * Operator control for one agent (#7C.1-7C.3) — pause (deny tools at the next
@@ -34,6 +35,7 @@ interface Snapshot {
 }
 
 export function AgentControlStrip({ agentId }: { agentId: string }) {
+  const delivery = useMessageDelivery(agentId);
   const { t } = useTranslation();
   const [snap, setSnap] = useState<Snapshot | null>(null);
   const [steer, setSteer] = useState('');
@@ -108,8 +110,8 @@ export function AgentControlStrip({ agentId }: { agentId: string }) {
         <AgentHoldButton agentId={agentId} />
         {/* v0.3.4: the auto-delivery switch moved to the god's Command Center
             header — ONE floor-wide control instead of a per-agent toggle. */}
-        {snap?.autoDeliveryPaused && (
-          <span style={{ fontSize: 11, color: 'var(--cth-ink-500)' }}>{t('agentControl.deliveryPaused')}</span>
+        {delivery.paused && (
+          <span style={{ fontSize: 12, color: 'var(--cth-ink-500)' }}>Message delivery paused <button className="crewlo-resume" disabled={delivery.busy} onClick={() => void delivery.setDeliveryPaused(false)}>{delivery.busy ? 'Resuming…' : 'Resume'}</button></span>
         )}
         {snap?.halted && <span style={{ fontSize: 11, color: 'var(--cth-coral)' }}>{t('agentControl.halting')}</span>}
         {!!snap?.pendingSteers && <span style={{ fontSize: 11, color: 'var(--cth-ink-500)' }}>{t('agentControl.steersQueued', { count: snap.pendingSteers })}</span>}
@@ -136,6 +138,7 @@ export function AgentControlStrip({ agentId }: { agentId: string }) {
         </PixelButton>
       </div>
       {note && <span style={{ fontSize: 11, color: 'var(--cth-ink-500)' }}>{note}</span>}
+      {delivery.error && <span role="alert">{delivery.error}</span>}
     </div>
   );
 }

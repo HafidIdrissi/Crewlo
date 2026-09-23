@@ -1,16 +1,18 @@
 {
-  "name": "munder-difflin",
+  "name": "crewlo",
   "version": "0.4.6",
   "private": true,
-  "description": "Clones for you and your team, working 24/7 — a free, local-first multi-agent harness that turns the CLI coding agent you already run into a clone of you, coordinating an office of agents on your machine.",
+  "description": "A local desktop studio for your AI agents, their missions, and conversations.",
   "main": "out/main/index.js",
-  "author": "Chaitanya Giri",
-  "homepage": "https://munderdiffl.in/",
+  "author": "Hafid Idrissi and contributors",
+  "homepage": "https://github.com/HafidIdrissi/crewlo",
   "repository": {
     "type": "git",
-    "url": "https://github.com/chaitanyagiri/munder-difflin.git"
+    "url": "https://github.com/HafidIdrissi/crewlo.git"
   },
   "scripts": {
+    "doctor": "node tools/crewlo-doctor.cjs",
+    "site": "vite docs --host 127.0.0.1 --port 5182",
     "dev": "electron-vite dev",
     "build": "electron-vite build && npm run copy:main-assets",
     "copy:main-assets": "node tools/copy-main-assets.cjs",
@@ -54,6 +56,7 @@
     "node-pty": "^1.0.0",
     "pixi.js": "^8.5.1",
     "posthog-node": "^5.48.2",
+    "qrcode": "^1.5.4",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-i18next": "^17.0.11",
@@ -68,6 +71,7 @@
     "@types/better-sqlite3": "^7.6.13",
     "@types/localtunnel": "^2.0.4",
     "@types/node": "^22.7.5",
+    "@types/qrcode": "^1.5.6",
     "@types/react": "^18.3.11",
     "@types/react-dom": "^18.3.0",
     "@vitejs/plugin-react": "^4.3.2",

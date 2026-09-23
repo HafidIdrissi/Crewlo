@@ -1,0 +1,22 @@
+WEBVTT
+
+00:00.000 --> 00:03.999
+Scripted demo: meet the crew in the voxel studio.
+Activity labels are driven by simulated execution events.
+
+00:04.000 --> 00:06.999
+Message delivery is paused. Resume from the mission composer.
+
+00:07.000 --> 00:09.999
+The activity updates as Remy moves from creating a file to a build.
+
+00:10.000 --> 00:12.999
+Telegram setup: a single-use pairing link and QR.
+This demo QR opens example.com, not a live bot.
+
+00:13.000 --> 00:15.249
+Verify the requesting account on your desktop.
+
+00:15.250 --> 00:18.000
+Confirm pairing and choose the default agent.
+No live provider or Telegram delivery is shown.

@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#b6dfe9">
+  <title>Crewlo — Configurer Telegram et WhatsApp</title>
+  <meta name="description" content="Guide local pour associer Telegram ou WhatsApp à vos agents Crewlo. Configuration dans l’application Windows, confirmation sur le PC et premier test réel.">
+  <link rel="icon" type="image/svg+xml" href="crewlo/favicon.svg">
+  <link rel="preload" href="crewlo/fonts/press-start-2p-latin-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="crewlo-site.css">
+  <link rel="stylesheet" href="messaging-setup.css">
+</head>
+<body id="top">
+  <a class="skip" href="#main">Aller au guide</a>
+  <header class="site-header"><div class="nav wrap">
+    <a class="brand" href="index.html" aria-label="Retour au site Crewlo"><img src="crewlo/favicon.svg" width="32" height="32" alt="">crewlo<span class="brand-note">guide de connexion</span></a>
+    <nav aria-label="Choisir une messagerie"><a class="nav-channel telegram-link" href="#telegram">Telegram</a><a class="nav-channel whatsapp-link" href="#whatsapp">WhatsApp</a></nav>
+    <div class="nav-actions"><a class="button small" href="index.html">← Le studio</a></div>
+  </div></header>
+  <main id="main">
+    <div class="world-hero setup-world">
+      <div class="voxel-sky" aria-hidden="true"><span class="pixel-sun"></span><span class="pixel-cloud cloud-one"></span></div>
+      <section class="wrap setup-hero" aria-labelledby="setup-title">
+        <p class="eyebrow">GUIDE DU SITE · CONFIGURATION DANS L’APP</p>
+        <h1 id="setup-title">Connecte ton crew.</h1>
+        <p class="setup-lede">Telegram pour démarrer simplement. WhatsApp si tu disposes d’une configuration Meta Cloud API.</p>
+        <div class="setup-warning"><strong>Cette page explique les étapes ; elle ne connecte rien.</strong><p>Ouvre l’application <strong>Crewlo sur ton PC Windows</strong> pour saisir tes identifiants et confirmer l’appairage. L’aperçu dans un navigateur ne peut pas connecter les agents : le moteur Electron de l’application est nécessaire.</p></div>
+        <div class="actions"><a class="button setup-telegram" href="#telegram">Étapes Telegram ↓</a><a class="button setup-whatsapp" href="#whatsapp">Étapes WhatsApp ↓</a></div>
+      </section>
+    </div>
+
+    <div class="wrap setup-content">
+      <aside class="setup-prerequisites" aria-labelledby="before-title"><h2 id="before-title">Avant de commencer</h2><p>Garde le PC allumé, Crewlo ouvert et connecté à Internet. Dans ton studio, ouvre une <strong>session agent compatible avec la messagerie Crewlo</strong>, par exemple Claude Code ou Codex, déjà authentifiée et disponible. La messagerie réutilise cette session : elle ne crée pas un agent à ta place.</p><p>Tu n’as pas encore lancé l’app ? <a href="index.html#start">Voir le démarrage depuis les sources</a>.</p></aside>
+
+      <section class="setup-section telegram-guide" id="telegram" aria-labelledby="telegram-title">
+        <div class="setup-section-heading"><span class="setup-number" aria-hidden="true">01</span><div><p class="eyebrow">BOT API OFFICIELLE · SANS TUNNEL</p><h2 id="telegram-title">Telegram</h2></div></div>
+        <ol class="setup-steps">
+          <li><h3>Crée ton bot.</h3><p>Dans Telegram, ouvre le compte officiel <a href="https://t.me/BotFather">@BotFather</a>, envoie <code>/newbot</code> et suis ses instructions. Conserve le token reçu dans un endroit sûr. <a href="https://core.telegram.org/bots/features#botfather">Documentation officielle BotFather</a>.</p></li>
+          <li><h3>Connecte-le dans Crewlo.</h3><p>Dans <strong>l’app Windows</strong>, clique sur <strong>Telegram</strong> en haut à droite. Colle le token dans le champ secret prévu, puis clique sur <strong>Connect</strong>. Ne colle jamais ce token dans un chat, un terminal, une capture ou un ticket GitHub.</p></li>
+          <li><h3>Associe ton compte, puis confirme sur le PC.</h3><p>Ouvre le lien ou scanne le QR généré par Crewlo. Dans le chat privé du bot, appuie sur <strong>Start</strong>. Reviens sur le PC, vérifie ton nom et ton identifiant Telegram, puis clique sur <strong>Confirm pairing</strong>. Refuse toute identité inconnue. Le lien est à usage unique et expire après cinq minutes.</p></li>
+          <li><h3>Choisis un agent disponible.</h3><p>Sélectionne le <strong>Default agent</strong> dans Crewlo. Tu peux aussi envoyer <code>/agents</code> depuis Telegram, puis <code>/agent &lt;id&gt;</code> avec l’identifiant réellement affiché dans la liste.</p></li>
+          <li><h3>Fais un premier test sans risque.</h3><p>Envoie le texte ci-dessous. Attends une vraie réponse préfixée par le nom de l’agent, puis vérifie le même échange dans <strong>Conversation</strong>, avec son badge Telegram.</p><blockquote>Réponds simplement : Bonjour depuis Crewlo.</blockquote></li>
+        </ol>
+        <p class="setup-note">Aucun webhook public n’est nécessaire : Crewlo utilise le long polling. N’utilise pas simultanément le même bot avec un autre programme. Un webhook existant ou un second lecteur peut bloquer la connexion.</p>
+        <a class="text-link" href="telegram-setup.md">Guide Telegram détaillé, limites et dépannage →</a>
+      </section>
+
+      <section class="setup-section whatsapp-guide" id="whatsapp" aria-labelledby="whatsapp-title">
+        <div class="setup-section-heading"><span class="setup-number" aria-hidden="true">02</span><div><p class="eyebrow">META CLOUD API · CONFIGURATION PLUS TECHNIQUE</p><h2 id="whatsapp-title">WhatsApp</h2></div></div>
+        <p class="setup-note"><strong>Ce n’est pas WhatsApp Web.</strong> Le QR Crewlo ouvre un message d’appairage vers un numéro Cloud API. Ce n’est pas le QR « Appareils connectés » de ton compte personnel.</p>
+        <ol class="setup-steps">
+          <li><h3>Prépare une application Meta et un numéro API.</h3><p>Configure <strong>WhatsApp Cloud API</strong> dans ton application Meta. Pour débuter, utilise le numéro de test fourni et ajoute ton téléphone aux <strong>destinataires de test autorisés</strong>. Récupère le Phone number ID, un access token avec les permissions WhatsApp nécessaires et l’App secret. Un token de test peut expirer ; Crewlo ne le renouvelle pas automatiquement.</p></li>
+          <li><h3>Renseigne le panneau WhatsApp dans Crewlo.</h3><p>Sur le PC, clique sur <strong>WhatsApp</strong> en haut à droite. Les champs se remplissent dans l’app, jamais sur cette page :</p>
+            <dl class="setup-fields"><dt>Phone number ID</dt><dd>L’identifiant Meta du numéro, pas ton numéro de téléphone.</dd><dt>Access token</dt><dd>Le token Meta autorisé pour ce numéro. Garde-le secret.</dd><dt>App secret</dt><dd>Le secret de ton application Meta, utilisé pour vérifier les signatures des webhooks.</dd><dt>Verify token</dt><dd>Un secret de ton choix : <strong>24 à 128</strong> lettres, chiffres, <code>_</code> ou <code>-</code>. Conserve-le pour renseigner exactement la même valeur dans Meta.</dd><dt>Graph API version</dt><dd>La version utilisée par ton application Meta, au format <code>vNN.N</code>. Vérifie la valeur au lieu de choisir une version au hasard.</dd><dt>Local port</dt><dd><code>8788</code> par défaut ; choisis un port local libre si nécessaire.</dd></dl>
+            <p>Clique ensuite sur <strong>Connect WhatsApp</strong>. L’état <strong>Local listener ready</strong> indique seulement que le récepteur local est prêt, pas que Meta atteint ton PC.</p>
+          </li>
+          <li><h3>Configure ton relais HTTPS et le webhook Meta.</h3><p>Avec ton propre tunnel ou relais, fais parvenir une URL <strong>HTTPS publique</strong> au récepteur local affiché par Crewlo. Par défaut :</p><pre class="setup-address"><code>http://127.0.0.1:8788/whatsapp/webhook</code></pre><p>Dans Meta, indique l’URL publique de callback correspondant à ce chemin et le <strong>même Verify token</strong>. Termine la vérification, abonne-toi au champ <strong>messages</strong> et vérifie que l’application est abonnée au compte <strong>WhatsApp Business Account (WABA)</strong> concerné.</p><p><strong>Crewlo ne crée aucun tunnel automatiquement.</strong> Cette page n’ouvre aucun port public et ne fournit pas d’adresse de relais.</p></li>
+          <li><h3>Envoie le message d’appairage depuis ton téléphone.</h3><p>Ouvre le lien d’appairage <code>wa.me</code> ou scanne le QR affiché dans Crewlo. <strong>Envoie réellement le message prérempli</strong> au numéro Cloud API. Ouvrir le lien seul ne suffit pas. Reviens sur le PC, vérifie ton numéro et clique sur <strong>Confirm pairing</strong>. Le lien est à usage unique, valable cinq minutes.</p></li>
+          <li><h3>Choisis l’agent et vérifie une réponse réelle.</h3><p>Sélectionne le <strong>Default agent</strong>, ou envoie <code>/agents</code> puis <code>/agent &lt;id&gt;</code> dans WhatsApp. Envoie « Réponds simplement : Bonjour depuis Crewlo. ». Vérifie la réponse avec le nom de l’agent sur ton téléphone et dans <strong>Conversation</strong>, avec le badge WhatsApp.</p></li>
+        </ol>
+        <p class="setup-note"><strong>Fenêtre de réponse :</strong> les réponses libres nécessitent un message utilisateur dans les dernières 24 heures. Si Crewlo affiche <strong>Waiting for your WhatsApp message</strong>, envoie un nouveau message depuis ton téléphone. Crewlo ne contourne pas cette limite avec des modèles payants.</p>
+        <a class="text-link" href="messageries-tests.fr.md">Guide technique et checklist complète des tests →</a>
+      </section>
+
+      <section class="setup-section setup-checks" id="verification" aria-labelledby="check-title">
+        <p class="eyebrow">UN ÉTAT AFFICHÉ N’EST PAS UNE PREUVE DE LIVRAISON</p><h2 id="check-title">Le test est réussi quand…</h2>
+        <ul class="setup-checklist"><li>La réponse réelle de l’agent arrive sur ton téléphone <strong>et</strong> dans Conversation.</li><li>Un autre compte ou un groupe ne déclenche aucun travail. Ne confirme aucune identité inconnue.</li><li>Une demande envoyée pendant <strong>Message delivery paused</strong> attend, puis part une seule fois après <strong>Resume</strong> sur le PC.</li><li>Une session agent indisponible est signalée honnêtement. La connexion au canal ne signifie pas que l’agent est prêt.</li></ul>
+        <div class="setup-statuses"><article><h3>Accepted by WhatsApp</h3><p>Meta a accepté la requête. Cela ne prouve pas que le téléphone a reçu le message. <strong>Delivered</strong> et <strong>Read</strong> dépendent des notifications de Meta.</p></article><article><h3>Awaiting agent reply</h3><p>Une réponse de l’agent manque encore. Vérifie sa session et ses éventuelles demandes de permission sur le PC. N’envoie pas la même demande en boucle.</p></article><article><h3>Delivery uncertain</h3><p>L’envoi a un résultat ambigu. Vérifie le téléphone et Conversation avant de renvoyer : Crewlo n’annonce pas une réussite qu’il ne peut pas confirmer.</p></article></div>
+        <p class="setup-note"><strong>Limite de la vérification actuelle :</strong> les tests locaux utilisent des API et réponses agent simulées. Ils ne valident pas ton token, ton application Meta, ton relais public ou ton modèle réel. La connexion de bout en bout reste à vérifier avec les étapes ci-dessus.</p>
+        <p class="setup-privacy">Les identifiants secrets utilisent le stockage chiffré du système. L’historique local de conversation n’est pas chiffré par cette fonctionnalité. Telegram, Meta et ton fournisseur IA conservent leurs propres règles de données et de coûts.</p>
+        <div class="actions"><a class="button" href="#telegram">Revoir Telegram ↑</a><a class="button" href="#whatsapp">Revoir WhatsApp ↑</a><a class="text-link" href="index.html">Retour au site Crewlo →</a></div>
+      </section>
+    </div>
+  </main>
+  <footer class="wrap setup-footer"><p>Guide Crewlo · Aucun identifiant demandé sur ce site. La configuration se fait dans l’application.</p><a href="index.html">← Retour au studio</a></footer>
+</body>
+</html>

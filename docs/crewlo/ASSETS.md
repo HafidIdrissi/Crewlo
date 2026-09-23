@@ -17,3 +17,7 @@ The earlier clay refinement added twelve original sculpt recipes to the three in
 The new active studio does not import the legacy office map or character rendering system. Compatibility character IDs still address persisted rosters. The original MIT copyright notice in LICENSE has not been changed. Credits for LimeZu and upstream contributors remain in Crewlo’s Settings and README.
 
 Screenshots in this directory were captured from local Electron windows. Populated scenes use explicitly labeled test fixtures, with no provider execution or fabricated live work.
+
+The [promotional demo kit](demo/README.md) contains real Electron UI captures with a persistent scripted-demo label: two GIFs, an 18-second MP4, static posters, and captions. Agent events and Telegram pairing are simulated, the QR points to example.com, and no live provider or real message delivery is claimed. Recordings use the original MIT Crewlo artwork and no external music or stock footage. `tools/crewlo-promo-capture.cjs` reproduces them in an isolated profile.
+
+The public landing page uses original CSS block-world scenery, voxel-style borders and simple inline channel symbols. It contains no Minecraft/Mojang textures, logos or game assets and claims no affiliation. Press Start 2P and Inter are copied unchanged from the existing bundled fonts into `docs/crewlo/fonts/`; their complete SIL OFL notices travel with them in [fonts/LICENSE.txt](fonts/LICENSE.txt). Telegram and WhatsApp setup images are labeled scripted or local-test captures, not evidence of live provider delivery.

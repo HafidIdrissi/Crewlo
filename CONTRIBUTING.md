@@ -1,6 +1,6 @@
-# Contributing to Munder Difflin
+# Contributing to Crewlo
 
-Thanks for your interest! This is an early prototype, so there's a lot of surface
+Crewlo is an independent visual fork of Munder Difflin. Thanks for your interest! This is an early prototype, so there's a lot of surface
 area and plenty of room to help. This guide covers setup, the gotchas, and the
 conventions that keep the codebase coherent.
 
@@ -17,7 +17,7 @@ much cheaper than finding out in review.
 - **Keep the change scoped to one clear improvement, fix, or refactor.** A fix
   plus a rename plus a refactor is three pull requests, and all three merge
   faster than the one.
-- **Munder Difflin targets macOS, Windows and Linux.** Every change has to work
+- **Crewlo targets macOS, Windows and Linux.** Every change has to work
   on all three unless it sits behind an explicit runtime platform check. Most
   of our cross-platform bugs are paths: use `path.join` and the Node path
   helpers, never a hand-built `"a/b"` string.
@@ -36,11 +36,10 @@ much cheaper than finding out in review.
 
 ### Prerequisites
 
-- **macOS, Windows, or Linux** — signed/notarized macOS builds, plus Windows and
-  Linux builds, ship from the [releases page](https://github.com/chaitanyagiri/munder-difflin/releases/latest).
-  Cross-platform smoke-testing and fixes are still very welcome (see
+- **macOS, Windows, or Linux** — run Crewlo from source; there is no Crewlo release feed yet.
+  Cross-platform smoke-testing and fixes are very welcome (see
   [Good first areas](#good-first-areas)).
-- **Node.js 18+** and npm.
+- **Node.js 22.22 or newer** and npm.
 - A **C/C++ toolchain** to build `node-pty`'s native addon. On macOS:
   ```bash
   xcode-select --install
@@ -52,9 +51,9 @@ much cheaper than finding out in review.
 ### Install & run
 
 ```bash
-git clone <your-fork-url> munder-difflin
-cd munder-difflin
-npm install        # postinstall rebuilds node-pty against Electron's ABI
+git clone <your-fork-url> crewlo
+cd crewlo
+npm ci             # postinstall rebuilds node-pty against Electron's ABI
 npm run dev        # live-reloading Electron build
 ```
 
