@@ -4,7 +4,7 @@
 
 A local desktop studio for your AI crew. Give agents a mission, see what they are doing, and open their conversations or terminals from a warm voxel workspace.
 
-[Build from source](#build-from-source) · [Watch the 18-second demo](docs/crewlo/demo/crewlo-demo.mp4) · [Preview the website](#preview-the-website-locally) · [Connect your phone](#from-your-phone) · [Contribute](CONTRIBUTING.md) · [☆ Star Crewlo](https://github.com/HafidIdrissi/crewlo)
+[Visit the website](https://hafididrissi.github.io/Crewlo/) · [Build from source](#build-from-source) · [Watch the 18-second demo](docs/crewlo/demo/crewlo-demo.mp4) · [Connect your phone](#from-your-phone) · [Contribute](CONTRIBUTING.md) · [☆ Star Crewlo](https://github.com/HafidIdrissi/crewlo)
 
 [![Crewlo studio: agent activity labels, a wide mission composer, and message delivery controls](docs/crewlo/demo/studio-activity.gif)](docs/crewlo/demo/crewlo-demo.mp4)
 
