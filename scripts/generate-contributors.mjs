@@ -1,4 +1,6 @@
 #!/usr/bin/env node
+// Historical Munder Difflin attribution generator. Do not run this against
+// Crewlo or present its output as Crewlo's contributor roster.
 // Regenerates CONTRIBUTORS.md from MERGED PULL REQUESTS, plus the pull requests
 // listed in .github/contributors-extra.json whose code is in main without the
 // merged badge.

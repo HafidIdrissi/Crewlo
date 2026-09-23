@@ -1,3 +1,7 @@
+> [!WARNING]
+> Historical upstream checklist. Crewlo does not yet have a verified installer or updater release.
+> Do not use this checklist as approval to publish the inherited release notes or artifacts.
+
 # Release checklist: verifying the updater
 
 The auto-updater ships across a version hop, so **the code in a release is only

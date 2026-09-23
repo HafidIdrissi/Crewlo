@@ -1,4 +1,10 @@
-<!-- RELEASE RUNNER, REQUIRED BEFORE YOU TAG: run RELEASE-CHECKLIST.md. Rehearse the updater on 0.4.6-rc.1 -> 0.4.7-rc.1 prereleases and pass the fault-injection checks BEFORE tagging the real release. This comment is not rendered in the published notes. -->
+> [!WARNING]
+> Historical upstream release note, retained for attribution. This is **not a Crewlo release**.
+> Crewlo currently has no verified installer, signed download, or release feed. To run Crewlo,
+> follow the [source instructions](README.md#build-from-source); do not use the Munder Difflin
+> downloads below as Crewlo builds.
+
+<!-- Archived upstream release note; never publish as Crewlo release notes. -->
 # Munder Difflin v0.4.6
 
 **A local hive of Claude Code, Antigravity, Codex, Gemini, Cursor, Grok & Copilot agents that run themselves.**

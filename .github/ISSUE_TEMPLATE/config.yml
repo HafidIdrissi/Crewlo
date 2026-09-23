@@ -1,8 +1,8 @@
 blank_issues_enabled: false
 contact_links:
-  - name: Questions & ideas
-    url: https://github.com/chaitanyagiri/munder-difflin/discussions
-    about: Ask questions, share setups, or float ideas before filing an issue.
-  - name: Security report
-    url: https://github.com/chaitanyagiri/munder-difflin/security/advisories/new
-    about: Report a vulnerability privately (do not open a public issue).
+  - name: Questions and early ideas
+    url: https://github.com/HafidIdrissi/Crewlo/discussions
+    about: Ask for help, share a setup, or shape a larger proposal.
+  - name: Private security report
+    url: https://github.com/HafidIdrissi/Crewlo/security/advisories/new
+    about: Report vulnerabilities without exposing details in a public issue.

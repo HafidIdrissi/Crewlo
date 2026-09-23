@@ -1,21 +1,29 @@
 # Crewlo
 
-**Your agents. One living workspace.**
+## Your AI agents, visible in one voxel studio.
 
-A local desktop studio for your AI crew. Give agents a mission, see what they are doing, and open their conversations or terminals from a warm voxel workspace.
+Crewlo brings the coding agents you already run into a shared desktop workspace. Give the crew a mission, see named activity above each character, open the real terminal, and check in from Telegram when you are away from the desk.
 
-[Visit the website](https://hafididrissi.github.io/Crewlo/) · [Build from source](#build-from-source) · [Watch the 18-second demo](docs/crewlo/demo/crewlo-demo.mp4) · [Connect your phone](#from-your-phone) · [Contribute](CONTRIBUTING.md) · [☆ Star Crewlo](https://github.com/HafidIdrissi/crewlo)
+[See the 18-second tour](docs/crewlo/demo/crewlo-demo.mp4) · [Try Crewlo from source](#build-from-source) · [Visit the website](https://hafididrissi.github.io/Crewlo/) · [Contribute](CONTRIBUTING.md) · [Star Crewlo](https://github.com/HafidIdrissi/Crewlo)
 
 [![Crewlo studio: agent activity labels, a wide mission composer, and message delivery controls](docs/crewlo/demo/studio-activity.gif)](docs/crewlo/demo/crewlo-demo.mp4)
 
-*Real interface recording with a scripted roster and simulated events—not live AI execution. Prefer a still? [Open the studio image](docs/crewlo/demo/studio-poster.png). [Video, captions and demo details](docs/crewlo/demo/README.md).*
+*Actual Crewlo interface, with scripted agents and events for this studio clip—not a live AI run. [Static image](docs/crewlo/demo/studio-poster.png) · [Capture notes](docs/crewlo/demo/README.md).*
+
+### A real Telegram reply, presented like a phone
+
+[![An English Telegram message to Remy and his named reply, presented in a recreated phone layout](docs/crewlo/demo/telegram-phone-demo.gif)](docs/crewlo/demo/telegram-phone-demo.md)
+
+*The request, queue acknowledgement and Remy reply were verified in Telegram Web. The phone layout is recreated and the wait is condensed; this is not a continuous recording or a physical-phone test. [Transcript and verification scope](docs/crewlo/demo/telegram-phone-demo.md).*
+
+**Source-first preview:** Crewlo has no verified installer or release feed yet. The desktop and focused tests have been checked locally on Windows; live WhatsApp delivery and packaged macOS/Linux builds still need validation. [What is tested](#current-status) · [What you need to run it](#build-from-source).
 
 ## Why Crewlo?
 
 - **See the work, not just the terminals.** Activity labels above agents reflect execution-hook events when available. Select a character to inspect its conversation or terminal.
 - **Give the crew one clear mission.** A wide composer keeps your request in focus, with one delivery status and an explicit Resume control when message delivery is paused.
 - **Keep the useful tools close.** Tasks & results, Approvals & input, Memory and Settings remain part of the same workspace.
-- **Check in from your phone.** Optional Telegram and WhatsApp connections route owner messages to existing connected agents, with public replies and channel badges in Conversation.
+- **Check in from your phone.** Telegram has a verified basic message round trip. Optional Telegram and WhatsApp connections route paired-owner messages to existing connected agents, with replies and channel badges in Conversation; WhatsApp still needs a live account-to-agent test.
 
 Bring the agent CLI you already use: provider presets include Claude Code, Codex, Gemini CLI and others. Your accounts and credentials stay under your control; coordination and remote-messaging support vary by provider.
 
@@ -23,7 +31,7 @@ Bring the agent CLI you already use: provider presets include Claude Code, Codex
 
 Crewlo is an early, source-first project. Local Windows checks cover the interface, real local terminal access, messaging queues, SQLite and OS-encrypted credential storage. Typechecks, production builds and focused feature tests have passed; the full test suite still has [documented baseline failures](docs/crewlo/VERIFICATION.md).
 
-Telegram/Meta traffic and agent replies in the messaging tests are simulated. Your credentials, public WhatsApp callback and actual model replies still need a [live acceptance test](docs/messageries-tests.fr.md). Packaged installers, signing and macOS/Linux runtime behavior have not been verified. There is no Crewlo release feed.
+A basic real Telegram request and named reply were [observed in Telegram Web](docs/crewlo/demo/telegram-phone-demo.md); that does not prove every agent, reconnection or physical-phone scenario. Automated messaging tests use simulated Telegram/Meta traffic and agent replies. WhatsApp with your credentials and public callback still needs a [live acceptance test](docs/messageries-tests.fr.md). Packaged installers, signing and macOS/Linux runtime behavior have not been verified. There is no Crewlo release feed.
 
 ## Build from source
 
@@ -92,6 +100,8 @@ Open **Telegram** or **WhatsApp** from Crewlo's top bar, complete setup and conf
 
 [Telegram setup](docs/telegram-setup.md) · [Telegram + WhatsApp setup and live-test checklist — français](docs/messageries-tests.fr.md)
 
+Want to see the verified basic Telegram exchange before setting up a bot? [Watch the 12-second phone-style GIF](docs/crewlo/demo/telegram-phone-demo.gif), then read its [verification scope](docs/crewlo/demo/telegram-phone-demo.md).
+
 WhatsApp's **Accepted** state is not proof of delivery: **Delivered** and **Read** come from Meta receipts. Paused, unavailable, failed or uncertain delivery remains visible. Consult Conversation before resending an uncertain message.
 
 <details>
@@ -111,7 +121,7 @@ Anonymous usage analytics requires a configured build-time key and can be disabl
 
 ## Help shape Crewlo
 
-Try the source, [report a reproducible bug](https://github.com/HafidIdrissi/crewlo/issues), or take on one small improvement. Windows/macOS/Linux verification, accessibility, messaging and clearer agent activity are useful places to contribute. Read the [contribution guide](CONTRIBUTING.md) before opening a PR.
+Try the source, [report a reproducible bug](https://github.com/HafidIdrissi/Crewlo/issues/new/choose), [suggest an idea](https://github.com/HafidIdrissi/Crewlo/discussions), or take on one small improvement. Windows/macOS/Linux verification, accessibility, messaging and clearer agent activity are useful places to contribute. Read the [contribution guide](CONTRIBUTING.md) before opening a PR.
 
 If Crewlo interests you, [give the repository a star](https://github.com/HafidIdrissi/crewlo). Starring happens on GitHub after you sign in; Crewlo never requests a GitHub token or stars automatically.
 

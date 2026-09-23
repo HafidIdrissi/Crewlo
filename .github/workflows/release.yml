@@ -1,12 +1,8 @@
 name: Release
 
-# Build installers for every platform and publish them to a GitHub Release
-# whenever a v* tag is pushed. Run manually (workflow_dispatch) to dry-build
-# without publishing.
+# Manual packaging only while Crewlo has no verified installer or release feed.
+# A tag push must not automatically publish inherited release notes or binaries.
 on:
-  push:
-    tags:
-      - "v*"
   workflow_dispatch:
 
 permissions:
@@ -31,7 +27,7 @@ jobs:
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22.22.0
           cache: npm
 
       # node-gyp (used to rebuild native node-pty) imports distutils, which was

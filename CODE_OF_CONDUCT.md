@@ -37,7 +37,10 @@ This Code of Conduct applies within all community spaces, and also applies when 
 
 ## Enforcement
 
-Instances of abusive, harassing, or otherwise unacceptable behavior may be reported to the community leaders responsible for enforcement at [INSERT CONTACT METHOD]. All complaints will be reviewed and investigated promptly and fairly.
+For a private report, contact the Crewlo maintainer through a contact method listed on
+[Hafid Idrissi's GitHub profile](https://github.com/HafidIdrissi). If no private route is available,
+open an issue asking for a private contact method **without** publishing names, screenshots,
+personal information, or incident details. Reports will be reviewed promptly and fairly.
 
 All community leaders are obligated to respect the privacy and security of the reporter of any incident.
 
