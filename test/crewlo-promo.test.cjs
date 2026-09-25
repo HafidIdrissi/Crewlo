@@ -53,7 +53,7 @@ test('Landing contains keyboard demo, copy feedback, FAQ and reduced-motion cont
   assert.match(read('docs/crewlo-site.css'), /prefers-reduced-motion\s*:\s*reduce/);
 });
 
-test('Voxel landing makes both messaging channels first-class hero and navigation links', () => {
+test('Voxel landing guides a first mission before optional messaging', () => {
   const html = read('docs/index.html');
   const heading = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
   assert.equal(heading, 'Build your crew. Block by block.');
@@ -61,14 +61,16 @@ test('Voxel landing makes both messaging channels first-class hero and navigatio
   assert.ok(hero, 'Prominent hero section is present');
   const header = html.match(/<header\b[^>]*>([\s\S]*?)<\/header>/)?.[1];
   for (const channel of ['telegram', 'whatsapp']) {
-    assert.match(hero, new RegExp(`<a\\b(?=[^>]*data-hero-channel="${channel}")(?=[^>]*href="#${channel}")[^>]*>`), `Hero links directly to ${channel} setup`);
     assert.match(header, new RegExp(`href="#${channel}"`), `Navigation exposes ${channel}`);
     assert.match(html, new RegExp(`<article\\b[^>]*id="${channel}"`), `Messaging card #${channel} exists`);
   }
+  assert.deepEqual([...hero.matchAll(/<li><a href="([^"]+)"/g)].map(match => match[1]), ['#start', '#connect-agent', '#first-mission', '#connect']);
+  assert.match(hero, /Optional/);
+  const start = html.indexOf('id="start"');
   const foundation = html.indexOf('class="foundation');
   const connect = html.indexOf('id="connect"');
   const experience = html.indexOf('id="experience"');
-  assert.ok(foundation >= 0 && foundation < connect && connect < experience, 'Messaging precedes the workflow demo, directly after the hero foundations');
+  assert.ok(foundation >= 0 && foundation < start && start < connect && connect < experience, 'Desktop setup comes before optional messaging');
 });
 
 test('Voxel typography is locally hosted with retained font licensing', () => {
@@ -113,6 +115,24 @@ test('Promo media have expected formats and remain small enough to share', () =>
   assert.equal(video.subarray(4, 8).toString(), 'ftyp');
   assert.ok(video.length < 10 * 1024 * 1024);
   assert.match(read('docs/crewlo/demo/crewlo-demo.vtt'), /^WEBVTT/);
+});
+test('WhatsApp phone preview stays shareable and explicitly illustrative', () => {
+  const dir = path.join(docs, 'crewlo/demo');
+  const gif = fs.readFileSync(path.join(dir, 'whatsapp-phone-preview.gif'));
+  assert.match(gif.subarray(0, 6).toString(), /^GIF8[79]a$/);
+  assert.equal(gif.readUInt16LE(6), 1080);
+  assert.equal(gif.readUInt16LE(8), 720);
+  assert.ok(gif.length < 5 * 1024 * 1024);
+  const video = fs.readFileSync(path.join(dir, 'whatsapp-phone-preview.mp4'));
+  assert.equal(video.subarray(4, 8).toString(), 'ftyp');
+  assert.ok(video.length < 10 * 1024 * 1024);
+  assert.ok(fs.existsSync(path.join(dir, 'whatsapp-phone-poster.png')));
+  assert.match(read('tools/render-whatsapp-phone-preview.py'), /Not yet live-tested/);
+  assert.match(read('docs/crewlo/demo/whatsapp-phone-preview.md'), /illustrative preview/i);
+  assert.match(read('README.md'), /not a WhatsApp conversation or proof of delivery/i);
+  const html = read('docs/index.html');
+  assert.match(html, /<video class="channel-demo" controls playsinline preload="none" poster="crewlo\/demo\/whatsapp-phone-poster\.png"/);
+  assert.match(html, /scripted chat, not a live WhatsApp exchange/);
 });
 test('Unconfigured beneficiary is not silently replaced by an upstream payment link', () => {
   const config = JSON.parse(read('docs/crewlo-links.json'));

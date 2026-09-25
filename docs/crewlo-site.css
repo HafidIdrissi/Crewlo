@@ -221,3 +221,21 @@ h1 em{font:inherit;color:var(--forest);font-style:normal}
 @media(prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}.button:hover,.button:active,.hero-channel:hover,.contributor-card:hover{transform:none}
 }
+
+/* A first visit follows the same sequence as the desktop setup. */
+.first-steps{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;list-style:none;padding:0;margin:0 0 25px}
+.first-steps li{min-width:0}
+.first-steps a{display:flex;align-items:flex-start;gap:9px;min-height:88px;height:100%;padding:12px 10px;border:2px solid #789260;background:#f8fbe9;text-decoration:none;box-shadow:2px 2px 0 #789260}
+.first-steps a:hover{background:#e7eebe;border-color:var(--forest)}
+.step-number{font:700 11px/1.7 var(--body);color:var(--forest);flex-shrink:0}
+.first-steps strong{display:block;font-size:12px;line-height:1.5}
+.first-steps small{display:block;font-size:10px;line-height:1.6;color:#53624c;margin-top:4px}
+.first-steps em{display:inline-block;font-size:9px;font-style:normal;font-weight:500;color:#53624c}
+.start-section{margin-top:50px}
+.onboarding-next{grid-column:1/-1;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:32px;border-top:2px solid var(--line);padding-top:28px}
+.onboarding-next article{min-width:0;scroll-margin-top:150px}
+.onboarding-next h3{font-size:21px}
+.onboarding-next p{font-size:13px}
+.onboarding-next .eyebrow{font-size:10px}
+.onboarding-next blockquote{margin:15px 0;padding:14px 17px;border-left:3px solid var(--forest);background:var(--cream);font-size:13px;line-height:1.8}
+@media(max-width:700px){.first-steps{gap:8px}.first-steps a{padding:10px 8px;gap:6px;min-height:92px}.first-steps strong{font-size:11px}.first-steps small{font-size:10px}.onboarding-next{grid-template-columns:1fr;gap:24px}.start-section{margin-top:30px}}

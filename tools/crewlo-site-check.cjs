@@ -22,13 +22,9 @@ async function messagingAccess(page, width, height) {
   await page.evaluate(() => window.scrollTo(0, 0));
   for (const channel of ['telegram', 'whatsapp']) {
     const nav = page.locator(`header nav a[href="#${channel}"]`);
-    const hero = page.locator(`.hero a[data-hero-channel="${channel}"]`);
     assert.equal(await nav.count(), 1, `Navigation has one direct ${channel} link`);
-    assert.equal(await hero.count(), 1, `Hero has one direct ${channel} card`);
-    assert.equal(await hero.getAttribute('href'), `#${channel}`);
-    assert.ok(await hero.isVisible(), `${channel} hero card is not hidden at ${width}px`);
     assert.ok(await page.locator(`#connect article#${channel}`).count(), `Hero target is the ${channel} setup card`);
-    for (const [label, link] of [['navigation', nav], ['hero', hero]]) {
+    for (const [label, link] of [['navigation', nav]]) {
       const box = await link.boundingBox();
       assert.ok(box && box.x >= -1 && box.x + box.width <= width + 1, `${channel} ${label} fits horizontally at ${width}px`);
       if (label === 'navigation' || width === 1440) assert.ok(box.y >= -1 && box.y + box.height <= height + 1, `${channel} ${label} is accessible above the fold at ${width}px`);
@@ -62,7 +58,7 @@ async function messagingContrast(page) {
       return { label: (el.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 90), ratio: (Math.max(a, b) + .05) / (Math.min(a, b) + .05), required: large ? 3 : 4.5 };
     });
   });
-  assert.ok(readings.length >= 4);
+  assert.ok(readings.length >= 2);
   for (const reading of readings) assert.ok(reading.ratio >= reading.required, `Messaging text contrast: ${reading.label}: ${reading.ratio.toFixed(2)}:1, expected ${reading.required}:1`);
 }
 
@@ -154,14 +150,14 @@ async function copyAndFaq(page) {
 }
 
 async function mediaControls(page) {
-  const video = page.locator('video').first();
+  const video = page.locator('#demo video');
   assert.equal(await video.getAttribute('autoplay'), null);
   assert.notEqual(await video.getAttribute('controls'), null);
   assert.equal(await video.locator('track[kind="captions"]').count(), 1);
   const playButton = page.locator('[data-video-play]').first();
   assert.ok(await playButton.count(), 'Demo has a visible, wired play action');
   await playButton.focus(); await playButton.press('Enter');
-  await page.waitForFunction(() => document.querySelector('video').currentTime > .2);
+  await page.waitForFunction(() => document.querySelector('#demo video').currentTime > .2);
   assert.ok(Math.abs(await video.evaluate(el => el.duration) - 18) < .1, 'Existing demo is 18 seconds and decodes');
   await video.evaluate(el => el.pause());
   await page.evaluate(() => {
@@ -173,7 +169,7 @@ async function mediaControls(page) {
   assert.ok(await page.locator('#video-status').isVisible(), 'Playback failure is visible, not only announced');
   await page.evaluate(() => { HTMLMediaElement.prototype.play = window.__crewloOriginalPlay; delete window.__crewloOriginalPlay; });
   await playButton.focus(); await playButton.press('Enter');
-  await page.waitForFunction(() => !document.querySelector('video').paused);
+  await page.waitForFunction(() => !document.querySelector('#demo video').paused);
   assert.equal(await page.locator('#video-status').innerText(), '', 'Successful retry clears the old playback error');
   await video.evaluate(el => el.pause());
   for (const card of await page.locator('.feature').all()) {
@@ -235,8 +231,8 @@ async function mediaControls(page) {
     assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' ').trim(), 'Build your crew. Block by block.');
     assert.ok(await page.evaluate(() => {
       const foundation = document.querySelector('.foundation');
-      return (foundation.closest('.world-hero') ?? foundation).nextElementSibling === document.querySelector('#connect');
-    }), 'Messaging immediately follows the hero and foundation group');
+      return (foundation.closest('.world-hero') ?? foundation).nextElementSibling === document.querySelector('#start');
+    }), 'Desktop setup immediately follows the hero and foundation group');
     assert.ok(await page.evaluate(() => !!(document.querySelector('#connect').compareDocumentPosition(document.querySelector('#experience')) & Node.DOCUMENT_POSITION_FOLLOWING)), 'Messaging is presented before the detailed workflow demo');
     assert.deepEqual(await page.locator('a[href^="#"]').evaluateAll(links => links.flatMap(link => {
       const id = decodeURIComponent(link.getAttribute('href').slice(1));
@@ -244,6 +240,7 @@ async function mediaControls(page) {
     })), [], 'All in-page anchor targets exist');
     assert.deepEqual(await page.locator('img').evaluateAll(images => images.filter(img => !img.hasAttribute('alt')).map(img => img.src)), [], 'Every image supplies text alternative or explicit decorative alt');
     assert.deepEqual(await page.locator('a[target="_blank"]').evaluateAll(links => links.filter(link => !link.rel.split(/\s+/).includes('noopener')).map(link => link.href)), [], 'New-tab external links isolate opener');
+    assert.deepEqual(await page.locator('.first-steps a').evaluateAll(links => links.map(link => link.getAttribute('href'))), ['#start', '#connect-agent', '#first-mission', '#connect']);
     await keyboardDemo(page);
     await copyAndFaq(page);
     await mediaControls(page);
@@ -295,6 +292,6 @@ async function mediaControls(page) {
     assert.deepEqual(external, [], 'Landing performs no external requests or analytics');
     assert.deepEqual(broken, [], 'No failed local assets');
     assert.deepEqual(errors, [], 'No browser exceptions');
-    console.log('PASS: 1440/1024/768/390/320px; visible Telegram/WhatsApp hero cards and above-fold sticky navigation; channel anchor keyboard access and text contrast; local setup guides HTTP200/anchors/return; local voxel/body fonts; messaging-first order; tab keyboard/ARIA/focus; clipboard success/rejection/unavailable (no shell); native FAQ keyboard; anchors/local assets; reduced motion posters and opt-in GIFs; 18s captioned video playback; Star target and coffee URL guards; no external requests. Screen-reader and full WCAG audit remain manual.');
+    console.log('PASS: 1440/1024/768/390/320px; four-step first-mission path and above-fold sticky navigation; channel anchor keyboard access and text contrast; local setup guides HTTP200/anchors/return; local voxel/body fonts; desktop setup before optional messaging; tab keyboard/ARIA/focus; clipboard success/rejection/unavailable (no shell); native FAQ keyboard; anchors/local assets; reduced motion posters and opt-in GIFs; 18s captioned video playback; Star target and coffee URL guards; no external requests. Screen-reader and full WCAG audit remain manual.');
   } finally { if (browser) await browser.close(); await server.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
