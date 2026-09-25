@@ -5,12 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#a6d7ec">
   <title>Crewlo — Your agents. One living workspace.</title>
-  <meta name="description" content="Turn your AI agent sessions into a crew you can follow. A local voxel workspace with visible activity, mission controls, and Telegram and WhatsApp integrations. Open source, built together.">
+  <meta name="description" content="Meet Crewlo: a local voxel studio for your AI agents. Give your crew a mission, follow their work, and see the 18-second interface tour.">
   <meta property="og:title" content="Crewlo — Your agents. One living workspace.">
-  <meta property="og:description" content="YOUR CREW. YOUR NEXT QUEST. Explore the voxel studio, watch the 18-second interface demo, and help build Crewlo.">
+  <meta property="og:description" content="A living voxel studio for your AI agents. Watch the 18-second interface tour and help build Crewlo.">
   <meta property="og:type" content="website">
-  <meta property="og:image" content="crewlo/demo/studio-poster.png">
+  <meta property="og:image" content="https://raw.githubusercontent.com/HafidIdrissi/Crewlo/main/docs/crewlo/demo/studio-poster.png">
+  <meta property="og:image:width" content="1280">
+  <meta property="og:image:height" content="800">
+  <meta property="og:image:alt" content="Crewlo voxel studio showing AI agent activity and mission controls">
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://raw.githubusercontent.com/HafidIdrissi/Crewlo/main/docs/crewlo/demo/studio-poster.png">
   <link rel="icon" type="image/svg+xml" href="crewlo/favicon.svg">
   <link rel="preload" href="crewlo/fonts/press-start-2p-latin-400.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="crewlo-site.css">
@@ -22,7 +26,7 @@
     <div class="nav wrap">
       <a class="brand" href="#top" aria-label="Crewlo home"><img src="crewlo/favicon.svg" width="32" height="32" alt="">crewlo<span class="brand-note">the agent studio</span></a>
       <nav aria-label="Main"><a class="nav-studio" href="#experience">The studio</a><a class="nav-channel telegram-link" href="#telegram"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 3 3 10l7 3 4 8 7-18Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m10 13 7-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span>Telegram</span></a><a class="nav-channel whatsapp-link" href="#whatsapp"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-11.9 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m9 7-1 2c.8 3 2 4.2 5 5l2-1-2-2-1 1-2-2 1-1-2-2Z" fill="currentColor"/></svg><span>WhatsApp</span></a><a class="nav-contribute" href="#contribute">Contribute</a></nav>
-      <div class="nav-actions"><a class="button small star" data-repository href="https://github.com/HafidIdrissi/crewlo"><span aria-hidden="true">☆</span> Star<span class="star-extra"> on GitHub</span></a><a class="button small primary" href="#start">Get started <span aria-hidden="true">↗</span></a></div>
+      <div class="nav-actions"><a class="button small star" data-repository href="https://github.com/HafidIdrissi/crewlo"><span aria-hidden="true">☆</span> Star<span class="star-extra"> on GitHub</span></a><a class="button small primary" href="#demo">Watch demo <span aria-hidden="true">↗</span></a></div>
     </div>
   </header>
   <main id="main">
@@ -32,12 +36,12 @@
       <div class="hero-copy">
         <a class="release-note" href="#contribute"><span class="status-dot" aria-hidden="true"></span> OPEN WORLD. OPEN SOURCE. <span aria-hidden="true">↗</span></a>
         <h1 id="hero-title">Build your crew.<br><em>Block by block.</em></h1>
-        <p class="lede">A living voxel world for your AI agents. Give them a mission, watch the work take shape, and check in from your phone.</p>
+        <p class="lede">A local desktop studio for your AI agents. Give your crew a mission, see who is doing what, and check in from your phone.</p>
         <div class="hero-channels" aria-label="Message your crew from your phone">
           <a class="hero-channel telegram-link" data-hero-channel="telegram" href="#telegram"><span class="channel-glyph"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M21 3 3 10l7 3 4 8 7-18Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m10 13 7-6" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></span><span><strong>Telegram</strong><span>Bot token. Pair. Go.</span></span><span class="channel-arrow" aria-hidden="true">↗</span></a>
           <a class="hero-channel whatsapp-link" data-hero-channel="whatsapp" href="#whatsapp"><span class="channel-glyph"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-11.9 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m9 7-1 2c.8 3 2 4.2 5 5l2-1-2-2-1 1-2-2 1-1-2-2Z" fill="currentColor"/></svg></span><span><strong>WhatsApp</strong><span>Connect with Meta Cloud API.</span></span><span class="channel-arrow" aria-hidden="true">↗</span></a>
         </div>
-        <div class="actions"><a class="button primary" href="#start">Build your crew <span aria-hidden="true">↗</span></a><button class="button watch" type="button" data-video-play><span class="play-icon" aria-hidden="true">▶</span> Watch 18 seconds</button></div>
+        <div class="actions"><button class="button primary watch" type="button" data-video-play><span class="play-icon" aria-hidden="true">▶</span> Watch 18 seconds</button><a class="button" href="#start">Run from source <span aria-hidden="true">↗</span></a></div>
         <p class="hero-footnote">Your computer. Your agent CLIs. A shared view.<br><span>Early-stage desktop app · source available</span></p>
       </div>
       <div class="hero-stage">
@@ -68,7 +72,7 @@
         <article class="channel-card whatsapp-card" id="whatsapp" aria-labelledby="whatsapp-title">
           <div class="channel-heading"><span class="channel-icon whatsapp" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 11.5a8 8 0 0 1-11.9 7L4 20l1.5-4.1A8 8 0 1 1 20 11.5Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="m9 7-1 2c.8 3 2 4.2 5 5l2-1-2-2-1 1-2-2 1-1-2-2Z" fill="currentColor"/></svg></span><div><h3 id="whatsapp-title">WhatsApp</h3><span class="tag">META CLOUD API</span></div><span class="channel-number">02</span></div>
           <div class="channel-body"><p>A familiar chat, connected to your studio. Use a Meta test or business number and a signed webhook.</p><div class="command-sample"><span class="mono">TRY THIS AFTER PAIRING</span><code>/agent &lt;id&gt;</code><span>Choose an available agent for your messages.</span></div><ol class="compact-steps"><li>Set up a WhatsApp Cloud API number in Meta</li><li>Add credentials and your public HTTPS callback</li><li>Send the pairing message and confirm on your PC</li></ol><div class="channel-actions"><a class="button channel-button whatsapp-link" href="messaging-setup.html#whatsapp">Set up WhatsApp <span aria-hidden="true">↗</span></a><a class="text-link" href="#start">Get Crewlo first</a></div><small class="channel-requirement">Official Cloud API · not WhatsApp Web · HTTPS relay required</small></div>
-          <figure class="channel-preview"><img class="channel-demo" src="crewlo/whatsapp-setup-ui.png" width="1440" height="1000" alt="Crewlo WhatsApp settings with a test owner and local webhook; captured in a local test with simulated Meta responses" loading="lazy"><figcaption>Local integration test capture · Meta API and agent replies simulated</figcaption></figure>
+          <figure class="channel-preview"><video class="channel-demo" controls playsinline preload="none" poster="crewlo/demo/whatsapp-phone-poster.png" aria-label="Illustrative WhatsApp phone flow for Crewlo agents; not yet live-tested"><source src="crewlo/demo/whatsapp-phone-preview.mp4" type="video/mp4"><a href="crewlo/demo/whatsapp-phone-preview.gif">View the illustrative GIF</a></video><figcaption>Illustrative phone preview · scripted chat, not a live WhatsApp exchange · <a href="crewlo/demo/whatsapp-phone-preview.md">GIF and verification scope</a></figcaption></figure>
         </article>
       </div>
       <div class="honesty-note"><span aria-hidden="true">ⓘ</span><p><strong>Owner-only access, desktop confirmation, existing permissions.</strong> Both channels are implemented and locally tested with simulated remote APIs. Real phone-to-agent delivery still needs validation with your credentials. WhatsApp free-form replies need an open 24-hour user-message window. <a href="messaging-setup.html#whatsapp">Live-test checklist</a>.</p></div>
