@@ -76,9 +76,12 @@
   for (const card of integrations) {
     card.addEventListener('toggle', () => {
       if (smallScreen.matches && card.open) for (const other of integrations) if (other !== card) other.open = false;
-      for (const [frame, setPlaying] of animations) if (card.contains(frame)) setPlaying(card.open && !reducedMotion.matches);
     });
   }
+  // Opening an explanation never starts media. Collapsing it stops hidden GIFs.
+  document.querySelectorAll('details').forEach(card => card.addEventListener('toggle', () => {
+    if (!card.open) for (const [frame, setPlaying] of animations) if (card.contains(frame)) setPlaying(false);
+  }));
   const revealHash = () => {
     const target = hashTarget();
     const card = target?.closest('[data-integration]');
@@ -161,17 +164,17 @@
   }
   if (tabs.length) selectChapter(tabs.find(tab => tab.dataset.demoStep === 'observe')?.dataset.demoStep || tabs[0].dataset.demoStep);
 
-  const copyStatus = document.querySelector('#copy-status');
-  if (copyStatus) {
+  document.querySelectorAll('.copy-status, #copy-status').forEach(copyStatus => {
     copyStatus.setAttribute('role', 'status');
     copyStatus.setAttribute('aria-live', 'polite');
     copyStatus.setAttribute('aria-atomic', 'true');
-  }
+  });
   document.querySelectorAll('[data-copy-command]').forEach(button => {
     let copying = false;
     button.addEventListener('click', async () => {
       if (copying) return;
-      const command = document.querySelector('#install-command')?.textContent?.trim();
+      const command = document.getElementById(button.dataset.copyCommand || 'install-command')?.textContent?.trim();
+      const copyStatus = button.closest('.terminal')?.querySelector('.copy-status, #copy-status');
       const report = message => { if (copyStatus) copyStatus.textContent = message; };
       report('');
       if (!command) { report('The install command is unavailable. Open the repository for setup instructions.'); return; }
@@ -219,6 +222,22 @@
   reducedMotion.addEventListener('change', event => {
     if (event.matches) document.querySelectorAll('video').forEach(video => video.pause());
   });
+
+  // A native dialog provides focus containment, Escape and focus restoration.
+  // Without JavaScript the same links open the original image directly.
+  const imagePreview = document.querySelector('#studio-preview');
+  if (imagePreview?.showModal) {
+    document.querySelectorAll('[data-image-preview]').forEach(link => link.addEventListener('click', event => {
+      event.preventDefault();
+      const img = imagePreview.querySelector('[data-preview-src]');
+      if (img && !img.hasAttribute('src')) img.src = img.dataset.previewSrc;
+      imagePreview.showModal();
+    }));
+    imagePreview.addEventListener('click', event => {
+      const box = imagePreview.getBoundingClientRect();
+      if (event.target === imagePreview && (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom)) imagePreview.close();
+    });
+  }
 
   fetch('crewlo-links.json', { cache: 'no-cache' }).then(response => {
     if (!response.ok) throw new Error('No public link configuration');

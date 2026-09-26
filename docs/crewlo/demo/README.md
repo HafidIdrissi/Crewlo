@@ -66,7 +66,7 @@ Edit `docs/crewlo-links.json` only after the maintainer confirms the beneficiary
 }
 ```
 
-This is a template, not an account recommendation. `coffeeUrl` is currently `null`. The site and app show a disabled entry until a valid HTTPS Buy Me a Coffee profile URL is supplied. Rebuild the app after changing its bundled config. Change the README's “coming soon” entry to the confirmed URL and uncomment the confirmed username in `.github/FUNDING.yml` at the same time. No payment credentials belong in these files.
+This is a template, not an account recommendation. `coffeeUrl` is currently `null`. The site omits the link until a valid HTTPS Buy Me a Coffee profile URL is supplied; the app keeps its unconfigured action disabled. Rebuild the app after changing its bundled config. Change the README's “coming soon” entry to the confirmed URL and uncomment the confirmed username in `.github/FUNDING.yml` at the same time. No payment credentials belong in these files.
 
 ## Launch copy — edit and post yourself
 

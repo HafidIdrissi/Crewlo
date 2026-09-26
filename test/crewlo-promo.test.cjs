@@ -21,7 +21,7 @@ function localTarget(value, from = docs) {
 }
 test('Crewlo landing uses local media, real repository links and explicit demo disclosure', () => {
   const html = read('docs/index.html');
-  assert.match(html, /<title>Crewlo — Your agents\. One living workspace\.<\/title>/);
+  assert.match(html, /<title>Crewlo — Your AI agents\. One clear workspace\.<\/title>/);
   assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1, 'One clear page heading');
   assert.match(html, /<main\b[^>]*id="main"/);
   assert.match(html, /Scripted (?:interface )?demo/i);
@@ -46,9 +46,11 @@ test('Landing contains keyboard demo, copy feedback, FAQ and reduced-motion cont
   assert.deepEqual(steps, ['observe', 'direct', 'connect']);
   assert.deepEqual(panels, ['observe', 'direct', 'connect']);
   assert.match(html, /role="tablist"/);
-  assert.match(html, /id="install-command"/);
-  assert.match(html, /data-copy-command/);
-  assert.match(html, /id="copy-status"/);
+  const guide = read('docs/install.html');
+  assert.match(guide, /id="install-command"/);
+  assert.match(guide, /data-copy-command/);
+  assert.match(guide, /id="copy-status"/);
+  assert.doesNotMatch(html, /id="install-command"/, 'Long setup commands live in the dedicated guide');
   assert.ok((html.match(/<details(?:\s|>)/g) || []).length >= 3, 'FAQ answers use native keyboard-operable disclosure controls');
   assert.match(read('docs/crewlo-site.css'), /prefers-reduced-motion\s*:\s*reduce/);
 });
@@ -56,26 +58,32 @@ test('Landing contains keyboard demo, copy feedback, FAQ and reduced-motion cont
 test('Voxel landing explains the product before setup and optional integrations', () => {
   const html = read('docs/index.html');
   const heading = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-  assert.equal(heading, 'Build your crew. Block by block.');
+  assert.equal(heading, 'Your AI agents. One clear workspace.');
   const hero = html.match(/<section\b[^>]*class="[^"]*\bhero\b[^"]*"[^>]*>([\s\S]*?)<\/section>/)?.[1];
   assert.ok(hero, 'Prominent hero section is present');
   const header = html.match(/<header\b[^>]*>([\s\S]*?)<\/header>/)?.[1];
-  for (const target of ['experience', 'demo', 'connect', 'start']) assert.match(header, new RegExp(`href="#${target}"`));
+  for (const target of ['experience', 'demo', 'connect']) assert.match(header, new RegExp(`href="#${target}"`));
   for (const channel of ['telegram', 'whatsapp']) {
     assert.doesNotMatch(header, new RegExp(`href="#${channel}"`), 'Messaging is grouped under Integrations');
     assert.match(html, new RegExp(`<details\\b[^>]*id="${channel}"`), `Integration #${channel} remains a native disclosure`);
   }
   assert.doesNotMatch(hero, /first-steps/);
-  assert.match(hero, /one visual studio on your computer/);
-  assert.match(hero, /Early-stage · Install from source/);
+  assert.match(hero, /one visual workspace on your computer/);
+  assert.match(hero, /Build your crew\.<br>\s*Block by block\./);
+  assert.match(hero, /data-image-preview/);
+  assert.match(hero, /Explore the demo/);
+  assert.match(hero, /href="install\.html"/);
+  assert.match(hero, /Early-stage · Windows source preview/);
   assert.match(header, /aria-controls="main-nav"/);
   const setup = html.match(/<section\b[^>]*id="start"[^>]*>([\s\S]*?)<\/section>/)?.[1];
-  assert.deepEqual([...setup.matchAll(/<li><a href="([^"]+)"/g)].map(match => match[1]), ['#install', '#connect-agent', '#first-mission', '#connect']);
-  const sections = ['demo', 'experience', 'start', 'connect', 'privacy', 'faq', 'contribute', 'support'];
+  assert.match(setup, /install\.html#requirements/);
+  assert.match(setup, /install\.html#connect-agent/);
+  assert.match(setup, /install\.html#first-mission/);
+  const sections = ['demo', 'experience', 'start', 'connect', 'proof', 'faq', 'support'];
   const positions = sections.map(id => html.indexOf(`id="${id}"`));
-  assert.ok(positions.every((position, i) => position >= 0 && (!i || position > positions[i - 1])), 'Product tour leads into setup, integrations, trust, FAQ and contribution');
+  assert.ok(positions.every((position, i) => position >= 0 && (!i || position > positions[i - 1])), 'Product tour leads into setup, integrations, evidence, FAQ and final installation');
   const support = html.match(/<section\b[^>]*id="support"[^>]*>([\s\S]*?)<\/section>/)?.[1];
-  assert.match(support, /href="#start"/);
+  assert.match(support, /href="install\.html"/);
 });
 
 test('Voxel typography is locally hosted with retained font licensing', () => {
@@ -101,7 +109,7 @@ test('Messaging setup links resolve to shipped HTML instead of unpublished GitHu
   }
   assert.doesNotMatch(html, /href="https:\/\/github\.com\/HafidIdrissi\/crewlo\/blob\/main\/docs\/(?:telegram-setup|messageries-tests\.fr)\.md/);
   const guide = read('docs/messaging-setup.html');
-  assert.match(guide, /<html\b[^>]*lang="fr"/);
+  assert.match(guide, /<html\b[^>]*lang="en"/);
   assert.match(guide, /href="(?:\.\/)?index\.html(?:#[^"]*)?"/);
   for (const match of guide.matchAll(/(?:src|href|poster)="([^"]+)"/g)) localTarget(match[1]);
   const ids = [...guide.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
@@ -135,8 +143,9 @@ test('WhatsApp phone preview stays shareable and explicitly illustrative', () =>
   assert.match(read('tools/render-whatsapp-phone-preview.py'), /Not yet live-tested/);
   assert.match(read('docs/crewlo/demo/whatsapp-phone-preview.md'), /illustrative preview/i);
   assert.match(read('README.md'), /not a WhatsApp conversation or proof of delivery/i);
-  const html = read('docs/index.html');
-  assert.match(html, /<img class="channel-demo" src="crewlo\/demo\/whatsapp-phone-preview\.gif"/);
+  const html = read('docs/messaging-setup.html');
+  assert.match(html, /data-motion="crewlo\/demo\/whatsapp-phone-preview\.gif"/);
+  assert.match(html, /src="crewlo\/demo\/whatsapp-phone-poster\.png"/, 'Phone animation loads only on request');
   assert.match(html, /scripted chat, not a live WhatsApp exchange/);
 });
 test('Unconfigured beneficiary is not silently replaced by an upstream payment link', () => {
@@ -147,4 +156,29 @@ test('Unconfigured beneficiary is not silently replaced by an upstream payment l
   assert.match(read('README.md'), /shown only after the maintainer supplies/);
   assert.doesNotMatch(read('.github/FUNDING.yml'), /razorpay\.me|munderdifflinfund/);
   if (fs.existsSync(path.join(docs, 'CNAME'))) assert.notEqual(read('docs/CNAME').trim(), 'munderdiffl.in', 'Do not publish the fork under the upstream domain');
+});
+
+
+test('Source guide and status pages keep a complete local navigation and honest evidence', () => {
+  for (const file of ['docs/install.html', 'docs/project-status.html', 'docs/messaging-setup.html']) {
+    const html = read(file);
+    assert.match(html, /<html lang="en"/);
+    const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
+    assert.equal(new Set(ids).size, ids.length, `Unique anchors in ${file}`);
+    for (const match of html.matchAll(/(?:src|href|poster|data-motion|data-still)="([^"]+)"/g)) {
+      localTarget(match[1]);
+      if (match[1].startsWith('#')) assert.ok(ids.includes(match[1].slice(1)), `${file}: ${match[1]}`);
+    }
+    for (const match of html.matchAll(/data-copy-command="([^"]+)"/g)) assert.ok(ids.includes(match[1]), 'Copy control targets a displayed command');
+    assert.doesNotMatch(html, /href="[^"]+\.(?:exe|dmg|appimage)"/i);
+  }
+  const html = read('docs/index.html');
+  const transcript = JSON.parse(read('docs/crewlo/demo/telegram-phone-transcript.json'));
+  assert.ok(html.includes(transcript.request));
+  assert.ok(html.includes(transcript.reply.replace('Remy · ', '')));
+  assert.match(html, /Still to capture:/);
+  assert.match(html, /EXPERIMENTAL · LIVE TEST PENDING/);
+  assert.match(html, /Agent CLIs can send prompts and code/);
+  assert.match(read('docs/install.html'), /Python 3/);
+  assert.match(read('docs/install.html'), /Spectre/);
 });

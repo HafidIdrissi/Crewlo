@@ -50,7 +50,7 @@ async function messagingAccess(page, width, height) {
 }
 
 async function messagingContrast(page) {
-  const readings = await page.locator('header nav a, .onboarding-next .eyebrow, .onboarding-next blockquote, .first-steps small, .experience-tabs button[aria-selected="true"]').evaluateAll(elements => {
+  const readings = await page.locator('header nav a, .quick-start .eyebrow, .quick-start p, .status-label, .experience-tabs button[aria-selected="true"]').evaluateAll(elements => {
     const rgba = text => { const values = text.match(/[\d.]+/g)?.map(Number) ?? [0, 0, 0]; return [values[0], values[1], values[2], values[3] ?? 1]; };
     const over = (front, back) => front.slice(0, 3).map((value, i) => value * front[3] + back[i] * (1 - front[3]));
     const luminance = color => color.map(value => { const n = value / 255; return n <= .04045 ? n / 12.92 : ((n + .055) / 1.055) ** 2.4; }).reduce((sum, value, i) => sum + value * [.2126, .7152, .0722][i], 0);
@@ -88,7 +88,7 @@ async function localMessagingGuides(page) {
     assert.ok(await back.isVisible(), 'Guide provides a visible return to the studio page');
     const [home] = await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }), back.click()]);
     assert.equal(home?.status(), 200);
-    assert.equal(await page.title(), 'Crewlo — Your agents. One living workspace.');
+    assert.equal(await page.title(), 'Crewlo — Your AI agents. One clear workspace.');
   }
 }
 
@@ -126,6 +126,7 @@ async function keyboardDemo(page) {
 }
 
 async function copyAndFaq(page) {
+  await page.goto(origin + '/install.html');
   const copy = page.locator('[data-copy-command]').first();
   assert.equal(await page.locator('#copy-status').getAttribute('role'), 'status');
   assert.equal(await page.locator('#copy-status').getAttribute('aria-live'), 'polite');
@@ -134,6 +135,9 @@ async function copyAndFaq(page) {
   await copy.focus(); await copy.press('Enter');
   await page.getByText('Copied. Review the command before running it.', { exact: true }).waitFor();
   assert.equal(await page.evaluate(() => window.__crewloCopyTest.writes.at(-1)), command, 'Clipboard receives displayed command only');
+  const runCopy = page.locator('[data-copy-command="run-command"]');
+  await runCopy.press('Enter');
+  await page.waitForFunction(() => window.__crewloCopyTest.writes.at(-1) === document.querySelector('#run-command').textContent.trim());
   await page.evaluate(() => { window.__crewloCopyTest.mode = 'reject'; });
   await copy.press('Enter');
   await page.getByText('Could not copy. Select the command and copy it manually.', { exact: true }).waitFor();
@@ -141,6 +145,7 @@ async function copyAndFaq(page) {
   await page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined }); });
   await copy.press('Enter');
   await page.getByText('Copy is not available here. Select the command and copy it manually.', { exact: true }).waitFor();
+  await page.goto(origin + '/');
   const faqs = await page.locator('.faq-list details').all();
   assert.ok(faqs.length >= 3, 'Useful FAQ uses native details');
   for (const faq of faqs) {
@@ -186,7 +191,7 @@ async function mediaControls(page) {
     assert.ok(await card.isVisible());
     const toggle = card.locator('.motion-toggle');
     const poster = await image.getAttribute('src');
-    assert.ok(poster.endsWith('.png'), 'Animation starts with still poster');
+    assert.ok(/\.(png|webp)$/.test(poster), 'Animation starts with still poster');
     await toggle.focus(); await toggle.press('Enter');
     assert.equal(await toggle.getAttribute('aria-pressed'), 'true');
     assert.ok((await image.getAttribute('src')).endsWith('.gif'));
@@ -232,19 +237,25 @@ async function mediaControls(page) {
     });
     await page.goto(origin + '/');
     await waitForLocalFonts(page);
-    assert.equal(await page.title(), 'Crewlo — Your agents. One living workspace.');
+    assert.equal(await page.title(), 'Crewlo — Your AI agents. One clear workspace.');
     assert.equal(await page.locator('h1').count(), 1);
-    assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' ').trim(), 'Build your crew. Block by block.');
+    assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' ').trim(), 'Your AI agents. One clear workspace.');
     assert.deepEqual(await page.locator('main > section[id]').evaluateAll(sections => sections.map(el => el.id)),
-      ['demo', 'experience', 'start', 'connect', 'privacy', 'faq', 'contribute', 'support'], 'Discovery precedes installation, optional integrations and trust');
+      ['demo', 'experience', 'start', 'connect', 'proof', 'faq', 'support'], 'Discovery precedes setup, integrations, evidence and FAQ');
     assert.deepEqual(await page.locator('a[href^="#"]').evaluateAll(links => links.flatMap(link => {
       const id = decodeURIComponent(link.getAttribute('href').slice(1));
       return id && !document.getElementById(id) ? [id] : [];
     })), [], 'All in-page anchor targets exist');
     assert.deepEqual(await page.locator('img').evaluateAll(images => images.filter(img => !img.hasAttribute('alt')).map(img => img.src)), [], 'Every image supplies text alternative or explicit decorative alt');
     assert.deepEqual(await page.locator('a[target="_blank"]').evaluateAll(links => links.filter(link => !link.rel.split(/\s+/).includes('noopener')).map(link => link.href)), [], 'New-tab external links isolate opener');
-    assert.deepEqual(await page.locator('.first-steps a').evaluateAll(links => links.map(link => link.getAttribute('href'))), ['#install', '#connect-agent', '#first-mission', '#connect']);
+    assert.deepEqual(await page.locator('.quick-steps a').evaluateAll(links => links.map(link => link.getAttribute('href'))), ['install.html#requirements', 'install.html#connect-agent', 'install.html#first-mission']);
     await keyboardDemo(page);
+    const enlarge = page.locator('figcaption [data-image-preview]');
+    await enlarge.press('Enter');
+    assert.equal(await page.locator('#studio-preview').evaluate(el => el.open), true);
+    await page.locator('#studio-preview button').press('Escape');
+    assert.equal(await page.locator('#studio-preview').evaluate(el => el.open), false);
+    assert.ok(await enlarge.evaluate(el => el === document.activeElement), 'Preview restores focus to the opener');
     await copyAndFaq(page);
     await mediaControls(page);
     // Capture the normal initial presentation, not deliberately injected errors.
@@ -290,6 +301,6 @@ async function mediaControls(page) {
     assert.deepEqual(external, [], 'Landing performs no external requests or analytics');
     assert.deepEqual(broken, [], 'No failed local assets');
     assert.deepEqual(errors, [], 'No browser exceptions');
-    console.log('PASS: 1440/1024/768/390/320px; four-step first-mission path and compact mobile navigation; integration disclosures, deep links and text contrast; local setup guides HTTP200/anchors/return; local voxel/body fonts; product discovery before setup and optional messaging; tab keyboard/ARIA/focus; clipboard success/rejection/unavailable (no shell); native FAQ keyboard; anchors/local assets; reduced motion posters and opt-in GIFs; 18s captioned video playback; Star target and coffee URL guards; no external requests. Screen-reader and full WCAG audit remain manual.');
+    console.log('PASS: 1440/1024/768/390/320px; dedicated first-mission guide and compact mobile navigation; integration disclosures, deep links and text contrast; local setup guides HTTP200/anchors/return; local voxel/body fonts; product discovery before setup and optional messaging; tab keyboard/ARIA/focus; clipboard success/rejection/unavailable (no shell); native FAQ keyboard; anchors/local assets; reduced motion posters and opt-in GIFs; 18s captioned video playback; Star target and coffee URL guards; no external requests. Screen-reader and full WCAG audit remain manual.');
   } finally { if (browser) await browser.close(); await server.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
