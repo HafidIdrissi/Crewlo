@@ -108,20 +108,20 @@ async function selectedStep(page, key) {
 }
 
 async function keyboardDemo(page) {
-  const observe = page.locator('[data-demo-step="observe"]');
-  await observe.focus(); await observe.press('Enter'); await selectedStep(page, 'observe');
-  await observe.press('ArrowRight'); await selectedStep(page, 'direct');
   const direct = page.locator('[data-demo-step="direct"]');
-  assert.ok(await direct.evaluate(el => el === document.activeElement), 'Arrow key moves focus with selection');
-  const focusVisible = await direct.evaluate(el => { const s = getComputedStyle(el); return (s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) >= 2) || s.boxShadow !== 'none'; });
+  await direct.press('Enter'); await selectedStep(page, 'direct');
+  await direct.press('ArrowRight'); await selectedStep(page, 'observe');
+  const observe = page.locator('[data-demo-step="observe"]');
+  assert.ok(await observe.evaluate(el => el === document.activeElement), 'Arrow key moves focus with selection');
+  const focusVisible = await observe.evaluate(el => { const s = getComputedStyle(el); return s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) >= 2; });
   assert.ok(focusVisible, 'Keyboard-selected demo tab has a visible focus indicator');
-  await direct.press('End'); await selectedStep(page, 'connect');
-  await page.locator('[data-demo-step="connect"]').press('ArrowRight'); await selectedStep(page, 'observe');
-  await observe.press('ArrowLeft'); await selectedStep(page, 'connect');
-  await page.locator('[data-demo-step="connect"]').press('Home'); await selectedStep(page, 'observe');
-  for (const key of ['direct', 'connect', 'observe']) {
-    const tab = page.locator(`[data-demo-step="${key}"]`);
-    await tab.focus(); await tab.press('Space'); await selectedStep(page, key);
+  await observe.press('End'); await selectedStep(page, 'connect');
+  await page.locator('[data-demo-step="connect"]').press('ArrowRight'); await selectedStep(page, 'direct');
+  await direct.press('ArrowLeft'); await selectedStep(page, 'connect');
+  await page.locator('[data-demo-step="connect"]').press('Home'); await selectedStep(page, 'direct');
+  for (const key of ['observe', 'connect', 'direct']) {
+    await page.locator(`[data-demo-step="${key}"]`).press('Space');
+    await selectedStep(page, key);
   }
 }
 
@@ -161,6 +161,7 @@ async function copyAndFaq(page) {
 }
 
 async function mediaControls(page) {
+  await page.locator('.archive-tour summary').click();
   const video = page.locator('#demo video');
   assert.equal(await video.getAttribute('autoplay'), null);
   assert.notEqual(await video.getAttribute('controls'), null);
@@ -261,7 +262,7 @@ async function mediaControls(page) {
     // Capture the normal initial presentation, not deliberately injected errors.
     await page.reload();
     await waitForLocalFonts(page);
-    await selectedStep(page, 'observe');
+    await selectedStep(page, 'direct');
     for (const [width, height] of sizes) {
       await page.setViewportSize({ width, height });
       await waitForLocalFonts(page);

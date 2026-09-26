@@ -43,8 +43,8 @@ test('Landing contains keyboard demo, copy feedback, FAQ and reduced-motion cont
   const html = read('docs/index.html');
   const steps = [...html.matchAll(/data-demo-step="([^"]+)"/g)].map(match => match[1]);
   const panels = [...html.matchAll(/data-demo-panel="([^"]+)"/g)].map(match => match[1]);
-  assert.deepEqual(steps, ['observe', 'direct', 'connect']);
-  assert.deepEqual(panels, ['observe', 'direct', 'connect']);
+  assert.deepEqual(steps, ['direct', 'observe', 'connect']);
+  assert.deepEqual(panels, ['direct', 'observe', 'connect']);
   assert.match(html, /role="tablist"/);
   const guide = read('docs/install.html');
   assert.match(guide, /id="install-command"/);

@@ -1,5 +1,35 @@
 # Crewlo demo kit
 
+## Focused landing walkthrough — 26 September 2026
+
+The landing now leads with a full-width studio close-up and three readable steps:
+write a mission, follow an agent, read a reply. Captions and playback controls sit
+outside the visuals. Playback is opt-in, stops after the three steps, can pause,
+and stops when hidden or when a reader focuses a panel. Reduced-motion visitors
+can select the steps manually. Progress indicates the presentation step, never
+agent execution or task completion.
+
+The composer and response are responsive HTML illustrations quoting the verified
+Telegram greeting; the request was sent through Telegram, not that composer.
+The studio is the actual voxel renderer with independent scripted agents. This
+is not continuous footage of a real mission. The original 18-second control tour
+remains available in a disclosure on the page, with optional captions.
+
+| New asset | Native size | Lossless WebP size |
+| --- | --- | --- |
+| [Team close-up](studio-team-hd.png) / [WebP](studio-team-hd.webp) | 1920 × 900 | 107,214 bytes |
+| [Remy close-up](studio-follow-hd.png) / [WebP](studio-follow-hd.webp) | 1280 × 960 | 92,236 bytes |
+| [Mobile framing](studio-mobile-hd.png) / [WebP](studio-mobile-hd.webp) | 720 × 520 | 46,490 bytes |
+
+These are direct canvas exports, not upscaled legacy screenshots. WebP companions
+were verified pixel-identical. Rebuild instructions are in
+`tools/studio-framing/README.md` in the repository. The site uses a dedicated
+mobile source instead of shrinking the desktop studio image.
+
+Still needed: a continuous real mission recording, from request to a checked
+result, with any permission request captured if it occurs. These presentation
+changes do not provide an installer or additional messaging validation.
+
 The original recordings below show Crewlo's local Electron interface with **scripted demo data**. Their visible disclosure must remain when shared. A separate [English Telegram phone GIF](telegram-phone-demo.md) presents a verified real Telegram exchange in a recreated phone layout. The [WhatsApp phone preview](whatsapp-phone-preview.md) is fully illustrative because a live WhatsApp round trip has not yet been verified.
 
 ## Real Telegram exchange: verified on 23 September 2026

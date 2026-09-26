@@ -2,6 +2,56 @@
 
 This revision is a local, reviewable website preview. It has not been pushed or published. Run `npm run site` from the checkout and open the localhost URL printed by Vite.
 
+## Product presentation follow-up
+
+The earlier redesign was published as `e68b369c`. This follow-up changes the
+presentation, not the product engine:
+
+- Full-width hero with two agents, captured directly from the actual voxel
+  renderer at 1920 × 900. A separate 720 × 520 mobile framing keeps the label
+  readable. A distinct 1280 × 960 agent close-up appears in the activity step.
+- Three large, keyboard-operable chapters: mission, activity, reply. The composer
+  and response are responsive HTML illustrations. They use the verified Telegram
+  greeting, with its original channel explicitly disclosed. The renderer state
+  is independently scripted; no synchronized real run is claimed.
+- Optional finite playback, pause/resume, manual selection, and subtle status /
+  response transitions. Controls stay above the visual; captions remain beside
+  it or below on mobile. Presentation progress never represents task progress.
+- Playback stops when the page or walkthrough is hidden, when a panel receives
+  keyboard focus, or when reduced motion is enabled. Reduced-motion users select
+  chapters manually. The original video remains in a disclosure; closing it
+  pauses playback. Captions are available on demand.
+- Repeated full-application screenshots replaced by three concise benefits.
+  Existing guides, integration statuses, credits and installation links remain.
+- No new dependency. New lossless WebP files total 245,940 bytes and were checked
+  pixel-identical to the native PNG exports. Capture tooling and its limitations
+  are documented in `tools/studio-framing/README.md`.
+
+Verification for this follow-up:
+
+- All 12 focused website/community tests pass; JS syntax and `git diff --check`
+  pass. Existing tab-order expectations were updated for mission-first order.
+- Chrome checked at 320, 390, 768, 1024 and 1440 CSS pixels, with no document-level
+  horizontal overflow. The three chapters were individually checked at 320 px.
+- Arrow/Home/End navigation, visible focus, mobile menu Escape/focus restoration,
+  FAQ keyboard toggles, modal open/Escape/focus restoration and the native
+  1920-pixel image were exercised. Demo anchors cleared the sticky header by
+  approximately 20 px.
+- The walkthrough completed all three steps and stopped; replay and pause were
+  exercised. Original video playback and pause-on-collapse were observed.
+- Five important new text/background pairs measured 6.29:1–11.51:1 contrast.
+  Step tabs are at least 76 px high; playback control is at least 44 px high.
+- Reduced-motion branches were reviewed in code; OS preference emulation was
+  not exercised. The standalone browser smoke script was updated and syntax
+  checked, not executed; interactive checks used the controlled browser.
+- No site console error was observed; one browser-extension listener error was
+  unrelated to the page.
+
+Outstanding product/media work is unchanged: a continuous real mission capture,
+a tested installer, live WhatsApp validation and broader provider/platform checks.
+
+The sections below record the earlier information-architecture review.
+
 ## Review before implementation
 
 Reviewed the live [Crewlo site](https://hafididrissi.github.io/Crewlo/) and [Munder Difflin site](https://munderdiffl.in/), including their browser presentation, before changing the code.

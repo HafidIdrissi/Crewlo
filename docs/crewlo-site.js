@@ -80,7 +80,10 @@
   }
   // Opening an explanation never starts media. Collapsing it stops hidden GIFs.
   document.querySelectorAll('details').forEach(card => card.addEventListener('toggle', () => {
-    if (!card.open) for (const [frame, setPlaying] of animations) if (card.contains(frame)) setPlaying(false);
+    if (!card.open) {
+      for (const [frame, setPlaying] of animations) if (card.contains(frame)) setPlaying(false);
+      card.querySelectorAll('video').forEach(video => video.pause());
+    }
   }));
   const revealHash = () => {
     const target = hashTarget();
@@ -108,7 +111,7 @@
 
   // Real tab semantics, including a single tab stop and standard arrow keys.
   // Nothing plays merely because a visitor selects a chapter.
-  const chapters = ['observe', 'direct', 'connect'];
+  const chapters = ['direct', 'observe', 'connect'];
   const panels = Array.from(document.querySelectorAll('[data-demo-panel]'));
   const tabs = Array.from(document.querySelectorAll('[data-demo-step]')).filter(tab =>
     chapters.includes(tab.dataset.demoStep) && panels.some(panel => panel.dataset.demoPanel === tab.dataset.demoStep)
@@ -132,9 +135,15 @@
     tablist.setAttribute('role', 'tablist');
     if (!tablist.hasAttribute('aria-label') && !tablist.hasAttribute('aria-labelledby')) tablist.setAttribute('aria-label', 'Explore the Crewlo demo');
   }
+  let currentChapter = 0;
   const selectChapter = (key, focus = false) => {
     const selected = tabs.find(tab => tab.dataset.demoStep === key);
     if (!selected || selected.disabled || selected.getAttribute('aria-disabled') === 'true') return;
+    currentChapter = tabs.indexOf(selected);
+    document.querySelectorAll('.walkthrough-progress i').forEach((step, index) => {
+      step.classList.toggle('is-current', index === currentChapter);
+      step.classList.toggle('is-visited', index < currentChapter);
+    });
     for (const tab of tabs) {
       const active = tab === selected;
       tab.setAttribute('aria-selected', String(active));
@@ -149,12 +158,13 @@
     if (focus) selected.focus();
   };
   for (const tab of tabs) {
-    tab.addEventListener('click', () => selectChapter(tab.dataset.demoStep));
+    tab.addEventListener('click', () => { stopWalkthrough(); selectChapter(tab.dataset.demoStep); });
     tab.addEventListener('keydown', event => {
       if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
       const available = tabs.filter(item => !item.disabled && item.getAttribute('aria-disabled') !== 'true');
       if (!available.length) return;
       event.preventDefault();
+      stopWalkthrough();
       let index = available.indexOf(tab);
       if (event.key === 'Home') index = 0;
       else if (event.key === 'End') index = available.length - 1;
@@ -162,7 +172,87 @@
       selectChapter(available[index].dataset.demoStep, true);
     });
   }
-  if (tabs.length) selectChapter(tabs.find(tab => tab.dataset.demoStep === 'observe')?.dataset.demoStep || tabs[0].dataset.demoStep);
+  if (tabs.length) selectChapter(tabs[0].dataset.demoStep);
+
+  // An optional, finite presentation. No provider call or product state is changed.
+  // Pausing preserves the chapter; choosing a tab takes over from playback.
+  const walkthrough = document.querySelector('[data-walkthrough]');
+  const walkthroughButton = document.querySelector('[data-walkthrough-play]');
+  const walkthroughStatus = document.querySelector('[data-walkthrough-status]');
+  let walkthroughTimer;
+  let walkthroughPlaying = false;
+  let remaining = 6000;
+  let chapterStarted = 0;
+  const reportChapter = suffix => {
+    if (walkthroughStatus) walkthroughStatus.textContent = `Step ${currentChapter + 1} of ${tabs.length} · ${suffix}`;
+  };
+  function stopWalkthrough() {
+    if (!walkthroughPlaying) return;
+    remaining = Math.max(0, remaining - (performance.now() - chapterStarted));
+    clearTimeout(walkthroughTimer);
+    walkthroughPlaying = false;
+    if (walkthrough) walkthrough.dataset.playing = 'false';
+    walkthroughButton?.setAttribute('aria-pressed', 'false');
+    if (walkthroughButton) walkthroughButton.textContent = 'Continue walkthrough';
+    reportChapter('paused');
+  }
+  const scheduleChapter = () => {
+    chapterStarted = performance.now();
+    walkthroughTimer = setTimeout(() => {
+      if (currentChapter === tabs.length - 1) {
+        stopWalkthrough();
+        remaining = 6000;
+        walkthroughButton.textContent = 'Replay walkthrough';
+        reportChapter('walkthrough complete');
+        walkthrough.dataset.complete = 'true';
+        return;
+      }
+      selectChapter(tabs[currentChapter + 1].dataset.demoStep);
+      reportChapter('illustrated walkthrough');
+      remaining = 6000;
+      scheduleChapter();
+    }, remaining);
+  };
+  if (walkthrough && walkthroughButton && tabs.length) {
+    walkthroughButton.hidden = false;
+    walkthroughButton.addEventListener('click', () => {
+      if (walkthroughPlaying) { stopWalkthrough(); return; }
+      if (reducedMotion.matches) return;
+      if (walkthrough.dataset.complete === 'true') selectChapter(tabs[0].dataset.demoStep);
+      walkthrough.dataset.complete = 'false';
+      walkthroughPlaying = true;
+      walkthrough.dataset.playing = 'true';
+      walkthroughButton.textContent = 'Pause walkthrough';
+      walkthroughButton.setAttribute('aria-pressed', 'true');
+      reportChapter('illustrated walkthrough');
+      scheduleChapter();
+    });
+    tabs.forEach(tab => {
+      const manualSelection = () => {
+        remaining = 6000;
+        walkthrough.dataset.complete = 'false';
+        walkthroughButton.textContent = 'Play from this step';
+        reportChapter('selected');
+      };
+      tab.addEventListener('click', manualSelection);
+      tab.addEventListener('keydown', event => {
+        if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) manualSelection();
+      });
+    });
+    const syncWalkthroughMotion = () => {
+      if (reducedMotion.matches) stopWalkthrough();
+      walkthroughButton.disabled = reducedMotion.matches;
+      if (reducedMotion.matches) walkthroughStatus.textContent = 'Reduced motion · choose a step above';
+    };
+    syncWalkthroughMotion();
+    reducedMotion.addEventListener('change', syncWalkthroughMotion);
+    document.addEventListener('visibilitychange', () => { if (document.hidden) stopWalkthrough(); });
+    // A focused panel must not disappear underneath a keyboard reader.
+    walkthrough.querySelector('.walkthrough-panels').addEventListener('focusin', stopWalkthrough);
+    new IntersectionObserver(entries => {
+      if (!entries[0].isIntersecting) stopWalkthrough();
+    }).observe(walkthrough);
+  }
 
   document.querySelectorAll('.copy-status, #copy-status').forEach(copyStatus => {
     copyStatus.setAttribute('role', 'status');

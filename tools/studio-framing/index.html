@@ -1,0 +1,10 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Crewlo — isolated studio capture</title>
+<style>
+@font-face{font-family:Inter;src:url('/docs/crewlo/fonts/inter-latin-var.woff2')}
+*{box-sizing:border-box}body{margin:0;background:#eaf0df;font-family:Inter,sans-serif}
+#scene{width:960px;height:450px;transform:scale(2);transform-origin:top left}
+body[data-view=follow] #scene{width:640px;height:480px}
+body[data-size=mobile] #scene{width:360px;height:260px}
+canvas{display:block}
+</style></head><body><div id="scene" aria-label="Actual Crewlo voxel renderer with scripted agents"></div><script type="module" src="./scene.ts"></script></body></html>
