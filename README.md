@@ -18,6 +18,12 @@ Crewlo brings the coding agents you already run into a shared desktop workspace.
 
 *The request, queue acknowledgement and Remy reply were verified in Telegram Web. The phone layout is recreated and the wait is condensed; this is not a continuous recording or a physical-phone test. [Transcript and verification scope](docs/crewlo/demo/telegram-phone-demo.md).*
 
+### WhatsApp: a preview while live testing continues
+
+[![Illustrative WhatsApp phone flow for messaging Crewlo agents; not yet live-tested](docs/crewlo/demo/whatsapp-phone-preview.gif)](docs/crewlo/demo/whatsapp-phone-preview.md)
+
+*Illustrative flow in a recreated phone UI—not a WhatsApp conversation or proof of delivery. The studio crop is from an earlier Crewlo capture; the chat text is scripted. [Preview scope and MP4](docs/crewlo/demo/whatsapp-phone-preview.md).*
+
 **Source-first preview:** Crewlo has no verified installer or release feed yet. The desktop and focused tests have been checked locally on Windows; live WhatsApp delivery and packaged macOS/Linux builds still need validation. [What is tested](#current-status) · [What you need to run it](#build-from-source).
 
 ## Why Crewlo?
@@ -103,6 +109,8 @@ Open **Telegram** or **WhatsApp** from Crewlo's top bar, complete setup and conf
 [Telegram setup](docs/telegram-setup.md) · [Telegram + WhatsApp setup and live-test checklist — français](docs/messageries-tests.fr.md)
 
 Want to see the verified basic Telegram exchange before setting up a bot? [Watch the 12-second phone-style GIF](docs/crewlo/demo/telegram-phone-demo.gif), then read its [verification scope](docs/crewlo/demo/telegram-phone-demo.md).
+
+The [WhatsApp phone GIF](docs/crewlo/demo/whatsapp-phone-preview.gif) is an illustrative preview only. A real WhatsApp phone-to-agent round trip has not yet been verified.
 
 WhatsApp's **Accepted** state is not proof of delivery: **Delivered** and **Read** come from Meta receipts. Paused, unavailable, failed or uncertain delivery remains visible. Consult Conversation before resending an uncertain message.
 
