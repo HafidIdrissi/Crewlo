@@ -6,6 +6,7 @@ const { join } = require('node:path');
 const tests = [
   'community-links',
   'crewlo-community',
+  'crewlo-installer-brand',
   'crewlo-promo',
   'messaging-reply-recovery',
   'telegram-http',

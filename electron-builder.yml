@@ -146,6 +146,11 @@ nsis:
   oneClick: false
   perMachine: false
   allowToChangeInstallationDirectory: true
+  installerIcon: build/crewlo.ico
+  uninstallerIcon: build/crewlo.ico
+  installerHeader: build/installerHeader.bmp
+  installerSidebar: build/installerSidebar.bmp
+  uninstallerSidebar: build/installerSidebar.bmp
   artifactName: Crewlo-${version}-win-x64-setup.exe
   shortcutName: Crewlo
 

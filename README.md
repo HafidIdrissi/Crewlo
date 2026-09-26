@@ -1,5 +1,7 @@
 # Crewlo
 
+<img src="docs/crewlo/favicon.svg" width="72" height="72" alt="Crewlo voxel logo">
+
 ## Your AI agents, visible in one voxel studio.
 
 Crewlo brings the coding agents you already run into a shared desktop workspace. Give the crew a mission, see named activity above each character, open the real terminal, and check in from Telegram when you are away from the desk.

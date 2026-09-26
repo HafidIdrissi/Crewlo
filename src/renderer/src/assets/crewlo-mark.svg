@@ -1,1 +1,13 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="22" fill="#ad6248"/><path d="M43 19C27 9 13 24 19 39c4 11 18 13 26 4" fill="none" stroke="#fcf1dd" stroke-width="10" stroke-linecap="round"/><circle cx="41" cy="29" r="6" fill="#e8bc83"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Crewlo voxel mark" shape-rendering="geometricPrecision">
+  <title>Crewlo</title>
+  <rect width="64" height="64" rx="14" fill="#20392f"/>
+  <path d="M23 15H48V25H28L24 29V37L28 41H48V51H23L14 42V24Z" transform="translate(2 3)" fill="#8b4b38"/>
+  <path d="M23 15H48V25H28L24 29V37L28 41H48V51H23L14 42V24Z" fill="#f1b64d"/>
+  <path d="M23 15H48V19H24L18 25H14V24Z" fill="#ffe09b"/>
+  <path d="M14 24H18V40L25 47H48V51H23L14 42Z" fill="#d48648"/>
+  <path d="M28 25H48V29H29L28 30Z" fill="#c47943"/>
+  <path d="M29 37H48V41H28Z" fill="#c47943"/>
+  <rect x="38" y="30" width="8" height="8" fill="#27533f"/>
+  <rect x="36" y="28" width="8" height="8" fill="#79d6a5"/>
+  <rect x="37" y="29" width="3" height="3" fill="#d8ffe0"/>
+</svg>
