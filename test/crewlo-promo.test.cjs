@@ -131,7 +131,7 @@ test('WhatsApp phone preview stays shareable and explicitly illustrative', () =>
   assert.match(read('docs/crewlo/demo/whatsapp-phone-preview.md'), /illustrative preview/i);
   assert.match(read('README.md'), /not a WhatsApp conversation or proof of delivery/i);
   const html = read('docs/index.html');
-  assert.match(html, /<video class="channel-demo" controls playsinline preload="none" poster="crewlo\/demo\/whatsapp-phone-poster\.png"/);
+  assert.match(html, /<img class="channel-demo" src="crewlo\/demo\/whatsapp-phone-preview\.gif"/);
   assert.match(html, /scripted chat, not a live WhatsApp exchange/);
 });
 test('Unconfigured beneficiary is not silently replaced by an upstream payment link', () => {
