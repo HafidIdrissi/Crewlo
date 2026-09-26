@@ -53,24 +53,29 @@ test('Landing contains keyboard demo, copy feedback, FAQ and reduced-motion cont
   assert.match(read('docs/crewlo-site.css'), /prefers-reduced-motion\s*:\s*reduce/);
 });
 
-test('Voxel landing guides a first mission before optional messaging', () => {
+test('Voxel landing explains the product before setup and optional integrations', () => {
   const html = read('docs/index.html');
   const heading = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
   assert.equal(heading, 'Build your crew. Block by block.');
   const hero = html.match(/<section\b[^>]*class="[^"]*\bhero\b[^"]*"[^>]*>([\s\S]*?)<\/section>/)?.[1];
   assert.ok(hero, 'Prominent hero section is present');
   const header = html.match(/<header\b[^>]*>([\s\S]*?)<\/header>/)?.[1];
+  for (const target of ['experience', 'demo', 'connect', 'start']) assert.match(header, new RegExp(`href="#${target}"`));
   for (const channel of ['telegram', 'whatsapp']) {
-    assert.match(header, new RegExp(`href="#${channel}"`), `Navigation exposes ${channel}`);
-    assert.match(html, new RegExp(`<article\\b[^>]*id="${channel}"`), `Messaging card #${channel} exists`);
+    assert.doesNotMatch(header, new RegExp(`href="#${channel}"`), 'Messaging is grouped under Integrations');
+    assert.match(html, new RegExp(`<details\\b[^>]*id="${channel}"`), `Integration #${channel} remains a native disclosure`);
   }
-  assert.deepEqual([...hero.matchAll(/<li><a href="([^"]+)"/g)].map(match => match[1]), ['#start', '#connect-agent', '#first-mission', '#connect']);
-  assert.match(hero, /Optional/);
-  const start = html.indexOf('id="start"');
-  const foundation = html.indexOf('class="foundation');
-  const connect = html.indexOf('id="connect"');
-  const experience = html.indexOf('id="experience"');
-  assert.ok(foundation >= 0 && foundation < start && start < connect && connect < experience, 'Desktop setup comes before optional messaging');
+  assert.doesNotMatch(hero, /first-steps/);
+  assert.match(hero, /one visual studio on your computer/);
+  assert.match(hero, /Early-stage · Install from source/);
+  assert.match(header, /aria-controls="main-nav"/);
+  const setup = html.match(/<section\b[^>]*id="start"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+  assert.deepEqual([...setup.matchAll(/<li><a href="([^"]+)"/g)].map(match => match[1]), ['#install', '#connect-agent', '#first-mission', '#connect']);
+  const sections = ['demo', 'experience', 'start', 'connect', 'privacy', 'faq', 'contribute', 'support'];
+  const positions = sections.map(id => html.indexOf(`id="${id}"`));
+  assert.ok(positions.every((position, i) => position >= 0 && (!i || position > positions[i - 1])), 'Product tour leads into setup, integrations, trust, FAQ and contribution');
+  const support = html.match(/<section\b[^>]*id="support"[^>]*>([\s\S]*?)<\/section>/)?.[1];
+  assert.match(support, /href="#start"/);
 });
 
 test('Voxel typography is locally hosted with retained font licensing', () => {
@@ -138,8 +143,8 @@ test('Unconfigured beneficiary is not silently replaced by an upstream payment l
   const config = JSON.parse(read('docs/crewlo-links.json'));
   assert.equal(config.repositoryUrl, 'https://github.com/HafidIdrissi/crewlo');
   if (config.coffeeUrl !== null) assert.match(config.coffeeUrl, /^https:\/\/(?:www\.)?buymeacoffee\.com\/[A-Za-z0-9_-]+\/?$/);
-  assert.match(read('docs/index.html'), /<a\b(?=[^>]*data-coffee)(?=[^>]*aria-disabled="true")[^>]*>/);
-  assert.match(read('README.md'), /disabled until the maintainer supplies/);
+  assert.doesNotMatch(read('docs/index.html'), /data-coffee|coffee-status|Buy me a coffee/);
+  assert.match(read('README.md'), /shown only after the maintainer supplies/);
   assert.doesNotMatch(read('.github/FUNDING.yml'), /razorpay\.me|munderdifflinfund/);
   if (fs.existsSync(path.join(docs, 'CNAME'))) assert.notEqual(read('docs/CNAME').trim(), 'munderdiffl.in', 'Do not publish the fork under the upstream domain');
 });

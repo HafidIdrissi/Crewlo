@@ -1,22 +1,107 @@
 /* Public links only: no analytics, credentials, payment widgets, or API writes. */
 (() => {
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const smallScreen = window.matchMedia('(max-width: 760px)');
+  const header = document.querySelector('.landing-header');
+  const navigation = document.querySelector('#main-nav');
+  const menuButton = document.querySelector('.nav-toggle');
+  if (header && navigation && menuButton) {
+    header.dataset.menuReady = 'true';
+    const setMenu = (open, restoreFocus = false) => {
+      menuButton.setAttribute('aria-expanded', String(open));
+      navigation.hidden = smallScreen.matches && !open;
+      if (restoreFocus) menuButton.focus();
+    };
+    const syncMenu = () => {
+      const moveFocus = smallScreen.matches && navigation.contains(document.activeElement);
+      menuButton.hidden = !smallScreen.matches;
+      setMenu(false, moveFocus);
+    };
+    menuButton.addEventListener('click', () => {
+      const open = menuButton.getAttribute('aria-expanded') !== 'true';
+      setMenu(open);
+      if (open) navigation.querySelector('a')?.focus();
+    });
+    header.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', () => setMenu(false)));
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && menuButton.getAttribute('aria-expanded') === 'true') {
+        event.preventDefault();
+        setMenu(false, true);
+      }
+    });
+    document.addEventListener('click', event => {
+      if (!header.contains(event.target)) setMenu(false);
+    });
+    smallScreen.addEventListener('change', syncMenu);
+    syncMenu();
+    // Use the actual bar height, including text zoom, for every in-page anchor.
+    const updateOffset = () => document.documentElement.style.setProperty('--header-height', `${header.getBoundingClientRect().height}px`);
+    new ResizeObserver(updateOffset).observe(header);
+    updateOffset();
+  }
+
+  const integrations = [...document.querySelectorAll('[data-integration]')];
+  const hashTarget = () => {
+    try { return document.getElementById(decodeURIComponent(location.hash.slice(1))); }
+    catch { return null; }
+  };
+  const syncIntegrations = () => {
+    const requested = hashTarget()?.closest('[data-integration]') || document.activeElement?.closest('[data-integration]');
+    for (const card of integrations) card.open = !smallScreen.matches || card === requested;
+  };
+  syncIntegrations();
+  smallScreen.addEventListener('change', syncIntegrations);
+
   const animations = new Map();
-  for (const card of document.querySelectorAll('.feature')) {
+  for (const card of document.querySelectorAll('.motion-frame')) {
     const img = card.querySelector('[data-motion]');
     const button = card.querySelector('.motion-toggle');
     if (!img || !button) continue;
-    const still = img.getAttribute('src');
+    const still = img.dataset.still || img.getAttribute('src');
     const setPlaying = playing => {
-      img.src = playing ? img.dataset.motion : still;
+      const source = playing ? img.dataset.motion : still;
+      if (img.getAttribute('src') !== source) img.src = source;
       button.textContent = playing ? 'Pause animation' : 'Play animation';
       button.setAttribute('aria-pressed', String(playing));
+      if (img.dataset.motionLabel) button.setAttribute('aria-label', `${playing ? 'Pause' : 'Play'} ${img.dataset.motionLabel} animation`);
     };
     animations.set(card, setPlaying);
-    // Opt-in only: the landing page never starts a GIF or video automatically.
+    button.hidden = false;
+    setPlaying(img.getAttribute('src') === img.dataset.motion && !reducedMotion.matches && !card.closest('details:not([open])'));
+    // Studio demos are opt-in; phone GIFs can be paused and respect reduced motion.
     button.addEventListener('click', () => setPlaying(button.getAttribute('aria-pressed') !== 'true'));
     reducedMotion.addEventListener('change', event => { if (event.matches) setPlaying(false); });
   }
+
+  for (const card of integrations) {
+    card.addEventListener('toggle', () => {
+      if (smallScreen.matches && card.open) for (const other of integrations) if (other !== card) other.open = false;
+      for (const [frame, setPlaying] of animations) if (card.contains(frame)) setPlaying(card.open && !reducedMotion.matches);
+    });
+  }
+  const revealHash = () => {
+    const target = hashTarget();
+    const card = target?.closest('[data-integration]');
+    if (card) {
+      if (smallScreen.matches) for (const other of integrations) other.open = other === card;
+      card.open = true;
+      requestAnimationFrame(() => target.scrollIntoView({ block: 'start', behavior: 'instant' }));
+    }
+  };
+  window.addEventListener('hashchange', revealHash);
+  if (location.hash) requestAnimationFrame(revealHash);
+  document.querySelectorAll('a[href^="#"]').forEach(link => link.addEventListener('click', () => {
+    const target = document.getElementById(link.getAttribute('href').slice(1));
+    if (!target) return;
+    const card = target.closest('[data-integration]');
+    if (card) card.open = true;
+    // Move the keyboard reading position out of a menu that has just closed.
+    requestAnimationFrame(() => {
+      if (!target.hasAttribute('tabindex')) target.tabIndex = -1;
+      target.focus({ preventScroll: true });
+      if (card) revealHash();
+    });
+  }));
 
   // Real tab semantics, including a single tab stop and standard arrow keys.
   // Nothing plays merely because a visitor selects a chapter.
@@ -40,6 +125,7 @@
   const tablist = tabs[0]?.closest('[role="tablist"]') ||
     (tabs.length && tabs.every(tab => tab.parentElement === tabs[0].parentElement) ? tabs[0].parentElement : null);
   if (tablist) {
+    tablist.hidden = false;
     tablist.setAttribute('role', 'tablist');
     if (!tablist.hasAttribute('aria-label') && !tablist.hasAttribute('aria-labelledby')) tablist.setAttribute('aria-label', 'Explore the Crewlo demo');
   }
@@ -112,6 +198,7 @@
       host.hidden = false;
       video.hidden = false;
       video.controls = true;
+      video.tabIndex = 0;
       for (let parent = video.parentElement; parent; parent = parent.parentElement) {
         if (parent.matches('details')) parent.open = true;
       }
@@ -123,6 +210,7 @@
       status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
       status.textContent = '';
       video.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'center' });
+      video.focus({ preventScroll: true });
       // Playback follows this explicit user gesture, never page load/tab focus.
       try { await video.play(); }
       catch { status.textContent = 'Playback did not start. Use the video controls to try again.'; }
@@ -132,9 +220,6 @@
     if (event.matches) document.querySelectorAll('video').forEach(video => video.pause());
   });
 
-  document.querySelectorAll('[data-coffee]').forEach(link => link.addEventListener('click', event => {
-    if (link.getAttribute('aria-disabled') === 'true') event.preventDefault();
-  }));
   fetch('crewlo-links.json', { cache: 'no-cache' }).then(response => {
     if (!response.ok) throw new Error('No public link configuration');
     return response.json();
@@ -148,8 +233,15 @@
       document.querySelectorAll('[data-repository]').forEach(link => { link.href = config.repositoryUrl; });
     }
     if (valid(config.coffeeUrl, 'www.buymeacoffee.com', /^\/[A-Za-z0-9_-]+\/?$/) || valid(config.coffeeUrl, 'buymeacoffee.com', /^\/[A-Za-z0-9_-]+\/?$/)) {
-      document.querySelectorAll('[data-coffee]').forEach(link => { link.href = config.coffeeUrl; link.removeAttribute('aria-disabled'); link.removeAttribute('tabindex'); });
-      document.querySelector('#coffee-status').textContent = 'Opens the maintainer’s Buy Me a Coffee page. Supporting is optional.';
+      const actions = document.querySelector('.support-actions');
+      if (actions) {
+        const link = document.createElement('a');
+        link.className = 'text-link';
+        link.dataset.coffee = '';
+        link.href = config.coffeeUrl;
+        link.textContent = 'Buy me a coffee';
+        actions.append(link);
+      }
     }
-  }).catch(() => { /* Keep the honest disabled fallback when offline/unconfigured. */ });
+  }).catch(() => { /* Keep repository links and omit unconfigured support actions. */ });
 })();

@@ -135,7 +135,7 @@ Try the source, [report a reproducible bug](https://github.com/HafidIdrissi/Crew
 
 If Crewlo interests you, [give the repository a star](https://github.com/HafidIdrissi/crewlo). Starring happens on GitHub after you sign in; Crewlo never requests a GitHub token or stars automatically.
 
-**Buy me a coffee:** the support entry is ready on the site and in the app, but disabled until the maintainer supplies their own payment link. No donation is routed to an unconfirmed account. The destination is configured in [docs/crewlo-links.json](docs/crewlo-links.json).
+**Buy me a coffee:** the website link is shown only after the maintainer supplies their own payment link; the app keeps its unconfigured support action disabled. No donation is routed to an unconfirmed account. The destination is configured in [docs/crewlo-links.json](docs/crewlo-links.json).
 
 ### Preview the website locally
 

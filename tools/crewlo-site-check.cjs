@@ -19,32 +19,38 @@ async function waitForLocalFonts(page) {
 }
 
 async function messagingAccess(page, width, height) {
-  await page.evaluate(() => window.scrollTo(0, 0));
+  await page.goto(origin + '/');
+  const menu = page.locator('.nav-toggle');
+  const nav = page.locator('header nav a[href="#connect"]');
+  if (width <= 760) {
+    await menu.press('Enter');
+    assert.equal(await menu.getAttribute('aria-expanded'), 'true');
+    await menu.press('Escape');
+    assert.equal(await menu.getAttribute('aria-expanded'), 'false');
+    assert.ok(await menu.evaluate(el => el === document.activeElement));
+    await menu.press('Enter');
+  }
+  await nav.press('Enter');
+  assert.equal(new URL(page.url()).hash, '#connect');
+  if (width <= 760) assert.equal(await menu.getAttribute('aria-expanded'), 'false');
   for (const channel of ['telegram', 'whatsapp']) {
-    const nav = page.locator(`header nav a[href="#${channel}"]`);
-    assert.equal(await nav.count(), 1, `Navigation has one direct ${channel} link`);
-    assert.ok(await page.locator(`#connect article#${channel}`).count(), `Hero target is the ${channel} setup card`);
-    for (const [label, link] of [['navigation', nav]]) {
-      const box = await link.boundingBox();
-      assert.ok(box && box.x >= -1 && box.x + box.width <= width + 1, `${channel} ${label} fits horizontally at ${width}px`);
-      if (label === 'navigation' || width === 1440) assert.ok(box.y >= -1 && box.y + box.height <= height + 1, `${channel} ${label} is accessible above the fold at ${width}px`);
-    }
-    assert.ok(await nav.evaluate(el => { const box = el.getBoundingClientRect(); return el.contains(document.elementFromPoint(box.x + box.width / 2, box.y + box.height / 2)); }), `${channel} navigation is not obscured at ${width}px`);
-    // Keyboard activation must reach the actual setup card without leaving site.
-    await nav.focus(); await nav.press('Enter');
-    assert.equal(new URL(page.url()).hash, `#${channel}`);
-    const target = await page.locator(`#${channel}`).boundingBox();
-    assert.ok(target && target.y >= -1 && target.y < height, `${channel} anchor scrolls to its card`);
+    await page.goto(`${origin}/#${channel}`);
+    const card = page.locator(`#connect details#${channel}`);
+    assert.equal(await card.evaluate(el => el.open), true, 'Deep link opens its integration');
+    const target = await card.boundingBox();
     const header = await page.locator('header').first().boundingBox();
-    assert.ok(header && target.y >= header.y + header.height - 1, `${channel} anchor heading is not covered by sticky navigation`);
-    const sticky = await nav.boundingBox();
-    assert.ok(sticky && sticky.y >= -1 && sticky.y + sticky.height <= height, `${channel} remains available in sticky navigation`);
-    await page.evaluate(() => window.scrollTo(0, 0));
+    assert.ok(target && header && target.y >= header.height - 1 && target.y < height, `${channel} anchor clears the fixed header`);
+    const summary = card.locator('summary');
+    await summary.press('Enter');
+    assert.equal(await card.evaluate(el => el.open), false);
+    await summary.press('Space');
+    assert.equal(await card.evaluate(el => el.open), true);
+    if (width <= 760) assert.equal(await page.locator('[data-integration][open]').count(), 1);
   }
 }
 
 async function messagingContrast(page) {
-  const readings = await page.locator('header nav a[href="#telegram"], header nav a[href="#whatsapp"], .hero [data-hero-channel], .hero [data-hero-channel] strong, .hero [data-hero-channel] small').evaluateAll(elements => {
+  const readings = await page.locator('header nav a, .onboarding-next .eyebrow, .onboarding-next blockquote, .first-steps small, .experience-tabs button[aria-selected="true"]').evaluateAll(elements => {
     const rgba = text => { const values = text.match(/[\d.]+/g)?.map(Number) ?? [0, 0, 0]; return [values[0], values[1], values[2], values[3] ?? 1]; };
     const over = (front, back) => front.slice(0, 3).map((value, i) => value * front[3] + back[i] * (1 - front[3]));
     const luminance = color => color.map(value => { const n = value / 255; return n <= .04045 ? n / 12.92 : ((n + .055) / 1.055) ** 2.4; }).reduce((sum, value, i) => sum + value * [.2126, .7152, .0722][i], 0);
@@ -64,7 +70,7 @@ async function messagingContrast(page) {
 
 async function localMessagingGuides(page) {
   for (const channel of ['telegram', 'whatsapp']) {
-    await page.goto(origin + '/');
+    await page.goto(`${origin}/#${channel}`);
     const link = page.locator(`#${channel} a[href="messaging-setup.html#${channel}"]`).first();
     assert.equal(await link.count(), 1, `A shipped local ${channel} guide is linked from its setup card`);
     const [response] = await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }), link.click()]);
@@ -135,7 +141,7 @@ async function copyAndFaq(page) {
   await page.evaluate(() => { Object.defineProperty(navigator, 'clipboard', { configurable: true, value: undefined }); });
   await copy.press('Enter');
   await page.getByText('Copy is not available here. Select the command and copy it manually.', { exact: true }).waitFor();
-  const faqs = await page.locator('main details').all();
+  const faqs = await page.locator('.faq-list details').all();
   assert.ok(faqs.length >= 3, 'Useful FAQ uses native details');
   for (const faq of faqs) {
     const summary = faq.locator('summary');
@@ -229,18 +235,15 @@ async function mediaControls(page) {
     assert.equal(await page.title(), 'Crewlo — Your agents. One living workspace.');
     assert.equal(await page.locator('h1').count(), 1);
     assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' ').trim(), 'Build your crew. Block by block.');
-    assert.ok(await page.evaluate(() => {
-      const foundation = document.querySelector('.foundation');
-      return (foundation.closest('.world-hero') ?? foundation).nextElementSibling === document.querySelector('#start');
-    }), 'Desktop setup immediately follows the hero and foundation group');
-    assert.ok(await page.evaluate(() => !!(document.querySelector('#connect').compareDocumentPosition(document.querySelector('#experience')) & Node.DOCUMENT_POSITION_FOLLOWING)), 'Messaging is presented before the detailed workflow demo');
+    assert.deepEqual(await page.locator('main > section[id]').evaluateAll(sections => sections.map(el => el.id)),
+      ['demo', 'experience', 'start', 'connect', 'privacy', 'faq', 'contribute', 'support'], 'Discovery precedes installation, optional integrations and trust');
     assert.deepEqual(await page.locator('a[href^="#"]').evaluateAll(links => links.flatMap(link => {
       const id = decodeURIComponent(link.getAttribute('href').slice(1));
       return id && !document.getElementById(id) ? [id] : [];
     })), [], 'All in-page anchor targets exist');
     assert.deepEqual(await page.locator('img').evaluateAll(images => images.filter(img => !img.hasAttribute('alt')).map(img => img.src)), [], 'Every image supplies text alternative or explicit decorative alt');
     assert.deepEqual(await page.locator('a[target="_blank"]').evaluateAll(links => links.filter(link => !link.rel.split(/\s+/).includes('noopener')).map(link => link.href)), [], 'New-tab external links isolate opener');
-    assert.deepEqual(await page.locator('.first-steps a').evaluateAll(links => links.map(link => link.getAttribute('href'))), ['#start', '#connect-agent', '#first-mission', '#connect']);
+    assert.deepEqual(await page.locator('.first-steps a').evaluateAll(links => links.map(link => link.getAttribute('href'))), ['#install', '#connect-agent', '#first-mission', '#connect']);
     await keyboardDemo(page);
     await copyAndFaq(page);
     await mediaControls(page);
@@ -267,8 +270,7 @@ async function mediaControls(page) {
       if ([1440, 390].includes(width)) await page.locator('#connect').screenshot({ path: `docs/crewlo/demo/site-messaging-${width}.png`, style: '.site-header, .skip { visibility: hidden !important; }' });
     }
     await localMessagingGuides(page);
-    assert.ok(await page.locator('[data-coffee]').count());
-    for (const link of await page.locator('[data-coffee]').all()) { assert.equal(await link.getAttribute('aria-disabled'), 'true'); assert.equal(await link.getAttribute('href'), null); }
+    assert.equal(await page.locator('[data-coffee]').count(), 0, 'No donation action without a configured destination');
     for (const link of await page.locator('[data-repository]').all()) assert.equal(await link.getAttribute('href'), repo);
     // URL activation is tested locally, never by navigating to any destination.
     const configs = [
@@ -281,17 +283,13 @@ async function mediaControls(page) {
       await page.route('**/crewlo-links.json', route => route.fulfill({ contentType: 'application/json', body: JSON.stringify({ repositoryUrl: repo, coffeeUrl }) }));
       await Promise.all([page.waitForResponse(response => response.url().endsWith('crewlo-links.json')), page.reload()]);
       await page.waitForLoadState('networkidle');
-      if (expected) await page.waitForFunction(() => [...document.querySelectorAll('[data-coffee]')].every(link => link.hasAttribute('href')));
-      for (const link of await page.locator('[data-coffee]').all()) {
-        assert.equal(!!(await link.getAttribute('href')), expected, `Coffee URL guard: ${coffeeUrl}`);
-        if (expected) assert.equal(await link.getAttribute('href'), coffeeUrl);
-        else assert.equal(await link.getAttribute('aria-disabled'), 'true');
-      }
+      assert.equal(await page.locator('[data-coffee]').count(), expected ? 1 : 0, `Coffee URL guard: ${coffeeUrl}`);
+      if (expected) assert.equal(await page.locator('[data-coffee]').getAttribute('href'), coffeeUrl);
       await page.unroute('**/crewlo-links.json');
     }
     assert.deepEqual(external, [], 'Landing performs no external requests or analytics');
     assert.deepEqual(broken, [], 'No failed local assets');
     assert.deepEqual(errors, [], 'No browser exceptions');
-    console.log('PASS: 1440/1024/768/390/320px; four-step first-mission path and above-fold sticky navigation; channel anchor keyboard access and text contrast; local setup guides HTTP200/anchors/return; local voxel/body fonts; desktop setup before optional messaging; tab keyboard/ARIA/focus; clipboard success/rejection/unavailable (no shell); native FAQ keyboard; anchors/local assets; reduced motion posters and opt-in GIFs; 18s captioned video playback; Star target and coffee URL guards; no external requests. Screen-reader and full WCAG audit remain manual.');
+    console.log('PASS: 1440/1024/768/390/320px; four-step first-mission path and compact mobile navigation; integration disclosures, deep links and text contrast; local setup guides HTTP200/anchors/return; local voxel/body fonts; product discovery before setup and optional messaging; tab keyboard/ARIA/focus; clipboard success/rejection/unavailable (no shell); native FAQ keyboard; anchors/local assets; reduced motion posters and opt-in GIFs; 18s captioned video playback; Star target and coffee URL guards; no external requests. Screen-reader and full WCAG audit remain manual.');
   } finally { if (browser) await browser.close(); await server.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });
