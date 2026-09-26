@@ -4,13 +4,13 @@ The original recordings below show Crewlo's local Electron interface with **scri
 
 ## Real Telegram exchange: verified on 23 September 2026
 
-The [12-second phone GIF](telegram-phone-demo.gif) uses the actual English request, queue acknowledgement and Remy reply observed in Telegram Web. The phone UI is recreated and waiting time is condensed, as disclosed in the animation. Its studio crop comes from an earlier verified marker exchange that was also matched in Crewlo Conversation. This is not a continuous recording or a physical-phone test. [MP4](telegram-phone-demo.mp4) · [Poster](telegram-phone-poster.png) · [Transcript, scope and embedding instructions](telegram-phone-demo.md).
+The [20-second phone GIF](telegram-phone-demo.gif) uses the actual English request, queue acknowledgement and Remy reply observed in Telegram Web. The phone UI is recreated and waiting time is condensed, as disclosed in the animation. Its studio crop comes from an earlier verified marker exchange that was also matched in Crewlo Conversation. This is not a continuous recording or a physical-phone test. [MP4](telegram-phone-demo.mp4) · [Poster](telegram-phone-poster.png) · [Transcript, scope and embedding instructions](telegram-phone-demo.md).
 
 The older media below remain scripted interface captures. Do not rename or recaption them as live runs.
 
 ## WhatsApp phone concept: no live delivery claim
 
-The [10-second WhatsApp GIF](whatsapp-phone-preview.gif), [MP4](whatsapp-phone-preview.mp4) and [poster](whatsapp-phone-poster.png) show an English, scripted example of how messaging a Crewlo agent could look. The animated phone layout is recreated. The voxel studio crop is from an earlier Crewlo capture, not a synchronized WhatsApp event. "Illustrative flow · Not yet live-tested" remains visible in every frame. See the [sharing and rebuild notes](whatsapp-phone-preview.md). Do not describe this preview as a real phone test or a verified agent response.
+The [22-second WhatsApp GIF](whatsapp-phone-preview.gif), [MP4](whatsapp-phone-preview.mp4) and [poster](whatsapp-phone-poster.png) show an English, scripted example of how messaging a Crewlo agent could look. The animated phone layout is recreated. The voxel studio crop is from an earlier Crewlo capture, not a synchronized WhatsApp event. "Illustrative flow · Not yet live-tested" remains visible in every frame. See the [sharing and rebuild notes](whatsapp-phone-preview.md). Do not describe this preview as a real phone test or a verified agent response.
 
 Use the [French quickstart and live-recording checklist](../QUICKSTART.fr.md#préparer-une-vraie-démo-publique) and the [local messaging guide](../../messaging-setup.html). Prepare/pair off camera, record only a safe test workspace, preserve truthful waiting/delivery states, disclose any time cuts, and review every frame before sharing. No live recording or publication is performed automatically.
 

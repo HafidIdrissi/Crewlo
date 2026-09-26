@@ -108,7 +108,7 @@ Open **Telegram** or **WhatsApp** from Crewlo's top bar, complete setup and conf
 
 [Telegram setup](docs/telegram-setup.md) · [Telegram + WhatsApp setup and live-test checklist — français](docs/messageries-tests.fr.md)
 
-Want to see the verified basic Telegram exchange before setting up a bot? [Watch the 12-second phone-style GIF](docs/crewlo/demo/telegram-phone-demo.gif), then read its [verification scope](docs/crewlo/demo/telegram-phone-demo.md).
+Want to see the verified basic Telegram exchange before setting up a bot? [Watch the 20-second phone-style GIF](docs/crewlo/demo/telegram-phone-demo.gif), then read its [verification scope](docs/crewlo/demo/telegram-phone-demo.md).
 
 The [WhatsApp phone GIF](docs/crewlo/demo/whatsapp-phone-preview.gif) is an illustrative preview only. A real WhatsApp phone-to-agent round trip has not yet been verified.
 

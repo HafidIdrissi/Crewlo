@@ -120,8 +120,8 @@ test('WhatsApp phone preview stays shareable and explicitly illustrative', () =>
   const dir = path.join(docs, 'crewlo/demo');
   const gif = fs.readFileSync(path.join(dir, 'whatsapp-phone-preview.gif'));
   assert.match(gif.subarray(0, 6).toString(), /^GIF8[79]a$/);
-  assert.equal(gif.readUInt16LE(6), 1080);
-  assert.equal(gif.readUInt16LE(8), 720);
+  assert.equal(gif.readUInt16LE(6), 960);
+  assert.equal(gif.readUInt16LE(8), 1440);
   assert.ok(gif.length < 5 * 1024 * 1024);
   const video = fs.readFileSync(path.join(dir, 'whatsapp-phone-preview.mp4'));
   assert.equal(video.subarray(4, 8).toString(), 'ftyp');
