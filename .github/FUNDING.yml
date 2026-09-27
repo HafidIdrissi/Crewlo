@@ -1,5 +1,2 @@
-# Crewlo's funding beneficiary has not been configured yet.
-# After the maintainer confirms their own Buy Me a Coffee profile, set its
-# username below and the same HTTPS profile URL in docs/crewlo-links.json.
-# Never reuse a payment destination from the upstream project by accident.
-# buy_me_a_coffee: YOUR_CONFIRMED_HANDLE
+# Profile supplied by Hafid Idrissi; shared with docs/crewlo-links.json.
+buy_me_a_coffee: hafididrissi

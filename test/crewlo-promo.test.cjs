@@ -155,7 +155,10 @@ test('Unconfigured beneficiary is not silently replaced by an upstream payment l
   assert.match(read('docs/index.html'), /data-coffee-slot/);
   assert.match(read('docs/index.html'), /class="bmc-button"[^>]*disabled/);
   assert.doesNotMatch(read('docs/index.html'), /href="https:\/\/(?:www\.)?buymeacoffee\.com\//);
-  assert.match(read('README.md'), /enabled only after the maintainer supplies/);
+  if (config.coffeeUrl) {
+    assert.ok(read('README.md').includes(`href="${config.coffeeUrl}"`));
+    assert.match(read('.github/FUNDING.yml'), new RegExp(`buy_me_a_coffee: ${new URL(config.coffeeUrl).pathname.slice(1)}`));
+  }
   assert.doesNotMatch(read('.github/FUNDING.yml'), /razorpay\.me|munderdifflinfund/);
   if (fs.existsSync(path.join(docs, 'CNAME'))) assert.notEqual(read('docs/CNAME').trim(), 'munderdiffl.in', 'Do not publish the fork under the upstream domain');
 });

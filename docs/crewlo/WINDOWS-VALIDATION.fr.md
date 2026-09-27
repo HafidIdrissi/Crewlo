@@ -119,8 +119,8 @@ node tools/crewlo-site-check.cjs
 Le kit Buy Me a Coffee fourni par le mainteneur est intégré au menu de soutien
 et à la dernière page de l'installateur Windows. L'action est facultative et
 n'ouvre le navigateur qu'après un clic. La destination provient du même
-`docs/crewlo-links.json` que le site et l'application ; le profil est actuellement
-non configuré, donc le bouton reste désactivé.
+`docs/crewlo-links.json` que le site et l'application. Lors de cette première
+construction, le profil n'était pas configuré et le bouton restait désactivé.
 
 Vérifications de cette version :
 
@@ -132,7 +132,7 @@ Vérifications de cette version :
 - SVG de marque extrait de l'application empaquetée : identique au fichier fourni.
 - SQLite et terminal Windows contrôlés en lecture seule dans le nouveau paquet : réussis.
 
-Artefact local : `dist/windows-preview/Crewlo-0.4.6-win-x64-preview-setup.exe`
+Artefact local de cette première construction : `dist/windows-preview/Crewlo-0.4.6-win-x64-preview-setup.exe`
 (129 248 669 octets).
 SHA-256 : `4083abc6e700035150f93ddd9725bc85cc2afa295bf47fe887ab8c3e024294f5`.
 
@@ -140,3 +140,21 @@ Le rendu natif de la nouvelle page finale n'a pas été parcouru manuellement.
 Cette reconstruction ne remplace pas les essais encore nécessaires sur un PC
 vierge, de désinstallation et de signature. Le binaire n'est pas publié dans
 une release publique.
+
+### Activation du profil confirmé
+
+Hafid Idrissi a ensuite fourni `https://buymeacoffee.com/hafididrissi`.
+Cette destination est configurée dans le site, le README, le soutien GitHub,
+l'application et la page finale de l'installateur. Le profil est ouvert
+uniquement sur action du visiteur ; aucun paiement n'a été effectué.
+
+La reconstruction avec le lien actif a réussi. La destination a été retrouvée
+dans le JavaScript de l'application empaquetée et dans l'include NSIS généré.
+Les 93 tests Crewlo, les contrôles du site sur cinq tailles d'écran et les
+boutons des pages internes du blog passent. SQLite et le terminal du nouveau
+paquet ont aussi été contrôlés en lecture seule.
+
+Artefact actuel : `dist/windows-preview/Crewlo-0.4.6-win-x64-preview-setup.exe`
+(129 248 937 octets), toujours non signé.
+SHA-256 : `10436185498dd34c8e68e2c2dca49bf0171206b61ba435d8b0956e237d358bfe`.
+Les limites de validation manuelle décrites ci-dessus restent applicables.

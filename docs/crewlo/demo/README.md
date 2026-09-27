@@ -236,7 +236,7 @@ Edit `docs/crewlo-links.json` only after the maintainer confirms the beneficiary
 }
 ```
 
-This is a template, not an account recommendation. `coffeeUrl` is currently `null`. The website, app and Windows setup show the supplied Buy Me a Coffee brand button, disabled until a valid HTTPS profile URL is supplied. The site's button becomes a link after loading the validated config; this also works on nested blog pages. Rebuild the app and installer after changing the bundled config. `build/prepare-support.cjs` runs before Windows packaging and generates the installer destination from the same JSON file. Update the README button link and the confirmed username in `.github/FUNDING.yml` at the same time. No payment credentials belong in these files. Windows setup only opens the profile after an explicit click on its final page; supporting Crewlo is optional.
+The example above is a template. The current `coffeeUrl` is `https://buymeacoffee.com/hafididrissi`, supplied by Hafid Idrissi. The website, app and Windows setup share this profile. The site's button becomes a link after loading the validated config; this also works on nested blog pages. If the destination is removed or invalid, the button stays disabled. Rebuild the app and installer after changing the bundled config. `build/prepare-support.cjs` runs before Windows packaging and generates the installer destination from the same JSON file. Update the README button link and the confirmed username in `.github/FUNDING.yml` at the same time. No payment credentials belong in these files. Windows setup only opens the profile after an explicit click on its final page; supporting Crewlo is optional.
 
 ## Launch copy — edit and post yourself
 

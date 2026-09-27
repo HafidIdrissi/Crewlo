@@ -187,9 +187,9 @@ Try the source, [report a reproducible bug](https://github.com/HafidIdrissi/Crew
 
 If Crewlo interests you, [give the repository a star](https://github.com/HafidIdrissi/crewlo). Starring happens on GitHub after you sign in; Crewlo never requests a GitHub token or stars automatically.
 
-<img src="docs/crewlo/brand/buy-me-a-coffee/button.svg" width="224" height="63" alt="Buy me a coffee — support Crewlo">
+<a href="https://buymeacoffee.com/hafididrissi"><img src="docs/crewlo/brand/buy-me-a-coffee/button.svg" width="224" height="63" alt="Buy me a coffee — support Crewlo"></a>
 
-**Buy me a coffee:** the payment link is enabled only after the maintainer supplies their own profile URL. The website, app and Windows installer show the supplied brand design with an inactive button while the profile is unconfigured. No donation is routed to an unconfirmed account. The destination is configured in [docs/crewlo-links.json](docs/crewlo-links.json).
+**Support Crewlo:** [buy Hafid Idrissi a coffee](https://buymeacoffee.com/hafididrissi). The website, app and Windows installer use this same maintainer-supplied profile. Support is optional; Crewlo works without a donation. The destination is configured in [docs/crewlo-links.json](docs/crewlo-links.json).
 
 ### Preview the website locally
 
