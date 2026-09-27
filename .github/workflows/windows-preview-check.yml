@@ -7,7 +7,9 @@ on:
         required: true
         default: v0.4.6-preview.2
 permissions:
-  contents: read
+  # GitHub hides draft release assets from read-only installation tokens.
+  # This job only downloads; publishing remains a separate maintainer action.
+  contents: write
 jobs:
   install:
     runs-on: windows-2022
