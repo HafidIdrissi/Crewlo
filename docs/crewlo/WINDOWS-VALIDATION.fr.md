@@ -113,3 +113,30 @@ node tools/check-installed-desktop.cjs dist/windows-preview/win-unpacked/Crewlo.
 node tools/check-live-agent.cjs dist/windows-preview/win-unpacked/Crewlo.exe codex
 node tools/crewlo-site-check.cjs
 ```
+
+## Bouton de soutien — 27 septembre 2026
+
+Le kit Buy Me a Coffee fourni par le mainteneur est intégré au menu de soutien
+et à la dernière page de l'installateur Windows. L'action est facultative et
+n'ouvre le navigateur qu'après un clic. La destination provient du même
+`docs/crewlo-links.json` que le site et l'application ; le profil est actuellement
+non configuré, donc le bouton reste désactivé.
+
+Vérifications de cette version :
+
+- TypeScript et compilation de l'application : réussis.
+- 93 tests Crewlo : réussis, dont le contrôle de la destination et des injections NSIS.
+- Compilation NSIS de la page finale avec profil absent et avec une destination
+  de test locale : réussie sans avertissement ; aucun lien de paiement ouvert.
+- Reconstruction réelle de l'installateur : réussie, toujours non signé.
+- SVG de marque extrait de l'application empaquetée : identique au fichier fourni.
+- SQLite et terminal Windows contrôlés en lecture seule dans le nouveau paquet : réussis.
+
+Artefact local : `dist/windows-preview/Crewlo-0.4.6-win-x64-preview-setup.exe`
+(129 248 669 octets).
+SHA-256 : `4083abc6e700035150f93ddd9725bc85cc2afa295bf47fe887ab8c3e024294f5`.
+
+Le rendu natif de la nouvelle page finale n'a pas été parcouru manuellement.
+Cette reconstruction ne remplace pas les essais encore nécessaires sur un PC
+vierge, de désinstallation et de signature. Le binaire n'est pas publié dans
+une release publique.

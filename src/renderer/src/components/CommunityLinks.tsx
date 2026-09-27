@@ -1,4 +1,5 @@
 import { communityLinks } from '@shared/communityLinks';
+import coffeeButton from '../../../../docs/crewlo/brand/buy-me-a-coffee/button.svg';
 
 export function CommunityLinks() {
   return <details className="cth-titlebar-nodrag crewlo-community">
@@ -6,7 +7,7 @@ export function CommunityLinks() {
     <div className="crewlo-community-menu">
       <strong>Faire grandir Crewlo</strong>
       <button disabled={!communityLinks.repositoryUrl} onClick={() => { if (communityLinks.repositoryUrl) void window.cth.openExternal(communityLinks.repositoryUrl); }}>☆ Star sur GitHub</button>
-      <button disabled={!communityLinks.coffeeUrl} onClick={() => { if (communityLinks.coffeeUrl) void window.cth.openExternal(communityLinks.coffeeUrl); }}>☕ Buy Me a Coffee</button>
+      <button className="crewlo-coffee-button" aria-label="Buy me a coffee — support Crewlo" disabled={!communityLinks.coffeeUrl} onClick={() => { if (communityLinks.coffeeUrl) void window.cth.openExternal(communityLinks.coffeeUrl); }}><img src={coffeeButton} alt="Buy me a coffee" width="204" height="57" /></button>
       {!communityLinks.coffeeUrl && <small>Le lien de soutien sera disponible une fois le compte du créateur configuré.</small>}
     </div>
   </details>;

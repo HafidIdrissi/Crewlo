@@ -148,7 +148,8 @@
     if (event.matches) evidenceVideos.forEach(video => video.pause());
   });
 
-  fetch('crewlo-links.json', { cache: 'no-cache' }).then(response => {
+  const publicAssetRoot = new URL('.', document.currentScript?.src || location.href);
+  fetch(new URL('crewlo-links.json', publicAssetRoot), { cache: 'no-cache' }).then(response => {
     if (!response.ok) throw new Error('No public link configuration');
     return response.json();
   }).then(config => {
@@ -161,14 +162,19 @@
       document.querySelectorAll('[data-repository]').forEach(link => { link.href = config.repositoryUrl; });
     }
     if (valid(config.coffeeUrl, 'www.buymeacoffee.com', /^\/[A-Za-z0-9_-]+\/?$/) || valid(config.coffeeUrl, 'buymeacoffee.com', /^\/[A-Za-z0-9_-]+\/?$/)) {
-      const actions = document.querySelector('.support-actions');
-      if (actions) {
+      for (const slot of document.querySelectorAll('[data-coffee-slot]')) {
+        const button = slot.querySelector('button');
+        if (!button) continue;
         const link = document.createElement('a');
-        link.className = 'text-link';
+        link.className = 'bmc-button';
         link.dataset.coffee = '';
         link.href = config.coffeeUrl;
-        link.textContent = 'Buy me a coffee';
-        actions.append(link);
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.setAttribute('aria-label', 'Buy me a coffee — support Crewlo (opens in a new tab)');
+        link.append(button.querySelector('img').cloneNode(true));
+        button.replaceWith(link);
+        slot.querySelector('[data-coffee-pending]')?.remove();
       }
     }
   }).catch(() => { /* Keep repository links and omit unconfigured support actions. */ });

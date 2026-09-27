@@ -1,6 +1,6 @@
 # Crewlo asset origins
 
-All new artwork was authored procedurally for this redesign. No image-generation output, stock images, franchise likenesses, or externally downloaded art is used in the active studio.
+Crewlo's studio artwork was authored procedurally for this redesign. No image-generation output, stock images, franchise likenesses, or externally downloaded art is used in the active studio. The separate support buttons use the Buy Me a Coffee brand kit supplied by the maintainer; those third-party brand assets are not Crewlo artwork or relicensed under the source's MIT license.
 
 The earlier clay refinement added twelve original sculpt recipes to the three initial designs. All fifteen preserve the same lighting and proportions, with distinct hair, facial details, clothing shapes, and accessories. Portraits and scene characters use exactly the same recipe source. Existing saved character IDs are unchanged. These additions use the same MIT license as `clayArt.ts`.
 
@@ -10,6 +10,7 @@ The earlier clay refinement added twelve original sculpt recipes to the three in
 | Legacy Crewlo clay figurines and portrait variations | `src/renderer/src/scene/studio/clayArt.ts` | MIT, same as project source |
 | Studio architecture, furniture, plants, sketch artwork | `src/renderer/src/scene/studio/studioArt.ts` | MIT, same as project source |
 | Crewlo C mark | `src/renderer/src/assets/crewlo-mark.svg` | MIT, original vector artwork |
+| Buy Me a Coffee button and cup | `docs/crewlo/brand/buy-me-a-coffee/`; supplied `bmcbrand` kit | Third-party brand assets; unchanged originals, separate from the MIT source artwork. See the adjacent README. |
 | Desktop packaging icons | `build/crewlo.png`, `.ico`, `.icns`; generated from the C mark by `tools/generate-crewlo-icons.cjs` | MIT, same original artwork |
 | Inter, JetBrains Mono, legacy Press Start 2P | Existing bundled fonts | SIL OFL 1.1; original notices retained in `assets/fonts/LICENSE.txt` |
 | Legacy office maps and tilesets | Existing upstream assets, retained for compatibility/reference | Separate LimeZu Complete Version license; see `LICENSE-ASSETS` and `assets/ATTRIBUTION.md` |

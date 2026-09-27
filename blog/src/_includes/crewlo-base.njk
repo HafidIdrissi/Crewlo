@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} — Crewlo Journal</title>
+  <meta name="description" content="{{ description }}">
+  <meta name="theme-color" content="#18392f">
+  <link rel="canonical" href="https://hafididrissi.github.io/Crewlo/blog/{{ slug }}{% if slug %}/{% endif %}">
+  <link rel="alternate" type="application/atom+xml" title="Crewlo Journal" href="{{ crewloRoot }}blog/feed.xml">
+  <meta property="og:title" content="{{ title }} — Crewlo Journal"><meta property="og:description" content="{{ description }}">
+  <meta property="og:type" content="{% if slug %}article{% else %}website{% endif %}">
+  <meta property="og:image" content="https://hafididrissi.github.io/Crewlo/crewlo/demo/studio-overview.png">
+  <link rel="icon" href="{{ crewloRoot }}crewlo/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="{{ crewloRoot }}crewlo-site.css">
+  <link rel="stylesheet" href="{{ crewloRoot }}crewlo-living.css">
+  <link rel="stylesheet" href="{{ crewloRoot }}blog/assets/crewlo-journal.css">
+  <script src="{{ crewloRoot }}crewlo-site.js" defer></script>
+{% if slug %}<script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":{{ title | dump | safe }},"description":{{ description | dump | safe }},"datePublished":"{{ page.date | htmlDate }}","author":{"@type":"Person","name":"Hafid Idrissi","url":"https://github.com/HafidIdrissi"},"publisher":{"@type":"Organization","name":"Crewlo"},"mainEntityOfPage":"https://hafididrissi.github.io/Crewlo/blog/{{ slug }}/"}
+  </script>{% endif %}
+</head>
+<body class="journal-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header landing-header"><div class="nav wrap">
+  <a class="brand" href="{{ crewloRoot }}index.html" aria-label="Crewlo home"><img src="{{ crewloRoot }}crewlo/favicon.svg" width="32" height="32" alt="">crewlo</a>
+  <nav class="site-nav" id="main-nav" aria-label="Main"><a href="{{ crewloRoot }}index.html#crew">Studio</a><a href="{{ crewloRoot }}blog/" aria-current="{% if not slug %}page{% else %}false{% endif %}">Blog</a><a href="{{ crewloRoot }}project-status.html">Project status</a><a href="{{ crewloRoot }}install.html">Installation</a></nav>
+  <div class="nav-actions"><a class="button small primary" href="{{ crewloRoot }}index.html#crew">Explore the studio</a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" hidden>Menu</button></div>
+</div></header>
+<main id="main" tabindex="-1">{{ content | safe }}</main>
+<footer class="wrap footer journal-footer"><div><a class="brand" href="{{ crewloRoot }}index.html"><img src="{{ crewloRoot }}crewlo/favicon.svg" width="32" height="32" alt="">crewlo</a><p>Notes by Hafid Idrissi.<br>Building a little world for useful work.</p><div class="bmc-support" data-coffee-slot><button class="bmc-button" type="button" disabled aria-label="Buy me a coffee — support link coming soon"><img src="{{ crewloRoot }}crewlo/brand/buy-me-a-coffee/button.svg" width="224" height="63" alt="Buy me a coffee"></button><small data-coffee-pending>Support link coming soon.</small></div></div><nav aria-label="Footer"><a href="{{ crewloRoot }}blog/">All articles</a><a href="{{ crewloRoot }}install.html">Install from source</a><a href="{{ crewloRoot }}project-status.html">Details &amp; limits</a><a href="{{ crewloRoot }}privacy.html">Privacy</a><a href="https://github.com/HafidIdrissi/Crewlo">GitHub</a></nav><p class="footer-bottom">Crewlo builds on <a href="https://github.com/chaitanyagiri/munder-difflin">Munder Difflin</a>. Original source and asset credits are preserved. Independent project, not affiliated with Minecraft or Mojang.</p></footer>
+</body></html>

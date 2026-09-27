@@ -1,5 +1,6 @@
 appId: app.crewlo.desktop
 productName: Crewlo
+beforePack: build/prepare-support.cjs
 copyright: Copyright © 2026 Hafid Idrissi and contributors; portions © 2026 Chaitanya Giri
 
 # Where electron-updater looks for new versions (latest*.yml + assets on GitHub

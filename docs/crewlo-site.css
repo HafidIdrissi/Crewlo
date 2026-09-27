@@ -39,6 +39,7 @@ p{font-size:16px;line-height:1.75;margin-bottom:20px}small,.fine{font-size:14px;
 .text-link{display:inline-flex;align-items:center;gap:9px;min-height:44px;font-size:15px;font-weight:700;line-height:1.5;text-decoration:none}.text-link:hover{text-decoration:underline}
 .notice{padding:16px;border-left:4px solid var(--forest);background:var(--mint)}
 .actions{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.bmc-support{display:grid;gap:8px;justify-items:start;max-width:240px}.bmc-button{display:block;width:224px;max-width:100%;min-height:44px;padding:0;border:0;border-radius:12px;background:transparent;text-decoration:none;overflow:hidden;cursor:pointer}.bmc-button img{display:block;width:100%;height:auto}.bmc-button:disabled{opacity:.7;cursor:not-allowed}.bmc-support small{font-size:12px;line-height:1.5;color:var(--muted)}
 .section{padding-block:88px}
 .section-heading{display:flex;align-items:flex-end;justify-content:space-between;gap:48px;margin-bottom:36px}
 .section-heading h2{margin-bottom:0}.section-intro{max-width:450px;font-size:16px;line-height:1.75;color:var(--muted);margin:0}.section-intro p{margin-bottom:8px}

@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Designing a Living Voxel Studio — Crewlo Journal</title>
+  <meta name="description" content="How characters, desks and quiet animations can explain agent activity without getting in the way of the work.">
+  <meta name="theme-color" content="#18392f">
+  <link rel="canonical" href="https://hafididrissi.github.io/Crewlo/blog/designing-a-living-voxel-studio/">
+  <link rel="alternate" type="application/atom+xml" title="Crewlo Journal" href="../../blog/feed.xml">
+  <meta property="og:title" content="Designing a Living Voxel Studio — Crewlo Journal"><meta property="og:description" content="How characters, desks and quiet animations can explain agent activity without getting in the way of the work.">
+  <meta property="og:type" content="article">
+  <meta property="og:image" content="https://hafididrissi.github.io/Crewlo/crewlo/demo/studio-overview.png">
+  <link rel="icon" href="../../crewlo/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../../crewlo-site.css">
+  <link rel="stylesheet" href="../../crewlo-living.css">
+  <link rel="stylesheet" href="../../blog/assets/crewlo-journal.css">
+  <script src="../../crewlo-site.js" defer></script>
+<script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"BlogPosting","headline":"Designing a Living Voxel Studio","description":"How characters, desks and quiet animations can explain agent activity without getting in the way of the work.","datePublished":"2026-09-27","author":{"@type":"Person","name":"Hafid Idrissi","url":"https://github.com/HafidIdrissi"},"publisher":{"@type":"Organization","name":"Crewlo"},"mainEntityOfPage":"https://hafididrissi.github.io/Crewlo/blog/designing-a-living-voxel-studio/"}
+  </script>
+</head>
+<body class="journal-page">
+<a class="skip" href="#main">Skip to content</a>
+<header class="site-header landing-header"><div class="nav wrap">
+  <a class="brand" href="../../index.html" aria-label="Crewlo home"><img src="../../crewlo/favicon.svg" width="32" height="32" alt="">crewlo</a>
+  <nav class="site-nav" id="main-nav" aria-label="Main"><a href="../../index.html#crew">Studio</a><a href="../../blog/" aria-current="false">Blog</a><a href="../../project-status.html">Project status</a><a href="../../install.html">Installation</a></nav>
+  <div class="nav-actions"><a class="button small primary" href="../../index.html#crew">Explore the studio</a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" hidden>Menu</button></div>
+</div></header>
+<main id="main" tabindex="-1"><article class="journal-article wrap">
+  <a class="text-link" href="../">← Back to the journal</a>
+  <header class="article-header"><p class="eyebrow">DESIGN NOTES</p><h1>Designing a Living Voxel Studio</h1><p class="article-deck">How characters, desks and quiet animations can explain agent activity without getting in the way of the work.</p><p class="article-meta">By Hafid Idrissi · <time datetime="2026-09-27">Sep 27, 2026</time> · 3 min read</p></header>
+  <div class="article-body"><p>The studio is Crewlo’s most recognizable element. It should also help a visitor understand the product before they start admiring the details.</p>
+<p>The design question is practical: can someone look at the scene and understand who has a mission, what is happening and where to find the response?</p>
+<h2 id="give-each-movement-a-job" tabindex="-1">Give each movement a job <a class="anchor" href="#give-each-movement-a-job" aria-hidden="true">#</a></h2>
+<p>The illustrated mission follows a short sequence:</p>
+<ol>
+<li>A request appears.</li>
+<li>A small card travels towards the selected agent.</li>
+<li>The desk lights up and an activity becomes visible.</li>
+<li>The reply opens near the desk and stays still long enough to read.</li>
+</ol>
+<p>The visitor can choose a sample mission and an agent, then replay the sequence. Keeping the story inside one scene makes it easier to follow the handoff.</p>
+<p>These are local, scripted examples. Their purpose is to show the interaction clearly. Real agent activity depends on the connected session and the events its integration exposes.</p>
+<h2 id="let-the-whole-studio-breathe" tabindex="-1">Let the whole studio breathe <a class="anchor" href="#let-the-whole-studio-breathe" aria-hidden="true">#</a></h2>
+<p>The scene begins with an overview. Desks and break areas give the characters context, while a gentle camera approach draws attention to the selected agent.</p>
+<p>The illustrated workspace contains twelve characters, with working poses and small moments at the coffee or gaming areas. Those details make the scene feel inhabited. They do not represent twelve live sessions or prove that an agent is doing useful work.</p>
+<p>Typing gestures are short and separated by pauses. A reply cue appears, then settles. Repeated movement should leave enough quiet space for text and selection to remain clear.</p>
+<h2 id="keep-the-answer-close-to-its-agent" tabindex="-1">Keep the answer close to its agent <a class="anchor" href="#keep-the-answer-close-to-its-agent" aria-hidden="true">#</a></h2>
+<p>A character is an entry point to information. Selecting one should make its name, state, activity and latest reply easy to find together.</p>
+<p>On desktop, Crewlo’s website places that compact profile beside the scene. On mobile, it sits immediately below the studio. The camera moves slightly towards the selection, while the readable profile carries the detail.</p>
+<p>The illustrated profiles demonstrate the layout. In the application, the connected conversation and terminal remain the places to inspect actual output.</p>
+<h2 id="use-contrast-to-make-the-world-readable" tabindex="-1">Use contrast to make the world readable <a class="anchor" href="#use-contrast-to-make-the-world-readable" aria-hidden="true">#</a></h2>
+<p>The visual language stays simple: ivory behind the scene, dark green for readable text and a warm accent for important actions. Pixel lettering marks the brand and small labels; longer explanations use a regular text face.</p>
+<p>The same principle applies to the phones. Telegram has a dark interface; WhatsApp follows a light layout with green outgoing bubbles. Original line-art wallpapers carry small voxel references without making the messages difficult to read.</p>
+<p>WhatsApp’s preview is explicitly experimental. A polished interface should not suggest that live delivery has already been verified.</p>
+<h2 id="make-motion-optional" tabindex="-1">Make motion optional <a class="anchor" href="#make-motion-optional" aria-hidden="true">#</a></h2>
+<p>The website includes pause and replay controls. Loops stop when they leave the viewport or the browser tab is hidden. Visitors who prefer reduced motion get static, selectable steps.</p>
+<p>That is part of the design: the mission, activity and reply must remain understandable without movement. Animation adds a path through the information; readable text preserves it.</p>
+<figure><img src="../../crewlo/demo/readme-studio-poster.png" width="960" height="600" alt="Illustrated Crewlo studio holding a readable example response beneath the characters"><figcaption>The final state of the illustrated mission holds the reply still. <a href="../../index.html#demo">Try the interactive version</a>, or <a href="../../crewlo/demo/readme-studio.mp4">watch the animation</a>.</figcaption></figure>
+<h2 id="what-i-want-to-improve-next" tabindex="-1">What I want to improve next <a class="anchor" href="#what-i-want-to-improve-next" aria-hidden="true">#</a></h2>
+<p>The next useful step is to compare this presentation with observed sessions: which activity labels help, when a state becomes ambiguous and whether the latest reply stays easy to find on a small screen.</p>
+<p>The studio earns its place when its visual cues help someone understand the work. That is the standard I want to keep using as Crewlo develops.</p>
+</div>
+  <aside class="article-next"><p class="eyebrow">KEEP EXPLORING</p><h2>Why I am building Crewlo</h2><a class="text-link" href="../why-i-am-building-crewlo/">Read the next article →</a></aside>
+</article>
+</main>
+<footer class="wrap footer journal-footer"><div><a class="brand" href="../../index.html"><img src="../../crewlo/favicon.svg" width="32" height="32" alt="">crewlo</a><p>Notes by Hafid Idrissi.<br>Building a little world for useful work.</p><div class="bmc-support" data-coffee-slot><button class="bmc-button" type="button" disabled aria-label="Buy me a coffee — support link coming soon"><img src="../../crewlo/brand/buy-me-a-coffee/button.svg" width="224" height="63" alt="Buy me a coffee"></button><small data-coffee-pending>Support link coming soon.</small></div></div><nav aria-label="Footer"><a href="../../blog/">All articles</a><a href="../../install.html">Install from source</a><a href="../../project-status.html">Details &amp; limits</a><a href="../../privacy.html">Privacy</a><a href="https://github.com/HafidIdrissi/Crewlo">GitHub</a></nav><p class="footer-bottom">Crewlo builds on <a href="https://github.com/chaitanyagiri/munder-difflin">Munder Difflin</a>. Original source and asset credits are preserved. Independent project, not affiliated with Minecraft or Mojang.</p></footer>
+</body></html>

@@ -1,81 +1,20 @@
 ---
-layout: base.njk
-title: The Munder Difflin Blog
-description: "Guides, deep dives, and comparisons on running multi-agent Claude Code: orchestration, agent memory, automation, and the tooling landscape."
-seoTitle: "Multi-agent & Claude Code blog — Munder Difflin"
+layout: crewlo-base.njk
+title: Notes from the studio
+description: "Hafid Idrissi's journal about building Crewlo: product decisions, verified agent missions and the design of a living voxel studio."
+crewloRoot: ../
 permalink: /index.html
 ---
-{% block head %}
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Blog",
-  "name": "{{ site.blogName }}",
-  "description": {{ site.description | dump | safe }},
-  "url": "{{ site.baseUrl }}",
-  "publisher": { "@type": "Organization", "name": "Munder Difflin", "logo": { "@type": "ImageObject", "url": "{{ site.origin }}/logo.png" } }
-}
-</script>
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "BreadcrumbList",
-  "itemListElement": [
-    { "@type": "ListItem", "position": 1, "name": "Home", "item": "{{ site.origin }}/" },
-    { "@type": "ListItem", "position": 2, "name": "Blog", "item": "{{ site.baseUrl }}" }
-  ]
-}
-</script>
-{% endblock %}
-{% block content %}
-{%- set posts = collections.posts -%}
-<header class="page-head wrap">
-  <p class="eyebrow">Notes from the office floor</p>
-  <h1>The Munder Difflin <span class="hl">Blog.</span></h1>
-  <p class="lead">Guides, deep dives, and comparisons on running <strong>multi-agent Claude
-  Code</strong> — orchestration, agent memory, automation, and the tooling landscape. From the team
-  building a self-coordinating hive of agents with a GOD orchestrator you talk to.</p>
-
-  <div class="filters" role="navigation" aria-label="Topics">
-    <a class="chip" aria-current="page">All<span class="ct">{{ posts.length }}</span></a>
-    {% for c in collections.categories %}
-    <a class="chip" href="{{ ('/topics/' + c.slug + '/') | u }}">{{ c.name }}<span class="ct">{{ c.posts.length }}</span></a>
-    {% endfor %}
-  </div>
+<header class="journal-hero wrap">
+  <div><p class="eyebrow">THE CREWLO JOURNAL · BY HAFID IDRISSI</p><h1>Notes from<br>the studio.</h1><p>The ideas, small experiments and design decisions behind Crewlo. A personal look at building a visual home for coding agents, block by block.</p><a class="text-link" href="#articles">Read the first three stories ↓</a></div>
+  <figure><img src="../crewlo/demo/studio-overview.webp" width="1920" height="900" alt="Crewlo's illustrated voxel studio with desks, characters and a coffee corner"><figcaption>An illustrated world for agent work. Sample characters and missions are scripted.</figcaption></figure>
 </header>
-
-{% if posts.length %}
-{%- set rest = collections.unpinned -%}
-{% if collections.pinned.length %}
-<section class="wrap pinned" aria-labelledby="pinned-title">
-  <h2 class="pinned-title" id="pinned-title">Start here</h2>
-  <div class="post-grid">
-    {% for p in collections.pinned %}{% include "card.njk" %}{% endfor %}
-  </div>
+<section class="journal-grid wrap" id="articles" aria-label="Latest articles">
+{% for post in collections.crewloPosts %}
+  <article class="journal-card">
+    <div class="journal-card-art"><img src="../crewlo/figurines/{{ post.data.figurine }}.svg" width="100" height="130" alt="" loading="lazy"><span>0{{ loop.index }}</span></div>
+    <div class="journal-card-copy"><p class="eyebrow">{{ post.data.categoryLabel }}</p><h2><a href="{{ post.data.slug }}/">{{ post.data.title }}</a></h2><p>{{ post.data.description }}</p><p class="article-meta"><time datetime="{{ post.date | htmlDate }}">{{ post.date | readableDate }}</time> · {{ post.templateContent | readingTime }} min read</p><a class="text-link" href="{{ post.data.slug }}/" aria-label="Read {{ post.data.title }}">Read the story →</a></div>
+  </article>
+{% endfor %}
 </section>
-{% endif %}
-
-{% if rest.length %}
-<div class="wrap featured">
-  {%- set p = rest[0] -%}
-  {% include "card.njk" %}
-</div>
-{% endif %}
-
-{% if rest.length > 1 %}
-<section class="wrap">
-  <div class="post-grid">
-    {% for p in rest %}{% if not loop.first %}{% include "card.njk" %}{% endif %}{% endfor %}
-  </div>
-</section>
-{% endif %}
-{% else %}
-<div class="center-stage wrap">
-  <div>
-    <p class="eyebrow">Coming soon</p>
-    <h1 style="font-size:clamp(28px,5vw,44px)">The first dispatch is in the oven.</h1>
-    <p>New posts land here. Subscribe via <a href="{{ site.baseUrl }}feed.xml">RSS</a>.</p>
-  </div>
-</div>
-{% endif %}
-{% endblock %}
+<aside class="journal-author wrap" id="author"><p class="eyebrow">BEHIND THE PROJECT</p><h2>Hi, I'm Hafid Idrissi.</h2><p>I'm developing Crewlo on an open-source foundation and shaping its own visual studio, setup experience and product story. This journal follows that work with concrete examples and clear limits. For the current validation scope, visit <a href="../project-status.html">Project status</a>.</p></aside>

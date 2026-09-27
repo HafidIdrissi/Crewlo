@@ -6,6 +6,10 @@
 .crewlo-community-menu { position: absolute; right: 0; top: 36px; z-index: 100; width: 230px; padding: 14px; display: grid; gap: 10px; border: 1px solid var(--cth-ink-300); border-radius: 10px; background: var(--cth-paper-100); box-shadow: 0 8px 24px #0002; }
 .crewlo-community-menu button { text-align: left; padding: 8px; border: 1px solid var(--cth-ink-300); border-radius: 6px; background: var(--cth-cream-50); color: var(--cth-ink-900); cursor: pointer; }
 .crewlo-community-menu button:disabled { opacity: .55; cursor: not-allowed; }
+.crewlo-community-menu .crewlo-coffee-button { padding: 0; border: 0; background: transparent; border-radius: 12px; overflow: hidden; min-height: 44px; }
+.crewlo-coffee-button img { display: block; width: 100%; height: auto; }
+.crewlo-community-menu .crewlo-coffee-button:disabled { opacity: .7; }
+.crewlo-coffee-button:focus-visible { outline: 2px solid var(--cth-sky); outline-offset: 3px; }
 .crewlo-community-menu small { line-height: 1.5; white-space: normal; color: var(--cth-ink-500); }
 @media (max-width: 850px) { .crewlo-community summary span { display: none; } }
 .crewlo-telegram-shortcut { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 28px; flex-shrink: 0; padding: 0 10px; border: 1px solid var(--cth-ink-300); border-radius: 6px; background: var(--cth-paper-100); color: var(--cth-ink-900); font: inherit; font-size: 13px; cursor: pointer; }

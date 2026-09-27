@@ -152,8 +152,10 @@ test('Unconfigured beneficiary is not silently replaced by an upstream payment l
   const config = JSON.parse(read('docs/crewlo-links.json'));
   assert.equal(config.repositoryUrl, 'https://github.com/HafidIdrissi/crewlo');
   if (config.coffeeUrl !== null) assert.match(config.coffeeUrl, /^https:\/\/(?:www\.)?buymeacoffee\.com\/[A-Za-z0-9_-]+\/?$/);
-  assert.doesNotMatch(read('docs/index.html'), /data-coffee|coffee-status|Buy me a coffee/);
-  assert.match(read('README.md'), /shown only after the maintainer supplies/);
+  assert.match(read('docs/index.html'), /data-coffee-slot/);
+  assert.match(read('docs/index.html'), /class="bmc-button"[^>]*disabled/);
+  assert.doesNotMatch(read('docs/index.html'), /href="https:\/\/(?:www\.)?buymeacoffee\.com\//);
+  assert.match(read('README.md'), /enabled only after the maintainer supplies/);
   assert.doesNotMatch(read('.github/FUNDING.yml'), /razorpay\.me|munderdifflinfund/);
   if (fs.existsSync(path.join(docs, 'CNAME'))) assert.notEqual(read('docs/CNAME').trim(), 'munderdiffl.in', 'Do not publish the fork under the upstream domain');
 });

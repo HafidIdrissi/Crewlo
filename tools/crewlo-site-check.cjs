@@ -416,7 +416,10 @@ async function mediaControls(page) {
     assert.equal(await noScript.locator('[data-preset]:visible').count(), 12, 'All presets remain accessible without scripting');
     assert.equal(await noScript.locator('[data-preset="cursor"]').getAttribute('href'), 'install.html#connect-agent');
     await noScript.close();
-    assert.equal(await page.locator('[data-coffee]').count(), 0, 'No donation action without a configured destination');
+    const configuredCoffee = require('../docs/crewlo-links.json').coffeeUrl;
+    assert.equal(await page.locator('[data-coffee]').count(), configuredCoffee ? 1 : 0, 'Donation action requires the configured maintainer destination');
+    assert.equal(await page.locator('.bmc-button img').count(), 1, 'The provided brand button is visible even before activation');
+    if (!configuredCoffee) assert.ok(await page.locator('.bmc-button').isDisabled());
     for (const link of await page.locator('[data-repository]').all()) assert.equal(await link.getAttribute('href'), repo);
     // URL activation is tested locally, never by navigating to any destination.
     const configs = [

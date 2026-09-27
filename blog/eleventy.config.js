@@ -46,6 +46,12 @@ export default function (eleventyConfig) {
   eleventyConfig.addPassthroughCopy({ "src/assets": "assets" });
 
   // ---- collections ----
+  // Crewlo's personal journal is separate from the attributed upstream archive.
+  eleventyConfig.addCollection("crewloPosts", api =>
+    api.getFilteredByGlob("src/crewlo/*.md")
+      .filter(post => !post.data.draft)
+      .sort((a, b) => (a.data.order ?? 99) - (b.data.order ?? 99) || b.date - a.date)
+  );
   // All published posts, newest first.
   eleventyConfig.addCollection("posts", (api) =>
     api

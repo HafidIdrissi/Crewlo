@@ -1,8 +1,8 @@
 {
-  "name": "munder-difflin-blog",
+  "name": "crewlo-journal",
   "version": "0.1.0",
   "private": true,
-  "description": "The Munder Difflin blog — built with Eleventy, deployed to munderdiffl.in/blog via GitHub Pages.",
+  "description": "Hafid Idrissi's Crewlo journal, built with Eleventy for GitHub Pages.",
   "license": "MIT",
   "type": "module",
   "scripts": {
