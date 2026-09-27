@@ -14,7 +14,7 @@
 - Telegram: one documented basic live message round trip; reconstructed phone demo.
 - WhatsApp: experimental Meta Cloud API integration; simulated tests, no verified live delivery.
 - Website: illustrated missions and agents, not recordings of live work.
-- No public installer download or active release/update feed is advertised.
+- Public Windows x64 preview: https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-preview.1. No active automatic update feed.
 
 Workspace state is local. Agent providers can receive prompts and code; Telegram and Meta process channel messages. Local-first does not mean offline-only.
 

@@ -32,7 +32,7 @@ The GIFs play directly in the README when your GitHub animation preference allow
 </tr>
 </table>
 
-**Early preview:** an unsigned Windows installer has been built and checked locally. No public installer download or release feed is advertised here. macOS/Linux runtime validation and live WhatsApp delivery remain open. [Details & limits](#current-status).
+**Early preview:** an unsigned Windows installer has been built and checked locally. [Download the Windows x64 preview](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-preview.1/Crewlo-0.4.6-win-x64-preview-setup.exe) (129 MB). No automatic updates are enabled. macOS/Linux runtime validation and live WhatsApp delivery remain open. [Details & limits](#current-status).
 
 <details>
 <summary>Latest changes & earlier captures</summary>
@@ -76,6 +76,12 @@ The 27 September full-suite run passed **959 tests, with 0 failures and 8 skippe
 
 A basic real Telegram request and named reply were [observed in Telegram Web](docs/crewlo/demo/telegram-phone-demo.md); that does not prove every agent, reconnection or physical-phone scenario. Automated messaging tests use simulated Telegram/Meta traffic and agent replies. WhatsApp still needs a [live acceptance test](docs/messageries-tests.fr.md). Additional live messaging checks and signing are deferred. There is no Crewlo release feed or enabled automatic update service.
 
+## Download for Windows
+
+[Download Crewlo 0.4.6 preview for Windows x64](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-preview.1/Crewlo-0.4.6-win-x64-preview-setup.exe) ? [Release notes and SHA-256 checksum](https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-preview.1)
+
+Run the setup file, follow the French/English installer, then connect your own authenticated agent CLI. Source build tools are not needed for this installer. It is unsigned: Windows may show an unknown-publisher warning. Clean-PC installation and uninstall remain unverified. macOS/Linux installers are not available.
+
 ## Build from source
 
 You need Git, **Node.js 22.22 or newer**, npm, and the credentials required by your chosen agent CLI. Provider setup is available through onboarding; provider subscriptions and API usage are separate from Crewlo.
@@ -117,7 +123,7 @@ Despite its historical name, `test:focused` runs all `test/*.test.cjs` files wit
 
 These platform commands do not publish. The Windows preview produces
 `dist/windows-preview/Crewlo-0.4.6-win-x64-preview-setup.exe` locally; this path is
-not a public download. It does not prove a clean native rebuild or another PC's
+also available in the public preview linked above. It does not prove a clean native rebuild or another PC's
 compatibility. macOS expects `dist/Crewlo-0.4.6-mac-universal.dmg` after a successful
 Mac build. Signing and Apple notarization have not been validated.
 

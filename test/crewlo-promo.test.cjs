@@ -30,8 +30,8 @@ test('Crewlo landing uses local media, real repository links and explicit demo d
   assert.doesNotMatch(html, /googletagmanager|posthog|starct|razorpay|harnessmd\.com/);
   assert.doesNotMatch(html, /<video[^>]*autoplay/);
   assert.match(html, /data-frame="3"[\s\S]*?result-points/);
-  assert.doesNotMatch(html, /href="[^"]+\.(?:exe|dmg|appimage)(?:[?#][^"]*)?"/i, 'No unverified installer download');
-  assert.doesNotMatch(html, /Download (?:Crewlo )?for (?:Windows|macOS|Linux)/i, 'Source-only install must not imply a published installer');
+  assert.match(html, /releases\/download\/v0\.4\.6-preview\.1\/Crewlo-0\.4\.6-win-x64-preview-setup\.exe/);
+  assert.doesNotMatch(html, /Download (?:Crewlo )?for (?:macOS|Linux)/i, 'Only Windows has a published installer');
   for (const match of html.matchAll(/(?:src|href|poster|data-motion|data-still)="([^"]+)"/g)) localTarget(match[1]);
   for (const match of read('docs/crewlo-site.css').matchAll(/url\(\s*['"]?([^)'"\s]+)['"]?\s*\)/g)) localTarget(match[1]);
   const ids = [...html.matchAll(/\bid="([^"]+)"/g)].map(match => match[1]);
@@ -73,17 +73,17 @@ test('Voxel landing explains the product before setup and optional integrations'
   assert.match(hero, /data-hero-agent/);
   assert.match(hero, /Explore the studio/);
   assert.match(hero, /href="install\.html"/);
-  assert.match(hero, /Early-stage &middot; Windows source preview/);
+  assert.match(hero, /Early-stage &middot; Windows preview/);
   assert.match(header, /aria-controls="main-nav"/);
   const setup = html.match(/<section\b[^>]*id="start"[^>]*>([\s\S]*?)<\/section>/)?.[1];
-  assert.match(setup, /install\.html#requirements/);
+  assert.match(setup, /install\.html#windows/);
   assert.match(setup, /install\.html#connect-agent/);
   assert.match(setup, /install\.html#first-mission/);
   const sections = ['demo', 'crew', 'proof', 'agents', 'connect', 'start', 'faq', 'support'];
   const positions = sections.map(id => html.indexOf(`id="${id}"`));
   assert.ok(positions.every((position, i) => position >= 0 && (!i || position > positions[i - 1])), 'Studio leads into evidence, agents, integrations, setup and FAQ');
   const support = html.match(/<section\b[^>]*id="support"[^>]*>([\s\S]*?)<\/section>/)?.[1];
-  assert.match(support, /href="install\.html"/);
+  assert.match(support, /Download for Windows/);
 });
 
 test('Voxel typography is locally hosted with retained font licensing', () => {
@@ -175,7 +175,7 @@ test('Source guide and status pages keep a complete local navigation and honest 
       if (match[1].startsWith('#')) assert.ok(ids.includes(match[1].slice(1)), `${file}: ${match[1]}`);
     }
     for (const match of html.matchAll(/data-copy-command="([^"]+)"/g)) assert.ok(ids.includes(match[1]), 'Copy control targets a displayed command');
-    assert.doesNotMatch(html, /href="[^"]+\.(?:exe|dmg|appimage)"/i);
+    assert.doesNotMatch(html, /href="[^"]+\.(?:dmg|appimage)"/i);
   }
   const html = read('docs/index.html');
   const transcript = JSON.parse(read('docs/crewlo/demo/telegram-phone-transcript.json'));

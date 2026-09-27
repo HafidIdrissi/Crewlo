@@ -1,6 +1,10 @@
-# Crewlo 0.4.6 — development preview
+# Crewlo 0.4.6 — Windows preview 1
 
-These notes describe the current source and local validation work. **Not a published release.** No public installer download or release feed is advertised.
+**Public Windows preview, not a stable release.** [Download the Windows x64 installer](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-preview.1/Crewlo-0.4.6-win-x64-preview-setup.exe) (129 MB) and [SHA-256 checksum](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-preview.1/Crewlo-0.4.6-win-x64-preview-setup.exe.sha256).
+
+Run the setup file, then launch Crewlo and connect your own agent CLI. French/English, per-user setup. The installer is unsigned; Windows may show an unknown-publisher warning. No automatic updates are enabled.
+
+Built from commit 6c157dec73725fba7ca2b2be57e00ad56ea8bd96. SHA-256: `10436185498dd34c8e68e2c2dca49bf0171206b61ba435d8b0956e237d358bfe`.
 
 ## What's new
 

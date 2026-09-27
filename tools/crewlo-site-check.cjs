@@ -378,7 +378,7 @@ async function mediaControls(page) {
     })), [], 'All in-page anchor targets exist');
     assert.deepEqual(await page.locator('img').evaluateAll(images => images.filter(img => !img.hasAttribute('alt')).map(img => img.src)), [], 'Every image supplies text alternative or explicit decorative alt');
     assert.deepEqual(await page.locator('a[target="_blank"]').evaluateAll(links => links.filter(link => !link.rel.split(/\s+/).includes('noopener')).map(link => link.href)), [], 'New-tab external links isolate opener');
-    assert.deepEqual(await page.locator('.quick-steps a').evaluateAll(links => links.map(link => link.getAttribute('href'))), ['install.html#requirements', 'install.html#connect-agent', 'install.html#first-mission']);
+    assert.deepEqual(await page.locator('.quick-steps a').evaluateAll(links => links.map(link => link.getAttribute('href'))), ['install.html#windows', 'install.html#connect-agent', 'install.html#first-mission']);
     await keyboardDemo(page);
     await copyAndFaq(page);
     await autoplayDemo(page);

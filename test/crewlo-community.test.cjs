@@ -14,7 +14,7 @@ test('the README leads with the studio and accurately scoped real Telegram demo'
   assert.match(readme, /verified in Telegram Web/i);
   assert.match(readme, /recreated and the wait is condensed/i);
   assert.match(readme, /unsigned Windows installer has been built and checked locally/i);
-  assert.match(readme, /No public installer download or release feed/i);
+  assert.match(readme, /Download the Windows x64 preview/i);
   assert.match(readme, /docs\/crewlo\/demo\/mission-studio\.mp4/);
   assert.match(readme, /MACOS-VALIDATION\.fr\.md/);
   assert.match(readme, /https:\/\/hafididrissi\.github\.io\/Crewlo\//);
@@ -47,7 +47,7 @@ test('source-first CI and release automation do not claim an unverified download
   assert.match(ci, /^  workflow_dispatch:\s*$/m);
   assert.doesNotMatch(release, /^  push:\s*$/m);
   assert.match(release, /^  workflow_dispatch:\s*$/m);
-  assert.match(read('RELEASE.md'), /Not a published release/);
+  assert.match(read('RELEASE.md'), /Public Windows preview, not a stable release/);
   assert.match(read('RELEASE.md'), /docs\/archive\/UPSTREAM-RELEASE-0\.4\.6\.md/);
   assert.match(read('docs/archive/UPSTREAM-RELEASE-0.4.6.md'), /Historical upstream release note/);
   assert.match(read('RELEASE-CHECKLIST.md'), /Historical upstream checklist/);
