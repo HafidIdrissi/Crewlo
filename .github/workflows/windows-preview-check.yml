@@ -1,0 +1,47 @@
+name: Windows installer validation
+on:
+  workflow_dispatch:
+    inputs:
+      release:
+        description: Preview release tag to test
+        required: true
+        default: v0.4.6-preview.2
+permissions:
+  contents: read
+jobs:
+  install:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.22.0
+          cache: npm
+      - run: npm ci --ignore-scripts
+      - run: npm audit --omit=dev --audit-level=moderate
+      - run: npm install --no-save --ignore-scripts playwright@1.58.2
+      - name: Download, verify and install in disposable runner
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PREVIEW_TAG: ${{ inputs.release }}
+        run: |
+          if ($env:PREVIEW_TAG -notmatch '^v[0-9]+\.[0-9]+\.[0-9]+-preview\.[0-9]+$') { throw 'Invalid preview tag' }
+          gh release download $env:PREVIEW_TAG --repo $env:GITHUB_REPOSITORY --pattern '*-win-x64-preview-setup.exe*' --dir "$env:RUNNER_TEMP/download"
+          if ($LASTEXITCODE) { throw 'Download failed' }
+          $setup = Get-ChildItem "$env:RUNNER_TEMP/download" -Filter '*.exe'
+          if (@($setup).Count -ne 1) { throw 'Expected one installer' }
+          $expected = (Get-Content ($setup.FullName + '.sha256')).Split(' ')[0]
+          if ((Get-FileHash $setup.FullName).Hash.ToLower() -ne $expected) { throw 'Checksum mismatch' }
+          $destination = Join-Path $env:RUNNER_TEMP 'crewlo-installed'
+          $process = Start-Process -FilePath $setup.FullName -ArgumentList "/S /D=$destination" -Wait -PassThru -WindowStyle Hidden
+          if ($process.ExitCode) { throw "Setup failed: $($process.ExitCode)" }
+          "CREWLO_TEST_INSTALL=$destination" >> $env:GITHUB_ENV
+      - name: Check installed runtime and first launch
+        shell: pwsh
+        run: |
+          node tools/check-windows-package.cjs "$env:CREWLO_TEST_INSTALL"
+          if ($LASTEXITCODE) { exit $LASTEXITCODE }
+          node tools/check-installed-desktop.cjs "$env:CREWLO_TEST_INSTALL/Crewlo.exe"
+          exit $LASTEXITCODE

@@ -7,6 +7,7 @@ const assert = require('node:assert/strict');
 
 (async () => {
   const base = resolve('out/windows-validation');
+  fs.mkdirSync(base, { recursive: true });
   const root = fs.mkdtempSync(join(base, 'desktop-check-'));
   const userData = join(root, 'user-data');
   const home = join(root, 'studio');

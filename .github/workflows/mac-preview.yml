@@ -34,6 +34,7 @@ jobs:
           python-version: '3.11'
       - run: python -m pip install setuptools
       - run: npm ci
+      - run: npm audit --omit=dev --audit-level=moderate
       - run: npm run build
       # Ad-hoc signing only: no Apple identity, credentials or notarization.
       - name: Package DMG
@@ -44,6 +45,14 @@ jobs:
           hdiutil verify 'dist/Crewlo-0.4.6-mac-${{ matrix.arch }}.dmg'
           cd dist
           shasum -a 256 'Crewlo-0.4.6-mac-${{ matrix.arch }}.dmg' > 'Crewlo-0.4.6-mac-${{ matrix.arch }}.dmg.sha256'
+      - name: Mount DMG, copy and exercise first launch
+        run: |
+          npm install --no-save --ignore-scripts playwright@1.58.2
+          mkdir -p "$RUNNER_TEMP/crewlo-mount" "$RUNNER_TEMP/crewlo-installed"
+          hdiutil attach -readonly -nobrowse -mountpoint "$RUNNER_TEMP/crewlo-mount" 'dist/Crewlo-0.4.6-mac-${{ matrix.arch }}.dmg'
+          ditto "$RUNNER_TEMP/crewlo-mount/Crewlo.app" "$RUNNER_TEMP/crewlo-installed/Crewlo.app"
+          hdiutil detach "$RUNNER_TEMP/crewlo-mount"
+          node tools/check-installed-desktop.cjs "$RUNNER_TEMP/crewlo-installed/Crewlo.app/Contents/MacOS/Crewlo"
       - uses: actions/upload-artifact@v4
         with:
           name: crewlo-mac-${{ matrix.arch }}
