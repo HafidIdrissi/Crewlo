@@ -1,18 +1,43 @@
 # Crewlo
 
-<img src="docs/crewlo/favicon.svg" width="72" height="72" alt="Crewlo voxel logo">
+<img src="docs/crewlo/favicon.svg" width="64" height="64" alt="Crewlo voxel logo">
 
 ## Your agents. A studio of their own.
 
-Crewlo brings the coding agents you already run into a shared desktop workspace. Give the crew a mission, see named activity above each character, open the real terminal, and check in from Telegram when you are away from the desk.
+Bring your coding agents into one visual workspace. Send a mission, follow the work, find the reply. A crew of twelve voxel characters makes the studio feel alive, from focused work to coffee breaks.
 
-[Explore the interactive studio](https://hafididrissi.github.io/Crewlo/#crew) · [Build from source](#build-from-source) · [Windows & macOS packaging](#desktop-packaging) · [Contribute](CONTRIBUTING.md) · [Star Crewlo](https://github.com/HafidIdrissi/Crewlo)
+[Explore the interactive studio](https://hafididrissi.github.io/Crewlo/#crew) · [Build from source](#build-from-source) · [Windows & macOS packaging](#desktop-packaging)
 
-[![Illustrated Crewlo studio with twelve voxel agents working and taking breaks](docs/crewlo/demo/studio-overview.png)](docs/crewlo/demo/mission-studio.mp4)
+[![Animated Crewlo studio: a mission reaches Remy, his activity appears, then the reply opens](docs/crewlo/demo/readme-studio.gif)](docs/crewlo/demo/readme-studio.mp4)
 
-*Illustrated 15-second mission: request → agent → activity → reply. The agents and responses are scripted, not a live AI recording. [Play the MP4](docs/crewlo/demo/mission-studio.mp4) · [Original interface capture](docs/crewlo/demo/studio-activity.gif) · [Capture notes](docs/crewlo/demo/README.md).*
+*Illustrated demo · 12 seconds. Scripted mission and reply, not a live AI recording. [Watch the video](docs/crewlo/demo/readme-studio.mp4) · [Still image](docs/crewlo/demo/readme-studio-poster.png) · [Original interface capture](docs/crewlo/demo/studio-activity.gif) · [Studio MP4](docs/crewlo/demo/mission-studio.mp4).*
 
-## Latest work — September 2026
+The GIFs play directly in the README when your GitHub animation preference allows it. Click an animation for the MP4, with playback controls. [Media & capture notes](docs/crewlo/demo/README.md).
+
+### Your crew, one message away.
+
+<table>
+<tr><th>Telegram · documented exchange</th><th>WhatsApp · experimental</th></tr>
+<tr>
+<td align="center"><a href="docs/crewlo/demo/readme-telegram.mp4"><img src="docs/crewlo/demo/readme-telegram.gif" width="400" alt="Animated Telegram phone: request, queue acknowledgement and Remy's documented greeting"></a></td>
+<td align="center"><a href="docs/crewlo/demo/readme-whatsapp.mp4"><img src="docs/crewlo/demo/readme-whatsapp.gif" width="400" alt="Animated WhatsApp phone with green outgoing bubbles and an illustrated agent reply; not yet live-tested"></a></td>
+</tr>
+<tr>
+<td>A basic request and named reply were verified in Telegram Web. The phone layout is recreated and the wait is condensed.</td>
+<td>Illustrative flow: not a WhatsApp conversation or proof of delivery. Requires Meta Cloud API and an HTTPS relay.</td>
+</tr>
+<tr>
+<td><a href="docs/crewlo/demo/telegram-phone-demo.md">Transcript & verification scope</a> · <a href="docs/crewlo/demo/readme-telegram-poster.png">Still image</a></td>
+<td><a href="docs/crewlo/demo/whatsapp-phone-preview.md">Preview scope</a> · <a href="docs/crewlo/demo/readme-whatsapp-poster.png">Still image</a></td>
+</tr>
+</table>
+
+**Early preview:** an unsigned Windows installer has been built and checked locally. No public installer download or release feed is advertised here. macOS/Linux runtime validation and live WhatsApp delivery remain open. [Details & limits](#current-status).
+
+<details>
+<summary>Latest changes & earlier captures</summary>
+
+### Latest work — September 2026
 
 - **A living studio on the website.** Choose a sample mission and agent, follow the four steps, pause or replay. Select a character to see their activity and last illustrated reply beside the scene.
 - **Twelve provider presets.** Four featured figurines with an expandable shelf; the desktop onboarding now includes Gemini in its twelve-engine list. Presets are not a claim that every provider has been live-tested.
@@ -23,19 +48,10 @@ Crewlo brings the coding agents you already run into a shared desktop workspace.
 
 [Current preview notes](RELEASE.md) · [Changelog](CHANGELOG.md) · [Details & limits](#current-status)
 
-### A real Telegram reply, presented like a phone
 
-[![An English Telegram message to Remy and his named reply, presented in a recreated phone layout](docs/crewlo/demo/telegram-phone-demo.gif)](docs/crewlo/demo/telegram-phone-demo.md)
+[Earlier Telegram animation](docs/crewlo/demo/telegram-phone-demo.gif) · [Earlier WhatsApp animation](docs/crewlo/demo/whatsapp-phone-preview.gif).
 
-*The request, queue acknowledgement and Remy reply were verified in Telegram Web. The phone layout is recreated and the wait is condensed; this is not a continuous recording or a physical-phone test. [Transcript and verification scope](docs/crewlo/demo/telegram-phone-demo.md).*
-
-### WhatsApp: a preview while live testing continues
-
-[![Illustrative WhatsApp phone flow for messaging Crewlo agents; not yet live-tested](docs/crewlo/demo/whatsapp-phone-preview.gif)](docs/crewlo/demo/whatsapp-phone-preview.md)
-
-*Illustrative flow in a recreated phone UI—not a WhatsApp conversation or proof of delivery. The studio crop is from an earlier Crewlo capture; the chat text is scripted. [Preview scope and MP4](docs/crewlo/demo/whatsapp-phone-preview.md).*
-
-**Early preview:** an unsigned Windows installer has been built and checked locally. No public installer download or release feed is advertised here. macOS/Linux runtime validation and live WhatsApp delivery remain open. [What is tested](#current-status) · [What you need to run it](#build-from-source).
+</details>
 
 ## Why Crewlo?
 

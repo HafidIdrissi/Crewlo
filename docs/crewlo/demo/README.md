@@ -1,5 +1,30 @@
 # Crewlo demo kit
 
+## Animated GitHub README
+
+The README uses `readme-studio.gif`, `readme-telegram.gif` and
+`readme-whatsapp.gif` so the animations can play inline on GitHub. GitHub does
+not expose video autoplay controls in README Markdown; a visitor's reduced-motion
+or animation preference can also pause GIFs. Each preview links to its MP4 and
+has a separate PNG still image. The studio GIF includes the mission, activity
+and reply captions that are HTML overlays on the website.
+
+The phone previews render the actual website components: the dark Telegram UI
+and light WhatsApp UI, with original local wallpapers, realistic phone frames,
+message arrival and a short working indicator. Telegram quotes the documented
+basic exchange, with recreated UI and condensed timing. WhatsApp is an
+illustrative, experimental flow, not evidence of delivery. No accounts or APIs
+are contacted by the renderer.
+
+Regenerate with `node tools/render-readme-media.cjs` using Node 22.22 or newer,
+Playwright, Chromium and FFmpeg. If they are not available on the default paths,
+set `CREWLO_PLAYWRIGHT` to the Playwright module path, `CREWLO_CHROMIUM` to the
+browser executable and `CREWLO_FFMPEG` to the FFmpeg executable. The renderer
+starts a local Vite server on port 5191 and exports twelve-second loops at 8 fps.
+The studio is 960×600; the phones are 640×900. PNG posters hold the visible reply.
+The older `telegram-phone-demo` and `whatsapp-phone-preview` assets remain
+available for the existing capture notes and site fallback.
+
 ## Living studio — 27 September 2026
 
 The first screen now uses a roughly 40/60 desktop split: the short promise and
