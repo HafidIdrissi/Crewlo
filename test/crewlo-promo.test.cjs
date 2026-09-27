@@ -30,7 +30,7 @@ test('Crewlo landing uses local media, real repository links and explicit demo d
   assert.doesNotMatch(html, /googletagmanager|posthog|starct|razorpay|harnessmd\.com/);
   assert.doesNotMatch(html, /<video[^>]*autoplay/);
   assert.match(html, /data-frame="3"[\s\S]*?result-points/);
-  assert.match(html, /releases\/download\/v0\.4\.6-preview\.1\/Crewlo-0\.4\.6-win-x64-preview-setup\.exe/);
+  assert.match(html, /releases\/download\/v0\.4\.6-preview\.2\/Crewlo-0\.4\.6-win-x64-preview-setup\.exe/);
   assert.doesNotMatch(html, /Download (?:Crewlo )?for Linux/i, 'No Linux installer is advertised');
   for (const match of html.matchAll(/(?:src|href|poster|data-motion|data-still)="([^"]+)"/g)) localTarget(match[1]);
   for (const match of read('docs/crewlo-site.css').matchAll(/url\(\s*['"]?([^)'"\s]+)['"]?\s*\)/g)) localTarget(match[1]);

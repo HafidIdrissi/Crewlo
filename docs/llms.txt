@@ -9,12 +9,12 @@
 
 - Windows: unsigned installer built and checked locally; clean-PC and uninstall validation remain open.
 - Codex: real temporary-file reading response verified through packaged IPC and PTY, not a full hive acceptance test.
-- macOS: Apple Silicon and Intel DMGs built; packaged SQLite and PTY checks passed on matching macOS 15 CI runners. No Apple Developer ID/notarization; full installation and first-launch testing remain open. Downloads: https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-mac-preview.1.
+- macOS: Apple Silicon and Intel DMGs built; packaged SQLite and PTY checks passed on matching macOS 15 CI runners. No Apple Developer ID/notarization; DMG installation and onboarding/settings checks pass in CI; personal-Mac permissions and live agents remain open. Downloads: https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-mac-preview.2.
 - Linux: runtime and installer not validated.
 - Telegram: one documented basic live message round trip; reconstructed phone demo.
 - WhatsApp: experimental Meta Cloud API integration; simulated tests, no verified live delivery.
 - Website: illustrated missions and agents, not recordings of live work.
-- Public Windows x64 preview: https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-preview.1. No active automatic update feed.
+- Public Windows x64 preview: https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-preview.2. No active automatic update feed.
 
 Workspace state is local. Agent providers can receive prompts and code; Telegram and Meta process channel messages. Local-first does not mean offline-only.
 

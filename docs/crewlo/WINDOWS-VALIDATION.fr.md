@@ -1,5 +1,13 @@
 # Validation Windows — 27 septembre 2026
 
+## Preview 2 : dependances corrigees et installation CI
+
+[Rapport communautaire actuel](COMMUNITY-READINESS.fr.md) : audit npm de production sans alerte, 961 tests reussis et 8 ignores ; installation NSIS et premier lancement valides sur un runner Windows Server 2022 temporaire. [Logs](https://github.com/HafidIdrissi/Crewlo/actions/runs/36352877292).
+
+Artefact public preview 2 : 129 388 564 octets, SHA-256 `a300825c31b83471394b7607f9ebc46dd78e6b59607cac995b79e80b171aedbe`. Les essais sur PC personnel, la desinstallation et la signature restent ouverts.
+
+## Historique des controles et constructions precedentes
+
 Les 22 échecs de la campagne initiale sont corrigés. Le dernier contrôle, après
 actualisation du dépôt, compte **967 tests : 959 réussis, 0 échec et 8 ignorés**.
 Il comprend les protections des jonctions, le refus des dossiers non enregistrés,

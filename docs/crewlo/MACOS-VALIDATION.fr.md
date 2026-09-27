@@ -1,5 +1,13 @@
 # Contrôle macOS — 27 septembre 2026
 
+## Preview 2 : installation et premier lancement automatises
+
+Les deux DMG corriges ont ete montes et copies dans un dossier separe sur leurs runners macOS 15. Accueil, studio, camera et conservation des parametres apres redemarrage : reussite sur Apple Silicon et Intel. [Logs](https://github.com/HafidIdrissi/Crewlo/actions/runs/36352545549). [Rapport actuel et limites](COMMUNITY-READINESS.fr.md).
+
+Signature ad hoc uniquement. Permissions personnelles, quarantaine du navigateur et agents live sur Mac restent non verifies.
+
+## Historique de la premiere preview
+
 ## Mise à jour : previews Apple Silicon et Intel publiées
 
 Les deux DMG ont été construits sur des runners macOS 15 correspondant à leur

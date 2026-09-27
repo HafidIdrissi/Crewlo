@@ -34,7 +34,7 @@ The GIFs play directly in the README when your GitHub animation preference allow
 </tr>
 </table>
 
-**Early preview:** an unsigned Windows installer has been built and checked locally. [Download the Windows x64 preview](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-preview.1/Crewlo-0.4.6-win-x64-preview-setup.exe) (129 MB). No automatic updates are enabled. macOS packages pass SQLite and terminal checks on CI; full Mac installation, Linux runtime validation and live WhatsApp delivery remain open. [Details & limits](#current-status).
+**Early preview:** an unsigned Windows installer has been built and checked locally. [Download the Windows x64 preview](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-preview.2/Crewlo-0.4.6-win-x64-preview-setup.exe) (129 MB). No automatic updates are enabled. macOS packages pass SQLite and terminal checks on CI; full Mac installation, Linux runtime validation and live WhatsApp delivery remain open. [Details & limits](#current-status).
 
 <details>
 <summary>Latest changes & earlier captures</summary>
@@ -66,29 +66,31 @@ Bring the agent CLI you already use: provider presets include Claude Code, Codex
 
 ## Current status
 
+Preview 2 removes the reported production dependency alerts (`npm audit --omit=dev`: zero at build time). Fresh-runner Windows installation and mounted-DMG Mac onboarding/settings checks pass. [Community readiness report and remaining manual checks](docs/crewlo/COMMUNITY-READINESS.fr.md).
+
 | Area | Verified scope | Remaining limits |
 | --- | --- | --- |
-| Windows installer | French setup on the development PC; rebuilt package starts; SQLite, PTY and settings persistence pass | Unsigned; no clean-PC or completed uninstall test |
+| Windows installer | French setup on the development PC; rebuilt package starts; SQLite, PTY and settings persistence pass | Unsigned; clean Server 2022 CI install passes, personal-PC and uninstall checks remain open |
 | Real agent | Codex read a temporary file and returned the exact marker through packaged Crewlo IPC and PTY | Does not establish full hive routing, all providers or messaging delivery |
 | Website | Five widths from 320 to 1440 px; keyboard selection, timed animations, pause, offscreen stop and reduced motion | Illustrated agents and missions; full accessibility audit remains open |
-| macOS | Apple Silicon and Intel DMGs built; packaged SQLite, PTY and disk-image verification pass on macOS 15 CI | No Developer ID or notarization; full first-launch and personal-Mac installation unverified |
+| macOS | Apple Silicon and Intel DMGs built; packaged SQLite, PTY and disk-image verification pass on macOS 15 CI | No Developer ID or notarization; personal-Mac permissions and live agents unverified |
 | Linux | Packaging configuration retained | Runtime and installer not validated |
 
-The 27 September full-suite run passed **959 tests, with 0 failures and 8 skipped** (967 total), including the signing-command and universal-DMG regressions. Earlier baseline failures are resolved; the old report remains as historical evidence. [Windows validation](docs/crewlo/WINDOWS-VALIDATION.fr.md) · [macOS validation](docs/crewlo/MACOS-VALIDATION.fr.md) · [Historical baseline](docs/crewlo/VERIFICATION.md).
+The 27 September full-suite run passed **961 tests, with 0 failures and 8 skipped** (969 total), including the signing-command and universal-DMG regressions. Earlier baseline failures are resolved; the old report remains as historical evidence. [Windows validation](docs/crewlo/WINDOWS-VALIDATION.fr.md) · [macOS validation](docs/crewlo/MACOS-VALIDATION.fr.md) · [Historical baseline](docs/crewlo/VERIFICATION.md).
 
 A basic real Telegram request and named reply were [observed in Telegram Web](docs/crewlo/demo/telegram-phone-demo.md); that does not prove every agent, reconnection or physical-phone scenario. Automated messaging tests use simulated Telegram/Meta traffic and agent replies. WhatsApp still needs a [live acceptance test](docs/messageries-tests.fr.md). Additional live messaging checks and signing are deferred. There is no Crewlo release feed or enabled automatic update service.
 
 ## Download for Windows
 
-[Download Crewlo 0.4.6 preview for Windows x64](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-preview.1/Crewlo-0.4.6-win-x64-preview-setup.exe) · [Release notes and SHA-256 checksum](https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-preview.1)
+[Download Crewlo 0.4.6 preview for Windows x64](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-preview.2/Crewlo-0.4.6-win-x64-preview-setup.exe) · [Release notes and SHA-256 checksum](https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-preview.2)
 
 Run the setup file, follow the French/English installer, then connect your own authenticated agent CLI. Source build tools are not needed for this installer. It is unsigned: Windows may show an unknown-publisher warning. Clean-PC installation and uninstall remain unverified. Linux installers are not available.
 
 ## Download for Mac
 
-[Apple Silicon (M-series)](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-mac-preview.1/Crewlo-0.4.6-mac-arm64.dmg) · [Intel Mac](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-mac-preview.1/Crewlo-0.4.6-mac-x64.dmg) · [Release notes and checksums](https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-mac-preview.1)
+[Apple Silicon (M-series)](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-mac-preview.2/Crewlo-0.4.6-mac-arm64.dmg) · [Intel Mac](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-mac-preview.2/Crewlo-0.4.6-mac-x64.dmg) · [Release notes and checksums](https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-mac-preview.2)
 
-Open the DMG, drag Crewlo into Applications, then launch it and connect your own agent CLI. These previews have local ad-hoc signatures, without Apple Developer ID certification or notarization. macOS may block opening them; see [installation guidance](https://hafididrissi.github.io/Crewlo/install.html#macos). SQLite and terminal checks pass on both CI architectures; a complete installation and first-launch test on a personal Mac remains open. No automatic updates are enabled.
+Open the DMG, drag Crewlo into Applications, then launch it and connect your own agent CLI. These previews have local ad-hoc signatures, without Apple Developer ID certification or notarization. macOS may block opening them; see [installation guidance](https://hafididrissi.github.io/Crewlo/install.html#macos). SQLite and terminal checks pass on both CI architectures; DMG installation and onboarding/settings checks pass in CI; personal-Mac permissions and live agents remain open. No automatic updates are enabled.
 
 ## Build from source
 
