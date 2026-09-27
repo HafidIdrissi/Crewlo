@@ -1,5 +1,4 @@
-- **The interface speaks Chinese and Arabic.** Set it in Settings.
-- **Updates install themselves.** Download, restart, done.
-- **Fonts ship inside the app.** No Google Fonts fetch on launch.
-- **Hardened how engine commands launch.**
-- **Settings has one Save button.** Connections get their own tab.
+- **Living voxel studio demo.** Missions, agent selection and phone previews.
+- **Windows preview checked locally.** Unsigned; no public release feed.
+- **Safer worktree cleanup.** Protect shared dependencies on Windows.
+- **Mac packaging reviewed.** Runtime testing still needs a Mac.

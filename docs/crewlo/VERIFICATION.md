@@ -1,5 +1,10 @@
 # Crewlo verification — 2026-09-20
 
+> Historical report. The Windows baseline failures below were resolved on 27 September.
+> See [current Windows validation](WINDOWS-VALIDATION.fr.md) and
+> [macOS checks](MACOS-VALIDATION.fr.md) for the latest scope. The earlier numbers
+> are preserved to document the original state, not to describe the current suite.
+
 For the subsequent interface refinement, current screenshots and latest test results, see [REFINEMENT.md](REFINEMENT.md). The notes below record the initial redesign pass.
 
 Work stayed on `feat/crewlo-visual-identity`. The initial worktree was clean. No AGENTS.md was found in the repository or its ancestor directories. No changes were pushed, published, or deployed.

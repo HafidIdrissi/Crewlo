@@ -18,6 +18,11 @@ Open these URLs and use **Download native PNG (scripted studio data)**:
 | `/tools/studio-framing/` | `studio-team-hd.png` | 1920 × 900 |
 | `/tools/studio-framing/?view=follow` | `studio-follow-hd.png` | 1280 × 960 |
 | `/tools/studio-framing/?view=follow&size=mobile` | `studio-mobile-hd.png` | 720 × 520 |
+| `/tools/studio-framing/?view=overview` | `studio-overview.png` | 1920 × 900 |
+
+The overview fits the entire room and omits baked-in captions so the landing can
+provide readable HTML labels. Run `node tools/build-living-media.cjs` to export
+the overview, lossless WebP poster and 15-second illustrated camera MP4 together.
 
 The renderer works at a logical viewport and exports at 2× resolution. The PNG
 download comes directly from its canvas, before any screenshot compression. It

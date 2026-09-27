@@ -97,12 +97,43 @@ test('leaves a dangling worktree dependency symlink untouched', async () => {
   fs.mkdirSync(path.join(repo, 'node_modules'));
   const wtPath = addWorktree(repo, wtRoot, 'agent-e');
   const worktreeNodeModules = path.join(wtPath, 'node_modules');
-  fs.symlinkSync('/does-not-exist', worktreeNodeModules);
+  const missing = path.join(wtRoot, 'does-not-exist');
+  fs.symlinkSync(missing, worktreeNodeModules, process.platform === 'win32' ? 'junction' : null);
 
   const result = await linkWorktreeDeps(repo, wtPath);
 
   assert.deepEqual(result, { ok: true, skipped: true });
-  assert.equal(fs.readlinkSync(worktreeNodeModules), '/does-not-exist');
+  assert.equal(fs.readlinkSync(worktreeNodeModules), missing);
+});
+
+test('Windows removal refuses foreign junctions and preserves their targets', async () => {
+  if (process.platform !== 'win32') return;
+  const { repo, wtRoot } = makeHarness();
+  const wtPath = addWorktree(repo, wtRoot, 'foreign-junction');
+  const foreign = path.join(wtRoot, 'foreign');
+  fs.mkdirSync(foreign);
+  const sentinel = path.join(foreign, 'must-survive.txt');
+  fs.writeFileSync(sentinel, 'external data');
+  fs.symlinkSync(foreign, path.join(wtPath, 'linked-assets'), 'junction');
+  const result = await removeWorktree(repo, wtPath);
+  assert.equal(result.ok, false);
+  assert.match(result.error, /containing a link/);
+  assert.equal(fs.readFileSync(sentinel, 'utf8'), 'external data');
+  assert.equal(fs.existsSync(path.join(wtPath, 'README.md')), true);
+});
+
+test('Windows removal does not detach dependencies in the primary or an unregistered checkout', async () => {
+  if (process.platform !== 'win32') return;
+  const { repo, wtRoot } = makeHarness();
+  fs.mkdirSync(path.join(repo, 'node_modules'));
+  const unregistered = path.join(wtRoot, 'ordinary-directory');
+  fs.mkdirSync(unregistered);
+  await linkWorktreeDeps(repo, unregistered);
+  for (const target of [repo, unregistered]) {
+    assert.equal((await removeWorktree(repo, target)).ok, false);
+    assert.equal(fs.existsSync(target), true);
+  }
+  assert.equal(fs.lstatSync(path.join(unregistered, 'node_modules')).isSymbolicLink(), true);
 });
 
 test('reports a failed link without throwing', async () => {
@@ -114,13 +145,14 @@ test('reports a failed link without throwing', async () => {
   const result = await linkWorktreeDeps(repo, notADirectory);
 
   assert.equal(result.ok, false);
-  assert.match(result.error, /EEXIST|ENOTDIR/);
+  assert.match(result.error, /EEXIST|ENOTDIR|ENOENT/);
 });
 
 test('removes only the linked dependencies before checking worktree status', async () => {
   const { repo, wtRoot } = makeHarness();
   const baseNodeModules = path.join(repo, 'node_modules');
   fs.mkdirSync(baseNodeModules);
+  fs.writeFileSync(path.join(baseNodeModules, 'dependency.txt'), 'dependency');
   const wtPath = addWorktree(repo, wtRoot, 'agent-f');
   const worktreeNodeModules = path.join(wtPath, 'node_modules');
 

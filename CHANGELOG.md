@@ -6,6 +6,20 @@ All notable changes to this project are documented here. The format is based on
 
 ## [Unreleased]
 
+### Crewlo preview — 2026-09-27
+
+- Added a 15-second illustrated mission, selectable agent profiles and a twelve-agent voxel studio to the website, with pause, reduced-motion and offscreen controls.
+- Added a four-preset shelf with all twelve presets available, plus Telegram/WhatsApp tabs and redesigned phone previews. WhatsApp remains experimental.
+- Built and checked an unsigned Windows NSIS preview with French/English setup, per-user installation and packaged SQLite/PTY tests.
+- Verified a real Codex file-reading response through packaged Crewlo IPC and PTY in a temporary project; this is not a complete hive or messaging acceptance test.
+- Protected Windows worktree removal against dependency junction traversal and unknown links.
+- Corrected Windows-path and CRLF test assumptions, outdated website assertions and secondary Studio links.
+- Updated onboarding to list twelve engines, including Gemini, in all three supported languages.
+- Corrected universal macOS DMG selection and made Mac packaging explicitly non-publishing. A Mac build and runtime test remain required.
+- Prepared a Windows signing-required build command; code signing and additional live messaging checks are deferred. No public Crewlo installer release or update feed is claimed.
+
+The following unreleased entries and version history also retain inherited upstream work.
+
 ### Added
 
 - **Tasks show their id.** The one thing people actually refer to a card by — `bmt-12` — was not

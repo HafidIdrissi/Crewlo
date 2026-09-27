@@ -47,7 +47,7 @@
   };
   const syncIntegrations = () => {
     const requested = hashTarget()?.closest('[data-integration]') || document.activeElement?.closest('[data-integration]');
-    for (const card of integrations) card.open = !smallScreen.matches || card === requested;
+    for (const card of integrations) card.open = card.closest('[data-channel-panel]') ? card === requested : !smallScreen.matches || card === requested;
   };
   syncIntegrations();
   smallScreen.addEventListener('change', syncIntegrations);
@@ -109,151 +109,6 @@
     });
   }));
 
-  // Real tab semantics, including a single tab stop and standard arrow keys.
-  // Nothing plays merely because a visitor selects a chapter.
-  const chapters = ['direct', 'observe', 'connect'];
-  const panels = Array.from(document.querySelectorAll('[data-demo-panel]'));
-  const tabs = Array.from(document.querySelectorAll('[data-demo-step]')).filter(tab =>
-    chapters.includes(tab.dataset.demoStep) && panels.some(panel => panel.dataset.demoPanel === tab.dataset.demoStep)
-  );
-  for (const tab of tabs) {
-    const key = tab.dataset.demoStep;
-    const panel = panels.find(item => item.dataset.demoPanel === key);
-    tab.id ||= `demo-tab-${key}`;
-    panel.id ||= `demo-panel-${key}`;
-    tab.setAttribute('role', 'tab');
-    tab.setAttribute('aria-controls', panel.id);
-    panel.setAttribute('role', 'tabpanel');
-    panel.setAttribute('aria-labelledby', tab.id);
-    // A focusable panel also works when its content contains no controls.
-    if (!panel.hasAttribute('tabindex')) panel.tabIndex = 0;
-  }
-  const tablist = tabs[0]?.closest('[role="tablist"]') ||
-    (tabs.length && tabs.every(tab => tab.parentElement === tabs[0].parentElement) ? tabs[0].parentElement : null);
-  if (tablist) {
-    tablist.hidden = false;
-    tablist.setAttribute('role', 'tablist');
-    if (!tablist.hasAttribute('aria-label') && !tablist.hasAttribute('aria-labelledby')) tablist.setAttribute('aria-label', 'Explore the Crewlo demo');
-  }
-  let currentChapter = 0;
-  const selectChapter = (key, focus = false) => {
-    const selected = tabs.find(tab => tab.dataset.demoStep === key);
-    if (!selected || selected.disabled || selected.getAttribute('aria-disabled') === 'true') return;
-    currentChapter = tabs.indexOf(selected);
-    document.querySelectorAll('.walkthrough-progress i').forEach((step, index) => {
-      step.classList.toggle('is-current', index === currentChapter);
-      step.classList.toggle('is-visited', index < currentChapter);
-    });
-    for (const tab of tabs) {
-      const active = tab === selected;
-      tab.setAttribute('aria-selected', String(active));
-      tab.tabIndex = active ? 0 : -1;
-      const panel = panels.find(item => item.dataset.demoPanel === tab.dataset.demoStep);
-      panel.hidden = !active;
-      if (!active) {
-        for (const [card, pause] of animations) if (panel.contains(card)) pause(false);
-        panel.querySelectorAll('video').forEach(video => video.pause());
-      }
-    }
-    if (focus) selected.focus();
-  };
-  for (const tab of tabs) {
-    tab.addEventListener('click', () => { stopWalkthrough(); selectChapter(tab.dataset.demoStep); });
-    tab.addEventListener('keydown', event => {
-      if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
-      const available = tabs.filter(item => !item.disabled && item.getAttribute('aria-disabled') !== 'true');
-      if (!available.length) return;
-      event.preventDefault();
-      stopWalkthrough();
-      let index = available.indexOf(tab);
-      if (event.key === 'Home') index = 0;
-      else if (event.key === 'End') index = available.length - 1;
-      else index = (index + (event.key === 'ArrowRight' ? 1 : -1) + available.length) % available.length;
-      selectChapter(available[index].dataset.demoStep, true);
-    });
-  }
-  if (tabs.length) selectChapter(tabs[0].dataset.demoStep);
-
-  // An optional, finite presentation. No provider call or product state is changed.
-  // Pausing preserves the chapter; choosing a tab takes over from playback.
-  const walkthrough = document.querySelector('[data-walkthrough]');
-  const walkthroughButton = document.querySelector('[data-walkthrough-play]');
-  const walkthroughStatus = document.querySelector('[data-walkthrough-status]');
-  let walkthroughTimer;
-  let walkthroughPlaying = false;
-  let remaining = 6000;
-  let chapterStarted = 0;
-  const reportChapter = suffix => {
-    if (walkthroughStatus) walkthroughStatus.textContent = `Step ${currentChapter + 1} of ${tabs.length} · ${suffix}`;
-  };
-  function stopWalkthrough() {
-    if (!walkthroughPlaying) return;
-    remaining = Math.max(0, remaining - (performance.now() - chapterStarted));
-    clearTimeout(walkthroughTimer);
-    walkthroughPlaying = false;
-    if (walkthrough) walkthrough.dataset.playing = 'false';
-    walkthroughButton?.setAttribute('aria-pressed', 'false');
-    if (walkthroughButton) walkthroughButton.textContent = 'Continue walkthrough';
-    reportChapter('paused');
-  }
-  const scheduleChapter = () => {
-    chapterStarted = performance.now();
-    walkthroughTimer = setTimeout(() => {
-      if (currentChapter === tabs.length - 1) {
-        stopWalkthrough();
-        remaining = 6000;
-        walkthroughButton.textContent = 'Replay walkthrough';
-        reportChapter('walkthrough complete');
-        walkthrough.dataset.complete = 'true';
-        return;
-      }
-      selectChapter(tabs[currentChapter + 1].dataset.demoStep);
-      reportChapter('illustrated walkthrough');
-      remaining = 6000;
-      scheduleChapter();
-    }, remaining);
-  };
-  if (walkthrough && walkthroughButton && tabs.length) {
-    walkthroughButton.hidden = false;
-    walkthroughButton.addEventListener('click', () => {
-      if (walkthroughPlaying) { stopWalkthrough(); return; }
-      if (reducedMotion.matches) return;
-      if (walkthrough.dataset.complete === 'true') selectChapter(tabs[0].dataset.demoStep);
-      walkthrough.dataset.complete = 'false';
-      walkthroughPlaying = true;
-      walkthrough.dataset.playing = 'true';
-      walkthroughButton.textContent = 'Pause walkthrough';
-      walkthroughButton.setAttribute('aria-pressed', 'true');
-      reportChapter('illustrated walkthrough');
-      scheduleChapter();
-    });
-    tabs.forEach(tab => {
-      const manualSelection = () => {
-        remaining = 6000;
-        walkthrough.dataset.complete = 'false';
-        walkthroughButton.textContent = 'Play from this step';
-        reportChapter('selected');
-      };
-      tab.addEventListener('click', manualSelection);
-      tab.addEventListener('keydown', event => {
-        if (['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) manualSelection();
-      });
-    });
-    const syncWalkthroughMotion = () => {
-      if (reducedMotion.matches) stopWalkthrough();
-      walkthroughButton.disabled = reducedMotion.matches;
-      if (reducedMotion.matches) walkthroughStatus.textContent = 'Reduced motion · choose a step above';
-    };
-    syncWalkthroughMotion();
-    reducedMotion.addEventListener('change', syncWalkthroughMotion);
-    document.addEventListener('visibilitychange', () => { if (document.hidden) stopWalkthrough(); });
-    // A focused panel must not disappear underneath a keyboard reader.
-    walkthrough.querySelector('.walkthrough-panels').addEventListener('focusin', stopWalkthrough);
-    new IntersectionObserver(entries => {
-      if (!entries[0].isIntersecting) stopWalkthrough();
-    }).observe(walkthrough);
-  }
-
   document.querySelectorAll('.copy-status, #copy-status').forEach(copyStatus => {
     copyStatus.setAttribute('role', 'status');
     copyStatus.setAttribute('aria-live', 'polite');
@@ -280,54 +135,18 @@
     });
   });
 
-  document.querySelectorAll('[data-video-play]').forEach(button => {
-    button.addEventListener('click', async event => {
-      event.preventDefault();
-      const host = document.querySelector('#demo');
-      const video = host?.matches('video') ? host : host?.querySelector('video');
-      if (!video) return;
-      const panel = video.closest('[data-demo-panel]');
-      if (panel) selectChapter(panel.dataset.demoPanel);
-      host.hidden = false;
-      video.hidden = false;
-      video.controls = true;
-      video.tabIndex = 0;
-      for (let parent = video.parentElement; parent; parent = parent.parentElement) {
-        if (parent.matches('details')) parent.open = true;
-      }
-      let status = document.querySelector('#video-status');
-      if (!status) {
-        status = document.createElement('p'); status.id = 'video-status';
-        video.insertAdjacentElement('afterend', status);
-      }
-      status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
-      status.textContent = '';
-      video.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'center' });
-      video.focus({ preventScroll: true });
-      // Playback follows this explicit user gesture, never page load/tab focus.
-      try { await video.play(); }
-      catch { status.textContent = 'Playback did not start. Use the video controls to try again.'; }
-    });
+  const evidenceVideos = [...document.querySelectorAll('video[controls]')];
+  for (const video of evidenceVideos) {
+    new IntersectionObserver(entries => {
+      if (!entries[0].isIntersecting) video.pause();
+    }).observe(video);
+  }
+  document.addEventListener('visibilitychange', () => {
+    if (document.hidden) evidenceVideos.forEach(video => video.pause());
   });
   reducedMotion.addEventListener('change', event => {
-    if (event.matches) document.querySelectorAll('video').forEach(video => video.pause());
+    if (event.matches) evidenceVideos.forEach(video => video.pause());
   });
-
-  // A native dialog provides focus containment, Escape and focus restoration.
-  // Without JavaScript the same links open the original image directly.
-  const imagePreview = document.querySelector('#studio-preview');
-  if (imagePreview?.showModal) {
-    document.querySelectorAll('[data-image-preview]').forEach(link => link.addEventListener('click', event => {
-      event.preventDefault();
-      const img = imagePreview.querySelector('[data-preview-src]');
-      if (img && !img.hasAttribute('src')) img.src = img.dataset.previewSrc;
-      imagePreview.showModal();
-    }));
-    imagePreview.addEventListener('click', event => {
-      const box = imagePreview.getBoundingClientRect();
-      if (event.target === imagePreview && (event.clientX < box.left || event.clientX > box.right || event.clientY < box.top || event.clientY > box.bottom)) imagePreview.close();
-    });
-  }
 
   fetch('crewlo-links.json', { cache: 'no-cache' }).then(response => {
     if (!response.ok) throw new Error('No public link configuration');

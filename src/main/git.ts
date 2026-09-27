@@ -1,4 +1,7 @@
 import { spawn } from 'node:child_process';
+import { lstat, readdir, realpath } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
+import { unlinkWorktreeDeps } from './worktreeDeps';
 import { openForRead, safeResolve } from './fs';
 
 /** Run git in `cwd` with `args`. Returns stdout text or an error. */
@@ -266,6 +269,35 @@ export async function addWorktree(
 export async function removeWorktree(
   cwd: string, wtPath: string
 ): Promise<{ ok: boolean; error?: string }> {
+  // Git for Windows can traverse junctions during forced removal. Verify the
+  // exact registered checkout before touching it, then detach our dependency
+  // link and refuse any remaining links rather than risking their targets.
+  if (process.platform === 'win32') {
+    try {
+      const listing = await runGit(cwd, ['worktree', 'list', '--porcelain', '-z']);
+      if (!listing.ok) return { ok: false, error: listing.error };
+      const target = await realpath(resolve(cwd, wtPath));
+      const records = listing.stdout.split('\0\0').filter(Boolean);
+      const registered = records.slice(1).some(record => {
+        const entry = record.split('\0').find(line => line.startsWith('worktree '));
+        return entry && resolve(entry.slice(9)).toLowerCase() === target.toLowerCase();
+      });
+      if (!registered) return { ok: false, error: 'Refusing to remove an unregistered or primary worktree' };
+      const detached = await unlinkWorktreeDeps(cwd, target);
+      if (!detached.ok) return detached;
+      async function rejectLinks(directory: string): Promise<void> {
+        for (const name of await readdir(directory)) {
+          const child = join(directory, name);
+          const stat = await lstat(child);
+          if (stat.isSymbolicLink()) throw new Error(`Refusing to remove worktree containing a link: ${child}`);
+          if (stat.isDirectory()) await rejectLinks(child);
+        }
+      }
+      await rejectLinks(target);
+    } catch (error) {
+      return { ok: false, error: String(error) };
+    }
+  }
   const res = await runGit(cwd, ['worktree', 'remove', '--force', wtPath]);
   if (res.ok) return { ok: true };
   return { ok: false, error: res.error };

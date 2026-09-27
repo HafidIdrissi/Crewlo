@@ -1,5 +1,7 @@
 import { createHash } from 'node:crypto';
-import { join } from 'node:path';
+// These helpers describe Unix-domain sockets; Windows uses the local TUI.
+import { posix } from 'node:path';
+const { join } = posix;
 
 export const CODEX_REMOTE_SOCKET_RELATIVE =
   'app-server-control/app-server-control.sock';

@@ -2,15 +2,26 @@
 
 <img src="docs/crewlo/favicon.svg" width="72" height="72" alt="Crewlo voxel logo">
 
-## Your AI agents, visible in one voxel studio.
+## Your agents. A studio of their own.
 
 Crewlo brings the coding agents you already run into a shared desktop workspace. Give the crew a mission, see named activity above each character, open the real terminal, and check in from Telegram when you are away from the desk.
 
-[See the 18-second tour](docs/crewlo/demo/crewlo-demo.mp4) · [Try Crewlo from source](#build-from-source) · [Visit the website](https://hafididrissi.github.io/Crewlo/) · [Contribute](CONTRIBUTING.md) · [Star Crewlo](https://github.com/HafidIdrissi/Crewlo)
+[Explore the interactive studio](https://hafididrissi.github.io/Crewlo/#crew) · [Build from source](#build-from-source) · [Windows & macOS packaging](#desktop-packaging) · [Contribute](CONTRIBUTING.md) · [Star Crewlo](https://github.com/HafidIdrissi/Crewlo)
 
-[![Crewlo studio: agent activity labels, a wide mission composer, and message delivery controls](docs/crewlo/demo/studio-activity.gif)](docs/crewlo/demo/crewlo-demo.mp4)
+[![Illustrated Crewlo studio with twelve voxel agents working and taking breaks](docs/crewlo/demo/studio-overview.png)](docs/crewlo/demo/mission-studio.mp4)
 
-*Actual Crewlo interface, with scripted agents and events for this studio clip—not a live AI run. [Static image](docs/crewlo/demo/studio-poster.png) · [Capture notes](docs/crewlo/demo/README.md).*
+*Illustrated 15-second mission: request → agent → activity → reply. The agents and responses are scripted, not a live AI recording. [Play the MP4](docs/crewlo/demo/mission-studio.mp4) · [Original interface capture](docs/crewlo/demo/studio-activity.gif) · [Capture notes](docs/crewlo/demo/README.md).*
+
+## Latest work — September 2026
+
+- **A living studio on the website.** Choose a sample mission and agent, follow the four steps, pause or replay. Select a character to see their activity and last illustrated reply beside the scene.
+- **Twelve provider presets.** Four featured figurines with an expandable shelf; the desktop onboarding now includes Gemini in its twelve-engine list. Presets are not a claim that every provider has been live-tested.
+- **One messaging section.** Telegram and experimental WhatsApp previews share tabs, with redesigned phone layouts and evidence kept next to each feature.
+- **Windows preview installer.** French/English setup, per-user installation, branded shortcuts, and checks of the packaged terminal, SQLite, onboarding and settings persistence.
+- **Safer Windows worktree cleanup.** Shared dependency junctions are detached before removal; other links cause removal to be refused to protect external files.
+- **macOS packaging checks.** Universal Intel/Apple Silicon targets reviewed and universal-DMG selection fixed. Building and running the installer still requires a Mac.
+
+[Current preview notes](RELEASE.md) · [Changelog](CHANGELOG.md) · [Details & limits](#current-status)
 
 ### A real Telegram reply, presented like a phone
 
@@ -24,7 +35,7 @@ Crewlo brings the coding agents you already run into a shared desktop workspace.
 
 *Illustrative flow in a recreated phone UI—not a WhatsApp conversation or proof of delivery. The studio crop is from an earlier Crewlo capture; the chat text is scripted. [Preview scope and MP4](docs/crewlo/demo/whatsapp-phone-preview.md).*
 
-**Source-first preview:** Crewlo has no verified installer or release feed yet. The desktop and focused tests have been checked locally on Windows; live WhatsApp delivery and packaged macOS/Linux builds still need validation. [What is tested](#current-status) · [What you need to run it](#build-from-source).
+**Early preview:** an unsigned Windows installer has been built and checked locally. No public installer download or release feed is advertised here. macOS/Linux runtime validation and live WhatsApp delivery remain open. [What is tested](#current-status) · [What you need to run it](#build-from-source).
 
 ## Why Crewlo?
 
@@ -37,9 +48,17 @@ Bring the agent CLI you already use: provider presets include Claude Code, Codex
 
 ## Current status
 
-Crewlo is an early, source-first project. Local Windows checks cover the interface, real local terminal access, messaging queues, SQLite and OS-encrypted credential storage. Typechecks, production builds and focused feature tests have passed; the full test suite still has [documented baseline failures](docs/crewlo/VERIFICATION.md).
+| Area | Verified scope | Remaining limits |
+| --- | --- | --- |
+| Windows installer | French setup on the development PC; rebuilt package starts; SQLite, PTY and settings persistence pass | Unsigned; no clean-PC or completed uninstall test |
+| Real agent | Codex read a temporary file and returned the exact marker through packaged Crewlo IPC and PTY | Does not establish full hive routing, all providers or messaging delivery |
+| Website | Five widths from 320 to 1440 px; keyboard selection, timed animations, pause, offscreen stop and reduced motion | Illustrated agents and missions; full accessibility audit remains open |
+| macOS | Universal DMG/ZIP configuration, icon and permissions files checked; targeted tests pass | No DMG built or installed; requires a Mac |
+| Linux | Packaging configuration retained | Runtime and installer not validated |
 
-A basic real Telegram request and named reply were [observed in Telegram Web](docs/crewlo/demo/telegram-phone-demo.md); that does not prove every agent, reconnection or physical-phone scenario. Automated messaging tests use simulated Telegram/Meta traffic and agent replies. WhatsApp with your credentials and public callback still needs a [live acceptance test](docs/messageries-tests.fr.md). Packaged installers, signing and macOS/Linux runtime behavior have not been verified. There is no Crewlo release feed.
+The 27 September full-suite run passed **959 tests, with 0 failures and 8 skipped** (967 total), including the signing-command and universal-DMG regressions. Earlier baseline failures are resolved; the old report remains as historical evidence. [Windows validation](docs/crewlo/WINDOWS-VALIDATION.fr.md) · [macOS validation](docs/crewlo/MACOS-VALIDATION.fr.md) · [Historical baseline](docs/crewlo/VERIFICATION.md).
+
+A basic real Telegram request and named reply were [observed in Telegram Web](docs/crewlo/demo/telegram-phone-demo.md); that does not prove every agent, reconnection or physical-phone scenario. Automated messaging tests use simulated Telegram/Meta traffic and agent replies. WhatsApp still needs a [live acceptance test](docs/messageries-tests.fr.md). Additional live messaging checks and signing are deferred. There is no Crewlo release feed or enabled automatic update service.
 
 ## Build from source
 
@@ -69,7 +88,24 @@ npm run build
 npm run preview
 ```
 
-The test runner expands filenames portably, including on Windows. See [verification and known baseline failures](docs/crewlo/VERIFICATION.md) and [messaging checks](docs/messageries-tests.fr.md) to distinguish focused test results from the full suite.
+Despite its historical name, `test:focused` runs all `test/*.test.cjs` files with portable filename expansion. `npm run test:crewlo` runs the smaller Crewlo-specific smoke suite. Live provider checks are separate and can consume provider usage.
+
+## Desktop packaging
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dist:win` | Build Windows x64 NSIS with native-module reconstruction |
+| `npm run dist:win:preview` | Local Windows preview using already installed, validated native modules |
+| `npm run dist:win:signed` | Require code signing; needs your signing credentials and native build tools |
+| `npm run dist:mac` | Build universal DMG and ZIP **on macOS** |
+
+These platform commands do not publish. The Windows preview produces
+`dist/windows-preview/Crewlo-0.4.6-win-x64-preview-setup.exe` locally; this path is
+not a public download. It does not prove a clean native rebuild or another PC's
+compatibility. macOS expects `dist/Crewlo-0.4.6-mac-universal.dmg` after a successful
+Mac build. Signing and Apple notarization have not been validated.
+
+[Windows installer guide](docs/crewlo/WINDOWS-INSTALLER.fr.md) · [Mac checks and next steps](docs/crewlo/MACOS-VALIDATION.fr.md)
 
 ## In the studio
 

@@ -28,7 +28,7 @@ test('consecutive agent caps survive an interleaved config update', () => {
   writeConfig({ agentTokenCaps: { existing: 50 } });
 
   setAgentTokenCap('jim', 100);
-  writeConfig({ registeredRepos: ['/workspace/project'] });
+  writeConfig({ registeredRepos: [path.resolve('/workspace/project')] });
   setAgentTokenCap('pam', 200);
 
   const config = readConfig();
@@ -37,7 +37,7 @@ test('consecutive agent caps survive an interleaved config update', () => {
     jim: 100,
     pam: 200
   });
-  assert.deepEqual(config.registeredRepos, ['/workspace/project']);
+  assert.deepEqual(config.registeredRepos, [path.resolve('/workspace/project')]);
 });
 
 test('setting and clearing caps use the latest persisted map', () => {

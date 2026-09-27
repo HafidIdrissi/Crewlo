@@ -13,7 +13,10 @@ test('the README leads with the studio and accurately scoped real Telegram demo'
   assert.match(readme, /docs\/crewlo\/demo\/telegram-phone-demo\.gif/);
   assert.match(readme, /verified in Telegram Web/i);
   assert.match(readme, /recreated and the wait is condensed/i);
-  assert.match(readme, /no verified installer or release feed/i);
+  assert.match(readme, /unsigned Windows installer has been built and checked locally/i);
+  assert.match(readme, /No public installer download or release feed/i);
+  assert.match(readme, /docs\/crewlo\/demo\/mission-studio\.mp4/);
+  assert.match(readme, /MACOS-VALIDATION\.fr\.md/);
   assert.match(readme, /https:\/\/hafididrissi\.github\.io\/Crewlo\//);
 });
 
@@ -44,7 +47,9 @@ test('source-first CI and release automation do not claim an unverified download
   assert.match(ci, /^  workflow_dispatch:\s*$/m);
   assert.doesNotMatch(release, /^  push:\s*$/m);
   assert.match(release, /^  workflow_dispatch:\s*$/m);
-  assert.match(read('RELEASE.md'), /Historical upstream release note/);
+  assert.match(read('RELEASE.md'), /Not a published release/);
+  assert.match(read('RELEASE.md'), /docs\/archive\/UPSTREAM-RELEASE-0\.4\.6\.md/);
+  assert.match(read('docs/archive/UPSTREAM-RELEASE-0.4.6.md'), /Historical upstream release note/);
   assert.match(read('RELEASE-CHECKLIST.md'), /Historical upstream checklist/);
   assert.match(read('CONTRIBUTORS.md'), /not.*a list of Crewlo contributors/i);
   assert.doesNotMatch(read('CODE_OF_CONDUCT.md'), /INSERT CONTACT METHOD/);

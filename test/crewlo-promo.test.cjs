@@ -21,15 +21,15 @@ function localTarget(value, from = docs) {
 }
 test('Crewlo landing uses local media, real repository links and explicit demo disclosure', () => {
   const html = read('docs/index.html');
-  assert.match(html, /<title>Crewlo — Your AI agents\. One clear workspace\.<\/title>/);
+  assert.match(html, /<title>Crewlo — Your agents\. A studio of their own\.<\/title>/);
   assert.equal((html.match(/<h1(?:\s|>)/g) || []).length, 1, 'One clear page heading');
   assert.match(html, /<main\b[^>]*id="main"/);
-  assert.match(html, /Scripted (?:interface )?demo/i);
-  assert.match(html, /No live AI execution or real Telegram delivery/i);
+  assert.match(html, /Illustrated demo/i);
+  assert.match(html, /sample missions and responses/i);
   assert.match(html, /https:\/\/github.com\/HafidIdrissi\/crewlo/);
   assert.doesNotMatch(html, /googletagmanager|posthog|starct|razorpay|harnessmd\.com/);
   assert.doesNotMatch(html, /<video[^>]*autoplay/);
-  assert.match(html, /<track\b[^>]*kind="captions"/);
+  assert.match(html, /data-frame="3"[\s\S]*?result-points/);
   assert.doesNotMatch(html, /href="[^"]+\.(?:exe|dmg|appimage)(?:[?#][^"]*)?"/i, 'No unverified installer download');
   assert.doesNotMatch(html, /Download (?:Crewlo )?for (?:Windows|macOS|Linux)/i, 'Source-only install must not imply a published installer');
   for (const match of html.matchAll(/(?:src|href|poster|data-motion|data-still)="([^"]+)"/g)) localTarget(match[1]);
@@ -41,10 +41,10 @@ test('Crewlo landing uses local media, real repository links and explicit demo d
 
 test('Landing contains keyboard demo, copy feedback, FAQ and reduced-motion contracts', () => {
   const html = read('docs/index.html');
-  const steps = [...html.matchAll(/data-demo-step="([^"]+)"/g)].map(match => match[1]);
-  const panels = [...html.matchAll(/data-demo-panel="([^"]+)"/g)].map(match => match[1]);
-  assert.deepEqual(steps, ['direct', 'observe', 'connect']);
-  assert.deepEqual(panels, ['direct', 'observe', 'connect']);
+  const steps = [...html.matchAll(/data-sequence="([^"]+)"/g)].map(match => match[1]);
+  const panels = [...html.matchAll(/data-phase-select="([^"]+)"/g)].map(match => match[1]);
+  assert.deepEqual(steps, ['mission', 'telegram', 'whatsapp']);
+  assert.deepEqual(panels.slice(0, 4), ['0', '1', '2', '3']);
   assert.match(html, /role="tablist"/);
   const guide = read('docs/install.html');
   assert.match(guide, /id="install-command"/);
@@ -58,30 +58,30 @@ test('Landing contains keyboard demo, copy feedback, FAQ and reduced-motion cont
 test('Voxel landing explains the product before setup and optional integrations', () => {
   const html = read('docs/index.html');
   const heading = html.match(/<h1\b[^>]*>([\s\S]*?)<\/h1>/)?.[1].replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
-  assert.equal(heading, 'Your AI agents. One clear workspace.');
+  assert.equal(heading, 'Your agents. A studio of their own.');
   const hero = html.match(/<section\b[^>]*class="[^"]*\bhero\b[^"]*"[^>]*>([\s\S]*?)<\/section>/)?.[1];
   assert.ok(hero, 'Prominent hero section is present');
   const header = html.match(/<header\b[^>]*>([\s\S]*?)<\/header>/)?.[1];
-  for (const target of ['experience', 'demo', 'connect']) assert.match(header, new RegExp(`href="#${target}"`));
+  for (const target of ['crew', 'demo', 'connect']) assert.match(header, new RegExp(`href="#${target}"`));
   for (const channel of ['telegram', 'whatsapp']) {
     assert.doesNotMatch(header, new RegExp(`href="#${channel}"`), 'Messaging is grouped under Integrations');
-    assert.match(html, new RegExp(`<details\\b[^>]*id="${channel}"`), `Integration #${channel} remains a native disclosure`);
+    assert.match(html, new RegExp(`<details\\b[^>]*id="${channel}"`), `Integration #${channel} remains a channel panel`);
   }
   assert.doesNotMatch(hero, /first-steps/);
-  assert.match(hero, /one visual workspace on your computer/);
-  assert.match(hero, /Build your crew\.<br>\s*Block by block\./);
-  assert.match(hero, /data-image-preview/);
-  assert.match(hero, /Explore the demo/);
+  assert.match(hero, /one visual workspace/);
+  assert.match(hero, /data-sample-mission/);
+  assert.match(hero, /data-hero-agent/);
+  assert.match(hero, /Explore the studio/);
   assert.match(hero, /href="install\.html"/);
-  assert.match(hero, /Early-stage · Windows source preview/);
+  assert.match(hero, /Early-stage &middot; Windows source preview/);
   assert.match(header, /aria-controls="main-nav"/);
   const setup = html.match(/<section\b[^>]*id="start"[^>]*>([\s\S]*?)<\/section>/)?.[1];
   assert.match(setup, /install\.html#requirements/);
   assert.match(setup, /install\.html#connect-agent/);
   assert.match(setup, /install\.html#first-mission/);
-  const sections = ['demo', 'experience', 'start', 'connect', 'proof', 'faq', 'support'];
+  const sections = ['demo', 'crew', 'proof', 'agents', 'connect', 'start', 'faq', 'support'];
   const positions = sections.map(id => html.indexOf(`id="${id}"`));
-  assert.ok(positions.every((position, i) => position >= 0 && (!i || position > positions[i - 1])), 'Product tour leads into setup, integrations, evidence, FAQ and final installation');
+  assert.ok(positions.every((position, i) => position >= 0 && (!i || position > positions[i - 1])), 'Studio leads into evidence, agents, integrations, setup and FAQ');
   const support = html.match(/<section\b[^>]*id="support"[^>]*>([\s\S]*?)<\/section>/)?.[1];
   assert.match(support, /href="install\.html"/);
 });
@@ -176,8 +176,8 @@ test('Source guide and status pages keep a complete local navigation and honest 
   const transcript = JSON.parse(read('docs/crewlo/demo/telegram-phone-transcript.json'));
   assert.ok(html.includes(transcript.request));
   assert.ok(html.includes(transcript.reply.replace('Remy · ', '')));
-  assert.match(html, /Still to capture:/);
-  assert.match(html, /EXPERIMENTAL · LIVE TEST PENDING/);
+  assert.match(html, /not a completed coding task/);
+  assert.match(html, /EXPERIMENTAL &middot; LIVE TEST PENDING/);
   assert.match(html, /Agent CLIs can send prompts and code/);
   assert.match(read('docs/install.html'), /Python 3/);
   assert.match(read('docs/install.html'), /Spectre/);

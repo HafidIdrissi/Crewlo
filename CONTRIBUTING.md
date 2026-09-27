@@ -23,13 +23,13 @@ npm ci
 npm run dev
 ```
 
-Crewlo does not yet offer a verified installer. You need an installed and authenticated agent CLI to run a real session; provider subscriptions and API usage are separate. Use a small, non-sensitive test workspace first.
+An unsigned Windows preview installer has been tested on the development PC; there is no public release feed. macOS packaging has been reviewed but still needs a Mac build and runtime test. See the [Windows](docs/crewlo/WINDOWS-VALIDATION.fr.md) and [macOS](docs/crewlo/MACOS-VALIDATION.fr.md) reports. You need an installed and authenticated agent CLI to run a real session; provider subscriptions and API usage are separate. Use a small, non-sensitive test workspace first.
 
 ## Send a focused pull request
 
 1. Open an issue or discussion for larger changes. For a small fix, a PR is fine directly.
 2. Work on one behavior at a time, from `main`. Keep paths cross-platform and handle directories with spaces.
-3. Add or update a test when behavior changes. Run `npm run typecheck`, relevant tests, and `npm run build`. The full Windows suite still has [known baseline failures](docs/crewlo/VERIFICATION.md); report what passed and failed instead of claiming a clean run.
+3. Add or update a test when behavior changes. Run `npm run typecheck`, relevant tests, and `npm run build`. `npm run test:focused` runs the full suite; `npm run test:crewlo` is the smaller smoke suite. The earlier Windows failures were resolved; report your actual results and skipped tests with your OS and Node version.
 4. Use the PR template's **Before** and **After** sections. For UI, attach comparable screenshots or a short recording. For docs, build or nonvisual work, describe the before/after outcome in text or show test output. State your OS and exact checks.
 5. Keep new UI consistent with [Crewlo's design system](DESIGN.md). Credit new artwork and fonts in [asset origins](docs/crewlo/ASSETS.md).
 

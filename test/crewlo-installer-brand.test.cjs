@@ -6,6 +6,30 @@ const path = require('node:path');
 const root = path.resolve(__dirname, '..');
 const read = rel => fs.readFileSync(path.join(root, rel));
 
+test('signed Windows release command refuses unsigned output and never publishes', () => {
+  const command = JSON.parse(read('package.json')).scripts['dist:win:signed'];
+  assert.match(command, /--win nsis --x64/);
+  assert.match(command, /-c\.forceCodeSigning=true/);
+  assert.match(command, /--publish never/);
+  assert.match(command, /-c\.directories\.output=dist\/windows-signed/);
+  assert.doesNotMatch(command, /npmRebuild=false/);
+});
+
+test('Windows installation is independent, per-user, and preserves user data', () => {
+  const config = require('js-yaml').load(read('electron-builder.yml').toString('utf8'));
+  assert.equal(config.appId, 'app.crewlo.desktop');
+  assert.equal(config.nsis.perMachine, false);
+  assert.equal(config.nsis.allowElevation, false);
+  assert.equal(config.nsis.deleteAppDataOnUninstall, false);
+  assert.equal(config.nsis.allowToChangeInstallationDirectory, true);
+  assert.deepEqual(config.nsis.installerLanguages, ['en_US', 'fr_FR']);
+  assert.equal(config.publish, null);
+  assert.ok(!config.files.includes('out/**'), 'Do not package local site screenshots and test captures');
+  for (const entry of ['out/main/**', 'out/preload/**', 'out/renderer/**']) assert.ok(config.files.includes(entry));
+  assert.match(read('src/main/index.ts').toString('utf8'), /setAppUserModelId\('app\.crewlo\.desktop'\)/);
+  assert.match(read(config.nsis.include).toString('utf8'), /customWelcomePage/);
+});
+
 test('Windows installer uses Crewlo icon and branded NSIS artwork', () => {
   const config = read('electron-builder.yml').toString('utf8');
   assert.match(config, /^productName: Crewlo$/m);

@@ -1,6 +1,121 @@
 # Crewlo demo kit
 
-## Focused landing walkthrough — 26 September 2026
+## Living studio — 27 September 2026
+
+The first screen now uses a roughly 40/60 desktop split: the short promise and
+two actions sit beside the large animated studio. Mission, activity and reply
+cards appear beside Remy's desk rather than in a separate text panel. Remy is a
+keyboard-accessible button that opens the illustrated response. The main action
+opens the full interactive studio; the second opens the installation guide.
+On mobile the story card sits below the scene to preserve readable text.
+
+Visitors can choose **Explore the project**, **Find the tests** or **Explain
+messaging**, then send the illustrated mission to **Remy** or **Jules**. A small
+card travels towards that desk during the first three seconds; the desk then
+lights up, activity appears, and the response unfolds. Selecting a sample stops
+the ambient loop. An explicitly sent mission plays once and holds its result,
+with replay and agent/mission selection available in the same scene. Pausing
+also freezes the travelling card. Reduced motion shows the selected response
+without animating the delivery. These are local scripted responses, not live calls.
+
+The separate **See the verified Telegram exchange** link leads to the dated
+request and actual reply directly below the interactive studio, before the preset
+chooser. This compact evidence section links to the transcript and verification
+scope. No continuous real mission recording is
+available yet; the existing recreated phone video must not be presented as one.
+
+The page proceeds from the hero and interactive studio to real evidence, preset
+choices, messaging, installation and FAQ. Telegram is the default messaging tab;
+WhatsApp has a separate experimental tab. Switching tabs stops the hidden loop.
+Arrow keys, Home and End select tabs, and existing channel deep links reveal the
+correct panel. Without JavaScript both channels remain readable. Essential status
+labels stay visible; detailed channel, data and cost notes use **Details & limits**
+disclosures. The three standalone benefit cards are omitted from this shorter path.
+
+The landing now presents these local, illustrated experiences:
+
+- **Mission → agent → result (15 seconds):** request at 0–3s, Remy working at
+  3–6s, `Reading README.md` at 6–10s, then a three-point response at 10–15s.
+  The response describes real source entry points, but was written for this
+  presentation; it is **not an executed agent response**. Activity wording follows
+  `src/shared/toolActivity.ts`. The MP4 renders twelve original agents with actual
+  typing, coffee and gaming poses, plus a gentle camera approach. The presentation
+  uses a neutral ivory background and a two-layer contact shadow beneath the floor;
+  these rendering changes are isolated to the capture fixture. Accessible HTML
+  supplies the readable steps.
+- **Meet your crew:** Remy, Ellis, Sam and Nina can be selected by their character, the
+  selection cards, or the next-agent button. The compact profile sits beside the
+  scene on desktop and immediately below it on mobile, with name, activity and
+  last reply grouped before the selection cards. All profiles and replies
+  are illustrative. Selecting a character does not start an agent.
+- **Telegram ↔ studio (9 seconds):** send at 0–3s, queue at 3–6s, named reply
+  at 6–9s. Text quotes `telegram-phone-transcript.json`; the screens and timing
+  are reconstructed, not synchronized footage. WhatsApp remains separately
+  marked experimental.
+- **WhatsApp ↔ studio (9 seconds):** a separate illustrative request, queue and
+  headline reply. Its light iOS-style phone follows the supplied visual reference:
+  green outgoing bubbles, white incoming bubbles, call icons and a light composer.
+  The local `whatsapp-wallpaper.svg` uses original line art. The user's reference
+  image and personal conversation are not published. The experimental label and
+  lack of live validation remain visible above and below the demonstration.
+
+Playback starts automatically when a sequence enters the viewport, and loops until paused. The reply holds for
+five seconds in the main loop, three in Telegram. Manual step controls pause
+playback. Leaving the viewport or hiding the browser tab suspends playback;
+returning resumes it unless the visitor explicitly paused or selected a step.
+Reduced-motion visitors get static, selectable steps, with no autoplay.
+A progress line makes playback visible immediately; Telegram also animates a
+small message marker between the phone and studio.
+Without JavaScript, all story steps are readable. No external APIs are called.
+The three benefit cards remain static in this first batch.
+
+The populated workspace shows **12 scripted agents: 6 working, 5 taking breaks,
+and 1 ready**. Break destinations are the coffee machine, arcade, foosball table,
+terrace bench and lounge sofa. The capture-only fixture seeds these destinations;
+the production app's execution state and break scheduler are unchanged. The full
+width workspace plays the video automatically while visible, with its own pause
+button and a static poster under reduced motion. Breaks illustrate idle time,
+not pausing a running task. Remy and Ellis remain at their original desk indexes.
+
+The preset chooser follows the interactive studio. Four original Crewlo figurines
+share one shelf: Claude Code, Codex, Gemini CLI and OpenCode. Selecting one shows
+its CLI command and a link to the shared local configuration guide. Commands match
+`src/shared/agentProvider.ts` (the custom-command option is separate).
+A native "See all 12 presets" disclosure reveals the other eight choices.
+The shelf retains four columns on mobile; the additional choices use two columns.
+Without JavaScript, the disclosure still works and each figurine links to setup.
+The artwork comes from `drawVoxelPerson`, with the studio's palettes and geometry.
+Character/provider pairings are illustrative, not live sessions or claims of
+provider-wide validation.
+Rebuild its local SVG artwork with `node tools/build-provider-gallery.cjs`.
+
+The overview shows the full room at 1920 × 900, with names supplied by HTML.
+`studio-overview.webp` is the lossless poster; `mission-studio.mp4` is a silent,
+15-second H.264 animation (about 605 KB), not a live mission capture. The capture
+tool renders 450 deterministic frames from the actual voxel renderer before
+encoding, rather than animating a still image.
+The Telegram presentation uses HTML/CSS rather than a GIF so its text adapts to
+small screens. Its dark Telegram styling follows the supplied visual reference:
+violet outgoing messages, charcoal incoming messages, timestamps, chat header and
+composer, inside a black phone frame with status bar and camera. The wallpaper
+is original local SVG line art (`telegram-wallpaper.svg`). The conversation still
+quotes the documented Crewlo exchange; the supplied screenshot is not published.
+Detailed evidence is now on `project-status.html#demo-evidence`.
+
+Rebuild the new assets from the repository root with FFmpeg and Playwright
+available (the `CREWLO_PLAYWRIGHT`, `CREWLO_CHROMIUM` and `CREWLO_FFMPEG`
+environment overrides described below are supported):
+
+```sh
+node tools/build-living-media.cjs
+node tools/crewlo-site-check.cjs
+```
+
+The capture tool uses an isolated local renderer server on port 5184. Stop any
+existing framing server before rebuilding. Site checks write screenshots to
+`out/site-check/`, not to the versioned asset folder.
+
+## Previous landing walkthrough — 26 September 2026 (superseded)
 
 The landing now leads with a full-width studio close-up and three readable steps:
 write a mission, follow an agent, read a reply. Captions and playback controls sit

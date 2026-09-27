@@ -23,6 +23,18 @@ test('picks the dmg for the running mac arch, not the zip', () => {
 test('picks the installer on windows, never the portable', () => {
   assert.match(pickDownloadAsset(assets, 'win32', 'x64'), /win-x64-setup\.exe$/);
 });
+
+test('Crewlo universal DMG works on both Mac architectures, with native assets preferred', () => {
+  const universal = { name: 'Crewlo-0.4.6-mac-universal.dmg', browser_download_url: 'https://example.test/Crewlo-0.4.6-mac-universal.dmg' };
+  const zip = { name: 'Crewlo-0.4.6-mac-universal.zip', browser_download_url: 'https://example.test/app.zip' };
+  for (const arch of ['arm64', 'x64']) {
+    assert.equal(pickDownloadAsset([zip, universal], 'darwin', arch), universal.browser_download_url);
+    assert.match(pickDownloadAsset([universal, ...assets], 'darwin', arch), new RegExp(`mac-${arch}\\.dmg$`));
+  }
+  assert.equal(pickDownloadAsset([zip], 'darwin', 'arm64'), null);
+  assert.equal(pickDownloadAsset([universal], 'darwin', 'ia32'), null);
+  assert.equal(pickDownloadAsset([universal], 'win32', 'x64'), null);
+});
 test('picks the AppImage on linux', () => {
   assert.match(pickDownloadAsset(assets, 'linux', 'x64'), /AppImage$/);
 });

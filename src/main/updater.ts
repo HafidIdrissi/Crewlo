@@ -182,7 +182,10 @@ export function pickDownloadAsset(
     : platform === 'linux' ? /-linux-x86_64\.AppImage$/
     : null;
   if (!want) return null;
-  const hit = assets.find((a) => typeof a.name === 'string' && want.test(a.name) && typeof a.browser_download_url === 'string');
+  const hit = assets.find((a) => typeof a.name === 'string' && want.test(a.name) && typeof a.browser_download_url === 'string')
+    ?? (platform === 'darwin' && ['x64', 'arm64'].includes(arch)
+      ? assets.find((a) => typeof a.name === 'string' && /-mac-universal\.dmg$/.test(a.name) && typeof a.browser_download_url === 'string')
+      : undefined);
   return hit?.browser_download_url ?? null;
 }
 

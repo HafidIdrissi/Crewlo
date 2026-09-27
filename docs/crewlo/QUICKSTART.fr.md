@@ -1,6 +1,6 @@
 # Lancer Crewlo sur Windows
 
-Crewlo se lance aujourd’hui **depuis les sources**. Il n’y a pas encore d’installateur Crewlo vérifié en un clic. Le diagnostic ci-dessous aide à repérer les prérequis avant de lancer l’installation ; il ne modifie rien.
+Ce guide explique le lancement de Crewlo **depuis les sources**. Un installateur Windows de prévisualisation, non signé, a aussi été construit et testé localement ; aucun téléchargement public n'est annoncé. Voir le [guide de l'installateur](WINDOWS-INSTALLER.fr.md) et le [bilan des tests](WINDOWS-VALIDATION.fr.md). Le diagnostic ci-dessous repère les prérequis sans rien modifier.
 
 ## 1. Ouvrir le projet
 

@@ -20,6 +20,15 @@ async function waitForLocalFonts(page) {
 
 async function messagingAccess(page, width, height) {
   await page.goto(origin + '/');
+  assert.equal(await page.locator('[data-channel-panel]:visible').count(), 1, 'Only one messaging demonstration occupies the page');
+  assert.equal(await page.locator('#telegram-tab').getAttribute('aria-selected'), 'true');
+  assert.equal(await page.locator('[data-channel-panel] details[open]').count(), 0, 'Detailed channel limits start collapsed');
+  await page.locator('#telegram-tab').press('ArrowRight');
+  assert.equal(await page.locator('#whatsapp-tab').getAttribute('aria-selected'), 'true');
+  assert.ok(await page.locator('#whatsapp-panel .experimental').first().isVisible());
+  assert.equal(await page.locator('[data-sequence="telegram"]').getAttribute('data-playing'), 'false', 'A hidden channel stops its loop');
+  await page.locator('#whatsapp-tab').press('Home');
+  assert.equal(await page.locator('#telegram-tab').getAttribute('aria-selected'), 'true');
   const menu = page.locator('.nav-toggle');
   const nav = page.locator('header nav a[href="#connect"]');
   if (width <= 760) {
@@ -36,6 +45,7 @@ async function messagingAccess(page, width, height) {
   for (const channel of ['telegram', 'whatsapp']) {
     await page.goto(`${origin}/#${channel}`);
     const card = page.locator(`#connect details#${channel}`);
+    assert.ok(await page.locator(`#${channel}-panel`).isVisible(), 'Deep link selects its messaging tab');
     assert.equal(await card.evaluate(el => el.open), true, 'Deep link opens its integration');
     const target = await card.boundingBox();
     const header = await page.locator('header').first().boundingBox();
@@ -50,7 +60,7 @@ async function messagingAccess(page, width, height) {
 }
 
 async function messagingContrast(page) {
-  const readings = await page.locator('header nav a, .quick-start .eyebrow, .quick-start p, .status-label, .experience-tabs button[aria-selected="true"]').evaluateAll(elements => {
+  const readings = await page.locator('header nav a, .quick-start .eyebrow, .quick-start p, .status-label, .experience-tabs button[aria-selected="true"], .button:visible, h1:visible, h2:visible, h3:visible, .hero .lede').evaluateAll(elements => {
     const rgba = text => { const values = text.match(/[\d.]+/g)?.map(Number) ?? [0, 0, 0]; return [values[0], values[1], values[2], values[3] ?? 1]; };
     const over = (front, back) => front.slice(0, 3).map((value, i) => value * front[3] + back[i] * (1 - front[3]));
     const luminance = color => color.map(value => { const n = value / 255; return n <= .04045 ? n / 12.92 : ((n + .055) / 1.055) ** 2.4; }).reduce((sum, value, i) => sum + value * [.2126, .7152, .0722][i], 0);
@@ -88,41 +98,82 @@ async function localMessagingGuides(page) {
     assert.ok(await back.isVisible(), 'Guide provides a visible return to the studio page');
     const [home] = await Promise.all([page.waitForNavigation({ waitUntil: 'domcontentloaded' }), back.click()]);
     assert.equal(home?.status(), 200);
-    assert.equal(await page.title(), 'Crewlo — Your AI agents. One clear workspace.');
+    assert.equal(await page.title(), 'Crewlo — Your agents. A studio of their own.');
   }
-}
-
-async function selectedStep(page, key) {
-  const tab = page.locator(`[data-demo-step="${key}"]`);
-  const panel = page.locator(`[data-demo-panel="${key}"]`);
-  await page.waitForFunction(key => document.querySelector(`[data-demo-step="${key}"]`)?.getAttribute('aria-selected') === 'true', key);
-  assert.equal(await tab.getAttribute('role'), 'tab');
-  assert.equal(await tab.getAttribute('tabindex'), '0');
-  assert.equal(await panel.getAttribute('role'), 'tabpanel');
-  assert.equal(await tab.getAttribute('aria-controls'), await panel.getAttribute('id'));
-  assert.equal(await panel.getAttribute('aria-labelledby'), await tab.getAttribute('id'));
-  assert.equal(await panel.isVisible(), true);
-  assert.equal(await page.locator('[data-demo-step][aria-selected="true"]').count(), 1);
-  assert.equal(await page.locator('[data-demo-panel]:visible').count(), 1);
-  for (const other of await page.locator(`[data-demo-step]:not([data-demo-step="${key}"])`).all()) assert.equal(await other.getAttribute('tabindex'), '-1');
 }
 
 async function keyboardDemo(page) {
-  const direct = page.locator('[data-demo-step="direct"]');
-  await direct.press('Enter'); await selectedStep(page, 'direct');
-  await direct.press('ArrowRight'); await selectedStep(page, 'observe');
-  const observe = page.locator('[data-demo-step="observe"]');
-  assert.ok(await observe.evaluate(el => el === document.activeElement), 'Arrow key moves focus with selection');
-  const focusVisible = await observe.evaluate(el => { const s = getComputedStyle(el); return s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) >= 2; });
-  assert.ok(focusVisible, 'Keyboard-selected demo tab has a visible focus indicator');
-  await observe.press('End'); await selectedStep(page, 'connect');
-  await page.locator('[data-demo-step="connect"]').press('ArrowRight'); await selectedStep(page, 'direct');
-  await direct.press('ArrowLeft'); await selectedStep(page, 'connect');
-  await page.locator('[data-demo-step="connect"]').press('Home'); await selectedStep(page, 'direct');
-  for (const key of ['observe', 'connect', 'direct']) {
-    await page.locator(`[data-demo-step="${key}"]`).press('Space');
-    await selectedStep(page, key);
+  await page.locator('[data-hero-agent]').press('Enter');
+  assert.equal(await page.locator('[data-sequence="mission"]').getAttribute('data-phase'), '3', 'Remy opens his illustrated reply from the hero');
+  for (const kind of ['mission', 'telegram', 'whatsapp']) {
+    if (kind !== 'mission') await page.locator(`[data-channel-tab="${kind}"]`).click();
+    const root = page.locator(`[data-sequence="${kind}"]`);
+    for (const step of await root.locator('[data-phase-select]').all()) {
+      await step.press('Enter');
+      assert.equal(await step.getAttribute('aria-pressed'), 'true');
+      assert.equal(await root.locator('[data-frame]:visible').count(), 1);
+      assert.equal(await root.getAttribute('data-phase'), await step.getAttribute('data-phase-select'));
+      assert.ok(await step.evaluate(el => {
+        const style = getComputedStyle(el);
+        return style.outlineStyle !== 'none' && parseFloat(style.outlineWidth) >= 2;
+      }), 'Keyboard controls have a visible focus ring');
+    }
   }
+  const crew = page.locator('[data-crew]');
+  await crew.locator('.agent-cards [data-agent="ellis"]').press('Space');
+  assert.equal(await crew.locator('[data-agent-name]').innerText(), 'Ellis');
+  assert.match(await crew.locator('[data-agent-activity]').innerText(), /Idle/);
+  assert.equal(await crew.locator('.agent-hotspot.ellis').getAttribute('aria-pressed'), 'true');
+  await crew.locator('[data-next-agent]').press('Enter');
+  assert.equal(await crew.locator('[data-agent-name]').innerText(), 'Sam');
+  assert.match(await crew.locator('[data-agent-activity]').innerText(), /Coffee break/);
+  await crew.locator('[data-next-agent]').press('Enter');
+  assert.equal(await crew.locator('[data-agent-name]').innerText(), 'Nina');
+  await crew.locator('[data-next-agent]').press('Enter');
+  assert.equal(await crew.locator('[data-agent-name]').innerText(), 'Remy');
+  await crew.locator('.agent-hotspot.ellis').click();
+  assert.equal(await crew.locator('[data-agent-name]').innerText(), 'Ellis');
+  const scene = await crew.locator('.crew-visual').boundingBox();
+  const details = await crew.locator('[data-agent-details]').boundingBox();
+  const roster = await crew.locator('.agent-cards').boundingBox();
+  assert.ok(details.y + details.height <= roster.y, 'Name, state and reply precede agent selection');
+  if (page.viewportSize().width > 900) {
+    assert.ok(details.x >= scene.x + scene.width, 'Desktop profile is beside the studio');
+    assert.ok(details.y >= scene.y && details.y < scene.y + 100, 'Desktop profile starts near the top of the studio');
+    assert.ok(details.y + details.height <= page.viewportSize().height, 'Selecting Ellis keeps his complete reply in view');
+  } else {
+    assert.ok(details.y >= scene.y + scene.height && details.y < scene.y + scene.height + 100, 'Mobile profile immediately follows the scene');
+  }
+  const studioLink = page.locator('header nav a').filter({ hasText: /^Studio$/ });
+  assert.equal(await studioLink.getAttribute('href'), '#crew', 'Studio menu targets the interactive crew');
+  if (page.viewportSize().width <= 760) await page.locator('.nav-toggle').click();
+  await studioLink.click();
+  assert.equal(new URL(page.url()).hash, '#crew');
+  await page.waitForFunction(() => document.activeElement?.id === 'crew');
+}
+
+async function presetChoices(page) {
+  const root = page.locator('[data-presets]');
+  assert.equal(await root.locator('[data-preset]:visible').count(), 4, 'Only four presets initially occupy the shared shelf');
+  const positions = await root.locator('.preset-shelf .preset-choice').evaluateAll(items => items.map(item => item.getBoundingClientRect().top));
+  assert.ok(positions.every(top => Math.abs(top - positions[0]) < 1), 'Four figurines share one shelf on mobile and desktop');
+  await root.locator('[data-preset="codex"]').press('Space');
+  assert.equal(await root.locator('[data-preset-cli]').innerText(), 'codex');
+  assert.equal(await root.locator('[data-preset-guide]').innerText(), 'Configure Codex \u2197');
+  await root.locator('summary').press('Enter');
+  assert.equal(await root.locator('[data-preset]:visible').count(), 12);
+  for (const choice of await root.locator('[data-preset]').all()) {
+    await choice.press('Enter');
+    assert.equal(await root.locator('[data-preset-cli]').innerText(), await choice.getAttribute('data-preset-command'));
+    assert.equal(await root.locator('[data-preset-title]').innerText(), await choice.getAttribute('data-preset-name'));
+    assert.equal(await root.locator('[aria-pressed="true"]').count(), 1);
+  }
+  await root.locator('[data-preset-guide]').press('Enter');
+  assert.equal(new URL(page.url()).pathname, '/install.html');
+  assert.equal(new URL(page.url()).hash, '#connect-agent');
+  await page.goBack();
+  await root.locator('[data-preset="claude"]').waitFor();
+  if (await root.locator('details').evaluate(el => el.open)) await root.locator('summary').press('Enter');
 }
 
 async function copyAndFaq(page) {
@@ -160,61 +211,132 @@ async function copyAndFaq(page) {
   }
 }
 
+async function autoplayDemo(page) {
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  for (const width of [1440, 390]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto(origin + '/');
+    const root = page.locator('[data-sequence="mission"]');
+    await root.scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => document.querySelector('[data-sequence="mission"]').dataset.playing === 'true');
+    await page.waitForFunction(() => Number(document.querySelector('[data-sequence="mission"]').style.getPropertyValue('--sequence-progress')) > .05);
+    await page.waitForFunction(() => document.querySelector('[data-sequence="mission"]').dataset.phase === '1');
+    await page.locator('#faq').scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => document.querySelector('[data-sequence="mission"]').dataset.playing === 'false');
+    await root.scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => document.querySelector('[data-sequence="mission"]').dataset.playing === 'true');
+    await root.locator('[data-sequence-play]').click();
+    await page.locator('#faq').scrollIntoViewIfNeeded();
+    await root.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(300);
+    assert.equal(await root.getAttribute('data-playing'), 'false', 'An explicit pause survives viewport re-entry');
+    const workspace = page.locator('[data-workspace-video]');
+    await workspace.scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => {
+      const video = document.querySelector('[data-workspace-video]');
+      return !video.paused && video.currentTime > .2;
+    });
+    await page.locator('[data-workspace-play]').click();
+    assert.equal(await workspace.evaluate(el => el.paused), true);
+    await page.locator('#faq').scrollIntoViewIfNeeded();
+    await workspace.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(200);
+    assert.equal(await workspace.evaluate(el => el.paused), true, 'Workspace preserves explicit pause');
+    const telegram = page.locator('[data-sequence="telegram"]');
+    await telegram.scrollIntoViewIfNeeded();
+    await page.waitForFunction(() => document.querySelector('[data-sequence="telegram"]').dataset.playing === 'true');
+  }
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.reload();
+  await page.locator('[data-sequence="mission"]').scrollIntoViewIfNeeded();
+  await page.waitForTimeout(300);
+  assert.equal(await page.locator('[data-sequence="mission"]').getAttribute('data-playing'), 'false');
+  assert.equal(await page.locator('#demo video').evaluate(el => el.paused), true);
+  await page.setViewportSize({ width: 1440, height: 1000 });
+}
+
 async function mediaControls(page) {
-  await page.locator('.archive-tour summary').click();
-  const video = page.locator('#demo video');
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  // Start timed playback in a fresh document with the intended media preference.
+  // Mid-playback preference changes are exercised separately below.
+  await page.reload();
+  const mission = page.locator('[data-sequence="mission"]');
+  const video = mission.locator('video');
   assert.equal(await video.getAttribute('autoplay'), null);
-  assert.notEqual(await video.getAttribute('controls'), null);
-  assert.equal(await video.locator('track[kind="captions"]').count(), 1);
-  const playButton = page.locator('[data-video-play]').first();
-  assert.ok(await playButton.count(), 'Demo has a visible, wired play action');
-  await playButton.focus(); await playButton.press('Enter');
-  await page.waitForFunction(() => document.querySelector('#demo video').currentTime > .2);
-  assert.ok(Math.abs(await video.evaluate(el => el.duration) - 18) < .1, 'Existing demo is 18 seconds and decodes');
-  await video.evaluate(el => el.pause());
-  await page.evaluate(() => {
-    window.__crewloOriginalPlay = HTMLMediaElement.prototype.play;
-    HTMLMediaElement.prototype.play = () => Promise.reject(new Error('Fixture playback denied'));
-  });
-  await playButton.focus(); await playButton.press('Enter');
-  await page.getByText('Playback did not start. Use the video controls to try again.', { exact: true }).waitFor();
-  assert.ok(await page.locator('#video-status').isVisible(), 'Playback failure is visible, not only announced');
-  await page.evaluate(() => { HTMLMediaElement.prototype.play = window.__crewloOriginalPlay; delete window.__crewloOriginalPlay; });
-  await playButton.focus(); await playButton.press('Enter');
-  await page.waitForFunction(() => !document.querySelector('#demo video').paused);
-  assert.equal(await page.locator('#video-status').innerText(), '', 'Successful retry clears the old playback error');
-  await video.evaluate(el => el.pause());
-  for (const card of await page.locator('.feature').all()) {
-    const image = card.locator('[data-motion]');
-    if (!(await image.count())) continue;
-    const step = await card.getAttribute('data-demo-panel');
-    if (step) { await page.locator(`[data-demo-step="${step}"]`).click(); await selectedStep(page, step); }
-    assert.ok(await card.isVisible());
-    const toggle = card.locator('.motion-toggle');
-    const poster = await image.getAttribute('src');
-    assert.ok(/\.(png|webp)$/.test(poster), 'Animation starts with still poster');
-    await toggle.focus(); await toggle.press('Enter');
-    assert.equal(await toggle.getAttribute('aria-pressed'), 'true');
-    assert.ok((await image.getAttribute('src')).endsWith('.gif'));
-    await page.waitForFunction(el => el.complete && el.naturalWidth > 0, await image.elementHandle());
-    await toggle.press('Space');
-    assert.equal(await toggle.getAttribute('aria-pressed'), 'false');
-    assert.equal(await image.getAttribute('src'), poster);
+  assert.ok(await video.getAttribute('poster'));
+  await mission.locator('[data-phase-select="0"]').click();
+  await mission.locator('[data-sequence-play]').click();
+  await page.waitForFunction(() => document.querySelector('#demo video').currentTime > .15);
+  assert.ok(Math.abs(await video.evaluate(el => el.duration) - 15) < .1, '15-second camera video decodes');
+  await mission.locator('[data-sequence-play]').click();
+  // A virtual clock verifies the full pacing and the final readable hold.
+  await page.clock.install();
+  for (const kind of ['mission', 'telegram', 'whatsapp']) {
+    if (kind !== 'mission') await page.locator(`[data-channel-tab="${kind}"]`).click();
+    const root = page.locator(`[data-sequence="${kind}"]`);
+    const play = root.locator('[data-sequence-play]');
+    await root.locator('[data-phase-select="0"]').click();
+    await play.click();
+    assert.equal(await play.getAttribute('aria-pressed'), 'true');
+    await page.clock.runFor(3100);
+    assert.equal(await root.getAttribute('data-phase'), '1');
+    await play.click();
+    await page.clock.runFor(4000);
+    assert.equal(await root.getAttribute('data-phase'), '1', 'Pause holds the current step');
+    await play.click();
+    await page.clock.runFor(kind === 'mission' ? 7300 : 3200);
+    assert.equal(await root.getAttribute('data-phase'), kind === 'mission' ? '3' : '2');
+    await page.clock.runFor(kind === 'mission' ? 3500 : 2000);
+    assert.equal(await root.getAttribute('data-phase'), kind === 'mission' ? '3' : '2', 'Result stays readable');
+    await page.clock.runFor(1200);
+    assert.equal(await root.getAttribute('data-phase'), '0', 'Loop restarts after the readable hold');
+    await play.click();
+    assert.equal(await play.getAttribute('aria-pressed'), 'false');
+    await play.click();
+    await page.locator('#faq').scrollIntoViewIfNeeded();
+    await page.waitForFunction(kind => document.querySelector(`[data-sequence="${kind}"]`).dataset.playing === 'false', kind);
   }
-  await page.locator('[data-demo-step="observe"]').click();
-  const card = page.locator('.feature').filter({ has: page.locator('[data-motion]') }).first();
-  if (await card.isVisible()) {
-    await page.emulateMedia({ reducedMotion: 'no-preference' });
-    await card.locator('.motion-toggle').click();
-    await page.locator('[data-demo-step="direct"]').click();
-    assert.equal(await card.locator('.motion-toggle').getAttribute('aria-pressed'), 'false', 'Hidden panel stops its animation');
-    await page.locator('[data-demo-step="observe"]').click();
-    await card.locator('.motion-toggle').click();
-    await video.evaluate(el => el.play());
-    await page.emulateMedia({ reducedMotion: 'reduce' });
-    await page.waitForFunction(() => [...document.querySelectorAll('.motion-toggle')].every(el => el.getAttribute('aria-pressed') !== 'true') && [...document.querySelectorAll('video')].every(el => el.paused));
-  }
-  assert.equal(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior), 'auto', 'Reduced motion disables smooth scrolling');
+  const root = page.locator('[data-sequence="mission"]');
+  await root.locator('[data-sequence-play]').click();
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.waitForFunction(() => document.querySelector('[data-sequence="mission"] [data-sequence-play]').disabled);
+  assert.equal(await root.locator('[data-sequence-play]').isDisabled(), true);
+  assert.equal(await root.locator('video').evaluate(el => el.paused), true);
+  await root.locator('[data-phase-select="3"]').click();
+  assert.equal(await root.getAttribute('data-phase'), '3', 'Static steps remain available');
+  assert.equal(await page.evaluate(() => getComputedStyle(document.documentElement).scrollBehavior), 'auto');
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await root.locator('[data-sample-mission]').selectOption('tests');
+  await root.locator('[data-sample-agent]').selectOption('jules');
+  assert.match(await root.locator('.mission-request').innerText(), /Find the tests/);
+  await root.locator('[data-send-mission]').click();
+  const launchPosition = await root.locator('.mission-parcel').evaluate(el => getComputedStyle(el).left);
+  await page.clock.runFor(1500);
+  const firstPosition = await root.locator('.mission-parcel').evaluate(el => getComputedStyle(el).left);
+  assert.notEqual(firstPosition, launchPosition, 'The mission card travels towards the selected desk');
+  await root.locator('[data-sequence-play]').click();
+  const pausedPosition = await root.locator('.mission-parcel').evaluate(el => getComputedStyle(el).left);
+  await page.clock.runFor(1000);
+  assert.equal(await root.locator('.mission-parcel').evaluate(el => getComputedStyle(el).left), pausedPosition, 'The flying card freezes when paused');
+  await root.locator('[data-sequence-play]').click();
+  await page.clock.runFor(1800);
+  assert.equal(await root.getAttribute('data-phase'), '1');
+  assert.match(await root.locator('[data-frame="1"]').innerText(), /JULES/);
+  await page.clock.runFor(12500);
+  assert.equal(await root.getAttribute('data-phase'), '3');
+  assert.match(await root.locator('[data-frame="3"]').innerText(), /npm run test:crewlo/);
+  assert.equal(await root.locator('[data-sequence-play]').innerText(), 'Replay');
+  await page.clock.runFor(3000);
+  assert.equal(await root.getAttribute('data-phase'), '3', 'An interactive mission holds its reply');
+  await root.locator('[data-send-mission]').click();
+  assert.equal(await root.getAttribute('data-phase'), '0', 'Replay starts a fresh delivery');
+  await root.locator('[data-sample-mission]').selectOption('messaging');
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.waitForFunction(() => document.querySelector('[data-sequence="mission"] [data-sequence-play]').disabled);
+  await root.locator('[data-send-mission]').click();
+  assert.equal(await root.getAttribute('data-phase'), '3');
+  assert.match(await root.locator('[data-frame="3"]').innerText(), /Your paired Telegram bot/);
+  await page.clock.resume();
 }
 
 (async () => {
@@ -238,11 +360,18 @@ async function mediaControls(page) {
     });
     await page.goto(origin + '/');
     await waitForLocalFonts(page);
-    assert.equal(await page.title(), 'Crewlo — Your AI agents. One clear workspace.');
+    assert.equal(await page.title(), 'Crewlo — Your agents. A studio of their own.');
     assert.equal(await page.locator('h1').count(), 1);
-    assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' ').trim(), 'Your AI agents. One clear workspace.');
+    assert.equal((await page.locator('h1').innerText()).replace(/\s+/g, ' ').trim(), 'Your agents. A studio of their own.');
+    const heroLayout = await page.evaluate(() => {
+      const copy = document.querySelector('.hero-copy').getBoundingClientRect();
+      const studio = document.querySelector('.hero-stage').getBoundingClientRect();
+      return { sideBySide: studio.left >= copy.right, studioLarger: studio.width > copy.width,
+        inFirstScreen: studio.bottom <= innerHeight && copy.bottom <= innerHeight };
+    });
+    assert.deepEqual(heroLayout, { sideBySide: true, studioLarger: true, inFirstScreen: true });
     assert.deepEqual(await page.locator('main > section[id]').evaluateAll(sections => sections.map(el => el.id)),
-      ['demo', 'experience', 'start', 'connect', 'proof', 'faq', 'support'], 'Discovery precedes setup, integrations, evidence and FAQ');
+      ['crew', 'proof', 'agents', 'connect', 'start', 'faq', 'support'], 'Real evidence follows the illustrated studio and precedes presets and messaging');
     assert.deepEqual(await page.locator('a[href^="#"]').evaluateAll(links => links.flatMap(link => {
       const id = decodeURIComponent(link.getAttribute('href').slice(1));
       return id && !document.getElementById(id) ? [id] : [];
@@ -251,24 +380,20 @@ async function mediaControls(page) {
     assert.deepEqual(await page.locator('a[target="_blank"]').evaluateAll(links => links.filter(link => !link.rel.split(/\s+/).includes('noopener')).map(link => link.href)), [], 'New-tab external links isolate opener');
     assert.deepEqual(await page.locator('.quick-steps a').evaluateAll(links => links.map(link => link.getAttribute('href'))), ['install.html#requirements', 'install.html#connect-agent', 'install.html#first-mission']);
     await keyboardDemo(page);
-    const enlarge = page.locator('figcaption [data-image-preview]');
-    await enlarge.press('Enter');
-    assert.equal(await page.locator('#studio-preview').evaluate(el => el.open), true);
-    await page.locator('#studio-preview button').press('Escape');
-    assert.equal(await page.locator('#studio-preview').evaluate(el => el.open), false);
-    assert.ok(await enlarge.evaluate(el => el === document.activeElement), 'Preview restores focus to the opener');
     await copyAndFaq(page);
+    await autoplayDemo(page);
     await mediaControls(page);
     // Capture the normal initial presentation, not deliberately injected errors.
     await page.reload();
     await waitForLocalFonts(page);
-    await selectedStep(page, 'direct');
+
     for (const [width, height] of sizes) {
       await page.setViewportSize({ width, height });
       await waitForLocalFonts(page);
       await messagingAccess(page, width, height);
       await messagingContrast(page);
-      await page.locator('[data-demo-step="observe"]').click(); await selectedStep(page, 'observe');
+      await keyboardDemo(page);
+      await presetChoices(page);
       for (const image of await page.locator('img:visible').all()) {
         await image.scrollIntoViewIfNeeded();
         await page.waitForFunction(el => el.complete && el.naturalWidth > 0, await image.elementHandle());
@@ -276,12 +401,21 @@ async function mediaControls(page) {
       const overflow = await page.evaluate(() => ({ width: innerWidth, scrollWidth: document.documentElement.scrollWidth }));
       assert.ok(overflow.scrollWidth <= width + 1, `No horizontal overflow at ${width}px: ${JSON.stringify(overflow)}`);
       await page.evaluate(() => { document.activeElement?.blur(); window.scrollTo(0, 0); });
-      await page.screenshot({ path: `docs/crewlo/demo/site-${width}.png`, fullPage: true });
-      if ([1440, 768, 390, 320].includes(width)) await page.screenshot({ path: `docs/crewlo/demo/site-hero-${width}.png` });
-      if (width === 768) await page.locator('#experience').screenshot({ path: 'docs/crewlo/demo/site-workflow-768.png' });
-      if ([1440, 390].includes(width)) await page.locator('#connect').screenshot({ path: `docs/crewlo/demo/site-messaging-${width}.png`, style: '.site-header, .skip { visibility: hidden !important; }' });
+      await page.screenshot({ path: `out/site-check/site-${width}.png`, fullPage: true });
+      if ([1440, 768, 390, 320].includes(width)) await page.screenshot({ path: `out/site-check/site-hero-${width}.png` });
+      if (width === 768) await page.locator('#proof').screenshot({ path: 'out/site-check/site-proof-768.png' });
+      if ([1440, 390].includes(width)) await page.locator('#connect').screenshot({ path: `out/site-check/site-messaging-${width}.png`, style: '.site-header, .skip { visibility: hidden !important; }' });
     }
     await localMessagingGuides(page);
+    const noScript = await browser.newPage({ javaScriptEnabled: false });
+    await noScript.goto(origin + '/');
+    assert.equal(await noScript.locator('[data-frame]:visible').count(), 10, 'All story steps are readable without JavaScript');
+    assert.equal(await noScript.locator('.sequence-controls:visible').count(), 0);
+    assert.equal(await noScript.locator('[data-preset]:visible').count(), 4);
+    await noScript.locator('.preset-disclosure summary').click();
+    assert.equal(await noScript.locator('[data-preset]:visible').count(), 12, 'All presets remain accessible without scripting');
+    assert.equal(await noScript.locator('[data-preset="cursor"]').getAttribute('href'), 'install.html#connect-agent');
+    await noScript.close();
     assert.equal(await page.locator('[data-coffee]').count(), 0, 'No donation action without a configured destination');
     for (const link of await page.locator('[data-repository]').all()) assert.equal(await link.getAttribute('href'), repo);
     // URL activation is tested locally, never by navigating to any destination.
@@ -302,6 +436,6 @@ async function mediaControls(page) {
     assert.deepEqual(external, [], 'Landing performs no external requests or analytics');
     assert.deepEqual(broken, [], 'No failed local assets');
     assert.deepEqual(errors, [], 'No browser exceptions');
-    console.log('PASS: 1440/1024/768/390/320px; dedicated first-mission guide and compact mobile navigation; integration disclosures, deep links and text contrast; local setup guides HTTP200/anchors/return; local voxel/body fonts; product discovery before setup and optional messaging; tab keyboard/ARIA/focus; clipboard success/rejection/unavailable (no shell); native FAQ keyboard; anchors/local assets; reduced motion posters and opt-in GIFs; 18s captioned video playback; Star target and coffee URL guards; no external requests. Screen-reader and full WCAG audit remain manual.');
+    console.log('PASS: 1440/1024/768/390/320px; dedicated first-mission guide and compact mobile navigation; integration disclosures, deep links and text contrast; local setup guides HTTP200/anchors/return; local voxel/body fonts; product discovery before setup and optional messaging; sequence and agent keyboard/ARIA/focus; clipboard success/rejection/unavailable (no shell); native FAQ keyboard; anchors/local assets; manual reduced-motion steps; timed sequences, pause, offscreen stop and result hold; no-JS fallback; Star target and coffee URL guards; no external requests. Screen-reader and full WCAG audit remain manual.');
   } finally { if (browser) await browser.close(); await server.close(); }
 })().catch(error => { console.error(error); process.exitCode = 1; });

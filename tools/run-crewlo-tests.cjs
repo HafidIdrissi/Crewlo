@@ -1,5 +1,5 @@
-// Keep a quick, portable smoke suite separate from the inherited full suite,
-// whose known Windows baseline failures are documented in docs/crewlo/VERIFICATION.md.
+// Quick portable smoke suite; test:focused runs the full suite.
+// Current platform evidence: docs/crewlo/WINDOWS-VALIDATION.fr.md.
 const { spawnSync } = require('node:child_process');
 const { join } = require('node:path');
 

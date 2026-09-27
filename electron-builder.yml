@@ -1,4 +1,4 @@
-appId: in.munderdiffl.app
+appId: app.crewlo.desktop
 productName: Crewlo
 copyright: Copyright © 2026 Hafid Idrissi and contributors; portions © 2026 Chaitanya Giri
 
@@ -47,7 +47,9 @@ directories:
   buildResources: build
 
 files:
-  - out/**
+  - out/main/**
+  - out/preload/**
+  - out/renderer/**
   - package.json
   # v0.3.4: shipped so the voice get_app_info tool can read release notes.
   - CHANGELOG.md
@@ -145,7 +147,15 @@ win:
 nsis:
   oneClick: false
   perMachine: false
+  allowElevation: false
   allowToChangeInstallationDirectory: true
+  include: build/installer.nsh
+  installerLanguages: [en_US, fr_FR]
+  displayLanguageSelector: true
+  deleteAppDataOnUninstall: false
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  uninstallDisplayName: Crewlo
   installerIcon: build/crewlo.ico
   uninstallerIcon: build/crewlo.ico
   installerHeader: build/installerHeader.bmp
