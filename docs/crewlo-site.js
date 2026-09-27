@@ -163,7 +163,13 @@
       const stars = [...document.querySelectorAll('[data-github-stars]')];
       if (stars.length) {
         const repoPath = new URL(config.repositoryUrl).pathname.replace(/\/$/, '');
-        fetch(`https://api.github.com/repos${repoPath}`, { credentials: 'omit', referrerPolicy: 'no-referrer', signal: AbortSignal.timeout(6000) })
+        let refreshingStars = false;
+        let lastStarRequest = 0;
+        const refreshStars = () => {
+          if (document.hidden || refreshingStars || Date.now() - lastStarRequest < 10000) return;
+          refreshingStars = true;
+          lastStarRequest = Date.now();
+          fetch(`https://api.github.com/repos${repoPath}?crewlo_refresh=${lastStarRequest}`, { cache: 'no-store', credentials: 'omit', referrerPolicy: 'no-referrer', signal: AbortSignal.timeout(6000) })
           .then(response => { if (!response.ok) throw new Error('GitHub count unavailable'); return response.json(); })
           .then(data => {
             if (!Number.isSafeInteger(data.stargazers_count) || data.stargazers_count < 0) return;
@@ -172,7 +178,16 @@
               count.hidden = false;
               count.closest('a').setAttribute('aria-label', `Star Crewlo on GitHub — ${data.stargazers_count} stars (opens in a new tab)`);
             }
-          }).catch(() => { /* The GitHub link stays usable without a fabricated count. */ });
+          }).catch(() => { /* Keep the last known count and usable GitHub link. */ })
+          .finally(() => { refreshingStars = false; });
+        };
+        // A star is only counted after GitHub confirms it, never on this click.
+        document.querySelectorAll('.github-star').forEach(link => link.addEventListener('click', () => { lastStarRequest = 0; }));
+        window.addEventListener('focus', refreshStars);
+        window.addEventListener('pageshow', refreshStars);
+        document.addEventListener('visibilitychange', refreshStars);
+        setInterval(refreshStars, 300000);
+        refreshStars();
       }
     }
     if (valid(config.coffeeUrl, 'www.buymeacoffee.com', /^\/[A-Za-z0-9_-]+\/?$/) || valid(config.coffeeUrl, 'buymeacoffee.com', /^\/[A-Za-z0-9_-]+\/?$/)) {

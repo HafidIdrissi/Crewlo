@@ -352,7 +352,7 @@ async function mediaControls(page) {
     page.on('response', response => { if (response.url().startsWith(origin) && response.status() >= 400) broken.push(`${response.status()} ${new URL(response.url()).pathname}`); });
     await page.route('**/*', route => {
       const url = new URL(route.request().url());
-      if (url.href === 'https://api.github.com/repos/HafidIdrissi/crewlo') {
+      if (url.origin === 'https://api.github.com' && url.pathname === '/repos/HafidIdrissi/crewlo') {
         return route.fulfill({ status: starResponse === null ? 503 : 200, contentType: 'application/json', body: JSON.stringify(starResponse) });
       }
       if (url.origin !== origin) { external.push(url.origin); return route.abort(); }
@@ -422,6 +422,15 @@ async function mediaControls(page) {
     await noScript.close();
     const configuredCoffee = require('../docs/crewlo-links.json').coffeeUrl;
     assert.equal(await page.locator('[data-github-stars]').innerText(), '128');
+    starResponse = { stargazers_count: 129 };
+    await page.evaluate(() => {
+      const link = document.querySelector('.github-star');
+      link.addEventListener('click', event => event.preventDefault(), { once: true });
+      link.click();
+    });
+    assert.equal(await page.locator('[data-github-stars]').innerText(), '128', 'Clicking is not proof of a star');
+    await page.evaluate(() => window.dispatchEvent(new Event('focus')));
+    await page.waitForFunction(() => document.querySelector('[data-github-stars]').textContent === '129');
     for (const [response, expected] of [[{ stargazers_count: 0 }, '0'], [{ stargazers_count: -1 }, null], [null, null]]) {
       starResponse = response;
       await page.reload();
