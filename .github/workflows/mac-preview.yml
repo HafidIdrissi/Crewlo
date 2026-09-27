@@ -37,7 +37,7 @@ jobs:
       - run: npm run build
       # Ad-hoc signing only: no Apple identity, credentials or notarization.
       - name: Package DMG
-        run: npx electron-builder --mac dmg --${{ matrix.arch }} --publish never -c.mac.identity=-
+        run: npx electron-builder --mac dmg --${{ matrix.arch }} --publish never -c.mac.sign=build/sign-mac-preview.cjs
       - name: Verify packaged runtime and disk image
         run: |
           node tools/check-macos-package.cjs '${{ matrix.app }}' '${{ matrix.arch }}'
