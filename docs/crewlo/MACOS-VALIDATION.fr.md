@@ -1,5 +1,29 @@
 # Contrôle macOS — 27 septembre 2026
 
+## Mise à jour : previews Apple Silicon et Intel publiées
+
+Les deux DMG ont été construits sur des runners macOS 15 correspondant à leur
+architecture, à partir du commit `8a0f0eb2`.
+[Exécution et journaux GitHub](https://github.com/HafidIdrissi/Crewlo/actions/runs/36351216255).
+
+- Apple Silicon : `Crewlo-0.4.6-mac-arm64.dmg`.
+- Intel : `Crewlo-0.4.6-mac-x64.dmg`.
+- Sur chaque architecture : fichiers du paquet présents, SQLite en mémoire et
+  commande réelle dans un PTY validés sous Electron 32.3.3.
+- Vérification des deux images par `hdiutil verify` réussie.
+- Signature ad hoc locale via `build/sign-mac-preview.cjs`, sans certificat
+  Developer ID ni notarisation Apple. Aucune clé Apple utilisée.
+
+[Téléchargements et checksums](https://github.com/HafidIdrissi/Crewlo/releases/tag/v0.4.6-mac-preview.1).
+
+Ces contrôles ne valident pas l'installation complète sur un Mac personnel,
+l'interface au premier lancement, les autorisations macOS, la connexion d'un
+agent ni une mission réelle. Ces essais restent à réaliser. Le DMG universel
+de la configuration générale n'est pas le fichier distribué : la preview
+propose deux DMG distincts, chacun testé sur son architecture.
+
+## Contrôle initial depuis Windows (historique)
+
 **Configuration contrôlée depuis Windows ; aucun installateur macOS construit
 ou exécuté.** Un essai réel sur Mac reste indispensable.
 

@@ -20,7 +20,7 @@ The 27 September full-suite run passed 959 tests, failed none and skipped eight 
 
 A real Codex response was verified through packaged Crewlo IPC and PTY using a temporary file. This does not establish full hive routing or all-provider compatibility. The illustrated website is not a recording of that test.
 
-The Windows installer is unsigned and locally tested. A clean Windows PC and uninstall remain unverified. macOS packaging has been reviewed, but no DMG has been built or executed; Linux runtime validation remains open. Signing and further live messaging checks are deferred.
+The Windows installer is unsigned and locally tested. A clean Windows PC and uninstall remain unverified. Separate [macOS preview notes](docs/crewlo/MACOS-RELEASE.md) cover the Apple Silicon and Intel DMGs and their packaged SQLite/PTY checks. Full Mac installation and first-launch testing, Apple certification/notarization, Linux runtime validation and further live messaging checks remain open.
 
 Telegram has a documented basic message round trip. WhatsApp is experimental with simulated transport tests, not verified live delivery.
 

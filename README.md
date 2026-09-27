@@ -32,7 +32,7 @@ The GIFs play directly in the README when your GitHub animation preference allow
 </tr>
 </table>
 
-**Early preview:** an unsigned Windows installer has been built and checked locally. [Download the Windows x64 preview](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-preview.1/Crewlo-0.4.6-win-x64-preview-setup.exe) (129 MB). No automatic updates are enabled. macOS/Linux runtime validation and live WhatsApp delivery remain open. [Details & limits](#current-status).
+**Early preview:** an unsigned Windows installer has been built and checked locally. [Download the Windows x64 preview](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-preview.1/Crewlo-0.4.6-win-x64-preview-setup.exe) (129 MB). No automatic updates are enabled. macOS packages pass SQLite and terminal checks on CI; full Mac installation, Linux runtime validation and live WhatsApp delivery remain open. [Details & limits](#current-status).
 
 <details>
 <summary>Latest changes & earlier captures</summary>
@@ -44,7 +44,7 @@ The GIFs play directly in the README when your GitHub animation preference allow
 - **One messaging section.** Telegram and experimental WhatsApp previews share tabs, with redesigned phone layouts and evidence kept next to each feature.
 - **Windows preview installer.** French/English setup, per-user installation, branded shortcuts, and checks of the packaged terminal, SQLite, onboarding and settings persistence.
 - **Safer Windows worktree cleanup.** Shared dependency junctions are detached before removal; other links cause removal to be refused to protect external files.
-- **macOS packaging checks.** Universal Intel/Apple Silicon targets reviewed and universal-DMG selection fixed. Building and running the installer still requires a Mac.
+- **macOS previews.** Separate Apple Silicon and Intel DMGs, built and checked on matching macOS runners. No Apple Developer ID certification or notarization.
 
 [Current preview notes](RELEASE.md) · [Changelog](CHANGELOG.md) · [Details & limits](#current-status)
 
@@ -69,7 +69,7 @@ Bring the agent CLI you already use: provider presets include Claude Code, Codex
 | Windows installer | French setup on the development PC; rebuilt package starts; SQLite, PTY and settings persistence pass | Unsigned; no clean-PC or completed uninstall test |
 | Real agent | Codex read a temporary file and returned the exact marker through packaged Crewlo IPC and PTY | Does not establish full hive routing, all providers or messaging delivery |
 | Website | Five widths from 320 to 1440 px; keyboard selection, timed animations, pause, offscreen stop and reduced motion | Illustrated agents and missions; full accessibility audit remains open |
-| macOS | Universal DMG/ZIP configuration, icon and permissions files checked; targeted tests pass | No DMG built or installed; requires a Mac |
+| macOS | Apple Silicon and Intel DMGs built; packaged SQLite, PTY and disk-image verification pass on macOS 15 CI | No Developer ID or notarization; full first-launch and personal-Mac installation unverified |
 | Linux | Packaging configuration retained | Runtime and installer not validated |
 
 The 27 September full-suite run passed **959 tests, with 0 failures and 8 skipped** (967 total), including the signing-command and universal-DMG regressions. Earlier baseline failures are resolved; the old report remains as historical evidence. [Windows validation](docs/crewlo/WINDOWS-VALIDATION.fr.md) · [macOS validation](docs/crewlo/MACOS-VALIDATION.fr.md) · [Historical baseline](docs/crewlo/VERIFICATION.md).
@@ -78,9 +78,15 @@ A basic real Telegram request and named reply were [observed in Telegram Web](do
 
 ## Download for Windows
 
-[Download Crewlo 0.4.6 preview for Windows x64](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-preview.1/Crewlo-0.4.6-win-x64-preview-setup.exe) ? [Release notes and SHA-256 checksum](https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-preview.1)
+[Download Crewlo 0.4.6 preview for Windows x64](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-preview.1/Crewlo-0.4.6-win-x64-preview-setup.exe) · [Release notes and SHA-256 checksum](https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-preview.1)
 
-Run the setup file, follow the French/English installer, then connect your own authenticated agent CLI. Source build tools are not needed for this installer. It is unsigned: Windows may show an unknown-publisher warning. Clean-PC installation and uninstall remain unverified. macOS/Linux installers are not available.
+Run the setup file, follow the French/English installer, then connect your own authenticated agent CLI. Source build tools are not needed for this installer. It is unsigned: Windows may show an unknown-publisher warning. Clean-PC installation and uninstall remain unverified. Linux installers are not available.
+
+## Download for Mac
+
+[Apple Silicon (M-series)](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-mac-preview.1/Crewlo-0.4.6-mac-arm64.dmg) · [Intel Mac](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-mac-preview.1/Crewlo-0.4.6-mac-x64.dmg) · [Release notes and checksums](https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-mac-preview.1)
+
+Open the DMG, drag Crewlo into Applications, then launch it and connect your own agent CLI. These previews have local ad-hoc signatures, without Apple Developer ID certification or notarization. macOS may block opening them; see [installation guidance](https://hafididrissi.github.io/Crewlo/install.html#macos). SQLite and terminal checks pass on both CI architectures; a complete installation and first-launch test on a personal Mac remains open. No automatic updates are enabled.
 
 ## Build from source
 

@@ -9,7 +9,7 @@
 
 - Windows: unsigned installer built and checked locally; clean-PC and uninstall validation remain open.
 - Codex: real temporary-file reading response verified through packaged IPC and PTY, not a full hive acceptance test.
-- macOS: universal DMG/ZIP configuration reviewed; no Mac build or runtime validation.
+- macOS: Apple Silicon and Intel DMGs built; packaged SQLite and PTY checks passed on matching macOS 15 CI runners. No Apple Developer ID/notarization; full installation and first-launch testing remain open. Downloads: https://github.com/HafidIdrissi/crewlo/releases/tag/v0.4.6-mac-preview.1.
 - Linux: runtime and installer not validated.
 - Telegram: one documented basic live message round trip; reconstructed phone demo.
 - WhatsApp: experimental Meta Cloud API integration; simulated tests, no verified live delivery.
