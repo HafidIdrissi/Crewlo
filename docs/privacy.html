@@ -57,6 +57,7 @@
       </ul>
       <p>Crewlo does not deliberately put bot tokens, internal agent prompts, or raw terminal logs into outgoing messaging replies. This is a product safeguard, not a guarantee about what you choose to send through an agent or third-party service.</p>
 
+      <h2>GitHub star counter</h2><p>The homepage requests the public repository star count from the GitHub API. GitHub receives normal request information such as your IP address. No account token is sent and clicking the button only opens the repository; starring it remains your choice on GitHub.</p>
       <h2>Product analytics</h2>
       <p>The desktop code includes optional PostHog product-usage analytics. They run only when a build includes a PostHog key, analytics remain enabled in <strong>Settings → Privacy</strong>, and Do Not Track is not set. Source builds without that key do not start this analytics client. The event allowlist is visible in the <a href="https://github.com/HafidIdrissi/Crewlo/blob/main/src/main/analytics.ts">source code</a>; it excludes message bodies, prompts, file paths, bot tokens, and raw terminal logs. If enabled, events include a random installation identifier and coarse app/platform details. You can turn analytics off in the app's Privacy settings.</p>
       <p>Live agent activity shown inside the desktop app is separate from these outbound product-usage events.</p>

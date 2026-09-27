@@ -2,6 +2,8 @@
 
 <img src="docs/crewlo/favicon.svg" width="64" height="64" alt="Crewlo voxel logo">
 
+[![Star Crewlo on GitHub](https://img.shields.io/github/stars/HafidIdrissi/Crewlo?style=for-the-badge&logo=github&label=Star%20Crewlo&color=315a2b&labelColor=17382b)](https://github.com/HafidIdrissi/Crewlo)
+
 ## Your agents. A studio of their own.
 
 Bring your coding agents into one visual workspace. Send a mission, follow the work, find the reply. A crew of twelve voxel characters makes the studio feel alive, from focused work to coffee breaks.

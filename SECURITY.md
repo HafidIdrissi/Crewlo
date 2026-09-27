@@ -1,6 +1,6 @@
 # Security policy
 
-Crewlo is a source-first desktop application. Security fixes target the current `main` branch; there is no verified Crewlo installer or supported release series yet.
+Crewlo is an early-preview desktop application with public Windows and macOS installers. Security fixes target the current `main` branch and the newest preview linked from the installation guide. Older previews are retained as historical artifacts; update manually because automatic updates are not enabled. No stable release support commitment is offered yet.
 
 ## Report privately
 

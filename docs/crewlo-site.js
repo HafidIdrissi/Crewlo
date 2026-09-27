@@ -160,6 +160,20 @@
     };
     if (valid(config.repositoryUrl, 'github.com', /^\/[^/]+\/[^/]+\/?$/)) {
       document.querySelectorAll('[data-repository]').forEach(link => { link.href = config.repositoryUrl; });
+      const stars = [...document.querySelectorAll('[data-github-stars]')];
+      if (stars.length) {
+        const repoPath = new URL(config.repositoryUrl).pathname.replace(/\/$/, '');
+        fetch(`https://api.github.com/repos${repoPath}`, { credentials: 'omit', referrerPolicy: 'no-referrer', signal: AbortSignal.timeout(6000) })
+          .then(response => { if (!response.ok) throw new Error('GitHub count unavailable'); return response.json(); })
+          .then(data => {
+            if (!Number.isSafeInteger(data.stargazers_count) || data.stargazers_count < 0) return;
+            for (const count of stars) {
+              count.textContent = new Intl.NumberFormat('en-US').format(data.stargazers_count);
+              count.hidden = false;
+              count.closest('a').setAttribute('aria-label', `Star Crewlo on GitHub — ${data.stargazers_count} stars (opens in a new tab)`);
+            }
+          }).catch(() => { /* The GitHub link stays usable without a fabricated count. */ });
+      }
     }
     if (valid(config.coffeeUrl, 'www.buymeacoffee.com', /^\/[A-Za-z0-9_-]+\/?$/) || valid(config.coffeeUrl, 'buymeacoffee.com', /^\/[A-Za-z0-9_-]+\/?$/)) {
       for (const slot of document.querySelectorAll('[data-coffee-slot]')) {

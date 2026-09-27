@@ -347,10 +347,14 @@ async function mediaControls(page) {
     browser = await chromium.launch({ headless: true, ...(process.env.CREWLO_CHROMIUM ? { executablePath: process.env.CREWLO_CHROMIUM } : {}) });
     const page = await browser.newPage({ reducedMotion: 'reduce', viewport: { width: 1440, height: 1000 } });
     const external = [], errors = [], broken = [];
+    let starResponse = { stargazers_count: 128 };
     page.on('pageerror', error => errors.push(error.message));
     page.on('response', response => { if (response.url().startsWith(origin) && response.status() >= 400) broken.push(`${response.status()} ${new URL(response.url()).pathname}`); });
     await page.route('**/*', route => {
       const url = new URL(route.request().url());
+      if (url.href === 'https://api.github.com/repos/HafidIdrissi/crewlo') {
+        return route.fulfill({ status: starResponse === null ? 503 : 200, contentType: 'application/json', body: JSON.stringify(starResponse) });
+      }
       if (url.origin !== origin) { external.push(url.origin); return route.abort(); }
       return route.continue();
     });
@@ -417,6 +421,17 @@ async function mediaControls(page) {
     assert.equal(await noScript.locator('[data-preset="cursor"]').getAttribute('href'), 'install.html#connect-agent');
     await noScript.close();
     const configuredCoffee = require('../docs/crewlo-links.json').coffeeUrl;
+    assert.equal(await page.locator('[data-github-stars]').innerText(), '128');
+    for (const [response, expected] of [[{ stargazers_count: 0 }, '0'], [{ stargazers_count: -1 }, null], [null, null]]) {
+      starResponse = response;
+      await page.reload();
+      await page.waitForLoadState('networkidle');
+      const count = page.locator('[data-github-stars]');
+      if (expected === null) assert.ok(await count.isHidden(), 'No invented count on API failure or invalid response');
+      else assert.equal(await count.innerText(), expected, 'Zero is a valid real count');
+      assert.equal(await page.locator('.github-star').getAttribute('href'), repo);
+    }
+    starResponse = { stargazers_count: 128 };
     assert.equal(await page.locator('[data-coffee]').count(), configuredCoffee ? 1 : 0, 'Donation action requires the configured maintainer destination');
     assert.equal(await page.locator('.bmc-button img').count(), 1, 'The provided brand button is visible even before activation');
     if (!configuredCoffee) assert.ok(await page.locator('.bmc-button').isDisabled());

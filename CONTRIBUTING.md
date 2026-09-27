@@ -23,7 +23,7 @@ npm ci
 npm run dev
 ```
 
-An unsigned Windows preview installer has been tested on the development PC; there is no public release feed. macOS packaging has been reviewed but still needs a Mac build and runtime test. See the [Windows](docs/crewlo/WINDOWS-VALIDATION.fr.md) and [macOS](docs/crewlo/MACOS-VALIDATION.fr.md) reports. You need an installed and authenticated agent CLI to run a real session; provider subscriptions and API usage are separate. Use a small, non-sensitive test workspace first.
+Public Windows x64 and macOS Apple Silicon/Intel previews are available through the [installation guide](https://hafididrissi.github.io/Crewlo/install.html). Windows is unsigned; macOS has no Apple Developer ID certification or notarization. Packaged SQLite and terminal checks pass on all three targets; the reports distinguish automated checks from personal-machine and live-agent tests. There is no automatic update feed. See the [Windows](docs/crewlo/WINDOWS-VALIDATION.fr.md) and [macOS](docs/crewlo/MACOS-VALIDATION.fr.md) reports. You need an installed and authenticated agent CLI to run a real session; provider subscriptions and API usage are separate. Use a small, non-sensitive test workspace first.
 
 ## Send a focused pull request
 
