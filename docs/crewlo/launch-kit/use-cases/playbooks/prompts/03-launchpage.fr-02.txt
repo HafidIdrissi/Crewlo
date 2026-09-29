@@ -1,0 +1,13 @@
+MISSION : implémenter LaunchPage selon docs/brief.md, docs/copy.md et docs/recette.md.
+
+Si le dossier est vide hors docs/, utilise React + TypeScript + Vite pour l’interface, un serveur Node local et Vitest pour les tests. Garde les dépendances minimales, compatibles avec le Node installé, et le lockfile. Écoute seulement sur 127.0.0.1. Fais passer /api depuis Vite vers l’API locale pour un parcours simple sans CORS permissif.
+
+Implémente POST /api/waitlist et GET /api/health selon le contrat du brief. Limite le corps JSON, valide son type et l’email côté serveur avec une règle pragmatique documentée, limite sa longueur, retire les espaces périphériques et définis une règle de comparaison cohérente pour les doublons. Traite explicitement les contenus non JSON et les entrées malformées.
+
+Pour la démonstration à processus unique, stocke les entrées dans un fichier data/waitlist.json hors des fichiers servis au navigateur et ignoré par Git. Sérialise les écritures et remplace le fichier via un fichier temporaire pour éviter les mises à jour perdues. Charge les données au démarrage, signale une corruption sans les écraser. Si la sauvegarde échoue, renvoie une erreur et n’annonce pas la réussite. Les tests utilisent un répertoire temporaire, jamais le fichier de la démo.
+
+Côté formulaire : label email, validation, état en cours, bouton temporairement désactivé, succès uniquement après réponse positive, doublon compréhensible, erreur réseau conservant la saisie. Aucun envoi d’email ni service externe. Ne place ni données ni secret dans le bundle frontend. Exemples sous example.com seulement.
+
+Crée npm run dev pour Vite, npm run dev:server pour l’API, npm run typecheck, npm run test:run et npm run build. Exécute les trois vérifications. Documente dans docs/handoff-dev.md les deux commandes à lancer dans deux terminaux, les ports choisis, le chemin des données et les sorties réellement obtenues. Un build frontend réussi ne prouve pas le fonctionnement de l’API.
+
+Le résultat est une démo locale : documente honnêtement les limites du fichier à processus unique. Termine avant l’intervention de QA.

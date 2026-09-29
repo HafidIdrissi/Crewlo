@@ -1,0 +1,16 @@
+MISSION : cadrer ClientFlow, un mini-CRM local pour un freelance.
+
+Le besoin : retrouver les prospects à relancer sans chercher dans un tableur et plusieurs carnets.
+
+Périmètre :
+- Créer et modifier un prospect : entreprise obligatoire, contact facultatif, email facultatif validé, montant estimé facultatif, prochaine action et date de relance facultatives.
+- Étapes : Nouveau, Contacté, Proposition, Gagné, Perdu.
+- Vue par étape avec un contrôle explicite pour déplacer un prospect. Aucun drag-and-drop obligatoire.
+- Recherche par entreprise ou contact ; filtre « À relancer » pour les dossiers actifs dont la date est aujourd’hui ou passée dans le fuseau local.
+- Montants positifs ou nuls en EUR, stockés en centimes entiers. Champ vide = inconnu, distinct de zéro. Afficher séparément potentiel actif et gagné ; exclure les perdus du potentiel.
+- Données locales conservées après rechargement. Sauvegarde et restauration JSON validées pour déplacer manuellement son portefeuille.
+- État vide utile et jeu d’exemples chargé uniquement sur action explicite.
+
+Exemples fictifs : Atelier Nacre, Proposition, 1 500 EUR ; Studio Boréal, Nouveau, montant inconnu ; Maison Sillage, Gagné, 800 EUR. Aucune donnée personnelle réelle.
+
+Crée docs/brief.md avec modèle de données, règles de dates/montants, écrans, critères d’acceptation et limites. Prévois React + TypeScript + Vite si le dossier est vide, des tests compatibles avec l’environnement et une clé localStorage propre à ClientFlow. Pas de compte partagé, d’envoi d’email ou de synchronisation externe. Crée docs/recette.md. Ne code pas.

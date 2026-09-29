@@ -1,0 +1,3 @@
+Lis l’application réelle, package.json, docs/handoff-dev.md et docs/recette-finale.md. Rédige README.md avec installation, démarrage, vérifications, mode de stockage, export/restauration et limites. Explique que les données restent dans le navigateur utilisé et qu’un export est nécessaire pour une sauvegarde transportable ; l’app n’envoie aucun email et ne synchronise pas plusieurs utilisateurs.
+
+Crée docs/demo-60s.md : créer Atelier Nacre, ajouter une action, déplacer vers Proposition, montrer la relance, recharger et exporter. Ne présente que des comportements effectivement disponibles. Termine avec les instructions exactes pour essayer le produit.

@@ -1,0 +1,9 @@
+MISSION : vérifier LaunchPage de bout en bout. Lis le brief, le contrat API et docs/handoff-dev.md. Ne modifie pas l’application ni les dépendances.
+
+Exécute typecheck, test:run et build. Avec l’outillage installé, teste l’API et sa persistance dans un répertoire temporaire isolé. Vérifie : adresse valide, champs vides et types erronés, entrée JSON malformée, corps excessif, doublon, deux inscriptions rapprochées, redémarrage, corruption du fichier et erreur de sauvegarde. Documente les codes réellement renvoyés et les limites non testées.
+
+Si un navigateur est disponible : démarre les deux processus et ouvre la vraie page. Soumets demo@example.com, vérifie l’état de confirmation et la présence sur disque. Soumets de nouveau et vérifie le doublon. Arrête le serveur de test, soumets autre@example.com et constate l’erreur visible sans faux succès. Redémarre le serveur et vérifie que la première adresse est conservée. Ne touche à aucun autre service local.
+
+Vérifie aussi clavier, labels, focus, largeur 390 px, CTA et liens. Aucun témoignage ou compteur inventé ne doit apparaître. Ne reproduis aucune donnée réelle dans le rapport.
+
+Écris docs/qa-1.md avec PASS / FAIL / NON TESTÉ pour chaque critère. Sépare tests unitaires, tests d’API, essai navigateur et inspection du fichier. Pour chaque défaut, donne reproduction, attendu, observé et gravité. Si tu n’as pas de navigateur, remets cette partie en recette manuelle.

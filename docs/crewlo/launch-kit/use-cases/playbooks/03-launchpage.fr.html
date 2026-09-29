@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Crewlo — LaunchPage · guide pratique</title><meta name="description" content="Relier une page de lancement à une API locale. Agents, prompts à copier et vérifications étape par étape avec Crewlo."><meta name="theme-color" content="#18382d"><link rel="canonical" href="https://hafididrissi.github.io/Crewlo/crewlo/launch-kit/use-cases/playbooks/03-launchpage.fr.html"><link rel="icon" href="https://hafididrissi.github.io/Crewlo/crewlo/favicon.svg" type="image/svg+xml"><style>
+:root{color-scheme:light;--ink:#18382d;--muted:#50695f;--line:#d8e2d9;--paper:#fffefa;--accent:#2d6045;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:#f1f4ed;color:var(--ink)}
+*{box-sizing:border-box}body{margin:0}a{color:#265f43;text-underline-offset:3px}a:hover{color:#123321}button{font:inherit;cursor:pointer}button:disabled{cursor:default;opacity:.5}a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #ad681e;outline-offset:4px}.skip{position:absolute;left:12px;top:-80px;background:white;padding:12px;z-index:20}.skip:focus{top:12px}
+.top{background:#18382d;color:#f6f4e9;padding:20px clamp(20px,4vw,60px);display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}.brand{font-weight:800;letter-spacing:.19em;font-size:15px}.top a{color:#def0bb}.tag{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#def0bb}.layout{max-width:1460px;margin:auto;display:grid;grid-template-columns:270px minmax(0,1fr);gap:48px;padding:36px 36px 80px}aside{position:sticky;top:20px;align-self:start;max-height:calc(100vh - 40px);overflow:auto}nav ul{list-style:none;padding:0;margin:8px 0 25px}nav a{display:block;border-radius:10px;padding:10px 14px;text-decoration:none;margin:3px 0}nav a[aria-current=page]{background:#dce8d3;font-weight:750}nav a:hover{background:#e4ece0}.nav-title{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:750;color:var(--muted)}.toc{font-size:13px}.toc ul{list-style:none;padding-left:12px}.toc>ul{padding-left:0}.toc a{display:block;padding:5px 0;text-decoration:none}.toc ul ul ul{display:none}main{min-width:0;max-width:980px}.intro{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:22px}.intro p{margin:0;color:var(--muted);font-size:14px}.intro a{font-size:13px}.paper{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:clamp(22px,4vw,50px);box-shadow:0 10px 40px #18382d06}h1{font-size:clamp(30px,3.6vw,49px);letter-spacing:-.035em;line-height:1.12;margin:0 0 27px}h2{font-size:25px;line-height:1.25;border-top:1px solid var(--line);padding-top:34px;margin-top:40px;scroll-margin-top:25px}h3{font-size:19px;margin-top:28px;scroll-margin-top:25px}p,li{line-height:1.75;font-size:16px}p{margin:16px 0}li{margin:8px 0}strong{font-weight:740}code{font-family:ui-monospace,Consolas,monospace;font-size:.88em;background:#eaf0e5;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#f0f4ec;border:1px solid #d2dfcd;border-radius:14px;padding:54px 22px 22px;position:relative;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;margin:24px 0}pre code{background:none;padding:0;font-size:14px}.copy{position:absolute;top:12px;right:12px;border:1px solid #bad0ae;background:#fffefa;color:var(--ink);padding:6px 12px;border-radius:8px;font-size:12px}.copy:hover{background:#dce8d3}.prompt-label{position:absolute;left:20px;top:18px;color:#47633d;letter-spacing:.06em;font-size:10px;font-weight:800}.table-scroll{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;padding:12px;border:1px solid var(--line);vertical-align:top;line-height:1.6}th{background:#eaf0e3}td{min-width:140px}footer{margin-top:28px;color:var(--muted);font-size:13px;line-height:1.7}.pager{display:flex;gap:15px;justify-content:space-between;margin-top:28px}.pager a{border:1px solid #c7d7c0;padding:11px 16px;border-radius:12px;text-decoration:none;background:#f8faf4}.status{min-height:24px;font-size:13px;color:var(--muted)}
+@media(max-width:960px){.layout{grid-template-columns:210px minmax(0,1fr);gap:22px;padding:25px 20px}.paper{padding:26px}h1{font-size:35px}}
+@media(max-width:700px){.layout{display:block;padding:20px 14px}aside{position:static;max-height:none;margin-bottom:18px}nav ul{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}nav a{padding:8px 10px;font-size:13px}.toc,.toc-label{display:none}.paper{padding:23px 18px;border-radius:15px}h1{font-size:32px}h2{font-size:22px}p,li{font-size:15px}pre{padding:53px 14px 18px}pre code{font-size:13px}.top{padding:17px 20px}.intro{align-items:flex-start}.pager{flex-wrap:wrap}}
+@media print{.top,aside,.intro,.copy,.pager,.status,.skip{display:none}.layout{display:block;padding:0}main{max-width:none}.paper{border:0;box-shadow:none;padding:0}pre{padding:14px;break-inside:avoid}.prompt-label{display:none}h1{font-size:28px}h2{font-size:21px}p,li{font-size:11pt}.table-scroll{overflow:visible}a{color:inherit}}
+</style></head>
+<body><a class="skip" href="#main">Aller au guide</a><header class="top"><div><a class="brand" href="https://hafididrissi.github.io/Crewlo/">CREWLO</a> &nbsp; / &nbsp; ATELIERS MVP</div><a href="https://hafididrissi.github.io/Crewlo/use-cases.html">Tous les cas d’usage</a><a href="https://github.com/HafidIdrissi/Crewlo/tree/main/docs/crewlo/launch-kit/use-cases/playbooks">Lire sur GitHub</a><a href="crewlo-playbooks-fr.zip" download>Télécharger le kit</a></header>
+<div class="layout"><aside><nav aria-label="Les parcours"><div class="nav-title">Du brief au résultat</div><ul><li><a href="DEMARRER.fr.html">Commencer</a></li><li><a href="01-taskboard.fr.html">TaskBoard</a></li><li><a href="02-clientflow.fr.html">ClientFlow</a></li><li><a href="03-launchpage.fr.html" aria-current="page">LaunchPage</a></li><li><a href="04-tournage.fr.html">Filmer le résultat</a></li></ul></nav><div class="nav-title toc-label">Dans ce guide</div><div class="toc">
+<ul>
+<li><a href="#launchpage-une-offre-et-un-formulaire-qui-enregistre-vraiment">LaunchPage — une offre et un formulaire qui enregistre vraiment</a><ul>
+<li><a href="#etape-1-definir-loffre-et-le-parcours">Étape 1 — Définir l’offre et le parcours</a></li>
+<li><a href="#etape-2-construire-la-page-et-son-api">Étape 2 — Construire la page et son API</a></li>
+<li><a href="#etape-3-verifier-le-parcours-navigateurserveurdisque">Étape 3 — Vérifier le parcours navigateur–serveur–disque</a></li>
+<li><a href="#etape-4-corriger-et-obtenir-la-recette-finale">Étape 4 — Corriger et obtenir la recette finale</a></li>
+<li><a href="#etape-5-livrer-une-demo-reproductible">Étape 5 — Livrer une démo reproductible</a></li>
+<li><a href="#etape-6-faire-la-demonstration-finale">Étape 6 — Faire la démonstration finale</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</aside>
+<main id="main"><div class="intro"><p>Relier une page de lancement à une API locale.<br>6 prompts copiables</p><a href="03-launchpage.fr.md" download>Version Markdown</a></div><div class="status" id="status" role="status" aria-live="polite"></div><article class="paper"><h1 id="launchpage-une-offre-et-un-formulaire-qui-enregistre-vraiment">LaunchPage — une offre et un formulaire qui enregistre vraiment</h1>
+<p><strong>L’histoire à montrer :</strong> « Je veux présenter une idée et vérifier que le parcours d’inscription fonctionne. Mes agents construisent la page, le formulaire et un petit serveur local. »</p>
+<p><strong>Produit de démonstration :</strong> FocusKit, un outil fictif de préparation de la journée. Le projet est un prototype de page de lancement, pas une preuve de demande commerciale.</p>
+<p><strong>Résultat cible :</strong> une page responsive et un formulaire relié à un serveur local. Une inscription fictive est enregistrée, un doublon est détecté et les données survivent au redémarrage du serveur.</p>
+<p><strong>Équipe :</strong> <code>LaunchPage Produit</code>, <code>LaunchPage Dev</code>, <code>LaunchPage QA</code>, avec les <a href="DEMARRER.fr.html">rôles du guide</a>. Dossier commun : <code>C:\Projects\crewlo-demos\launchpage</code>. Ce scénario utilise deux processus locaux, un serveur de développement et une API.</p>
+<h2 id="etape-1-definir-loffre-et-le-parcours">Étape 1 — Définir l’offre et le parcours</h2>
+<p><strong>Agent : LaunchPage Produit.</strong></p>
+<pre><code class="language-text">MISSION : cadrer une page de lancement pour FocusKit, produit fictif destiné aux indépendants qui veulent préparer leur journée en trois priorités.
+
+L’offre : « Trois priorités. Une journée plus claire. » L’appel à l’action : « Rejoindre la liste d’attente ». Le produit est en préparation : aucune promesse de disponibilité, gain de temps mesuré, prix, avis client ou nombre d’inscrits inventé.
+
+Page : titre, sous-titre, problème concret, trois bénéfices, aperçu illustré explicitement présenté comme tel, trois étapes d’utilisation prévues, FAQ, formulaire email et état après soumission. Texte français simple. Formulaire accessible, responsive et utilisable au clavier.
+
+Pour une démo technique réelle, l’email doit être envoyé à une API Node locale et enregistré sur disque. Ne pas afficher de succès si l’API refuse ou ne répond pas. Valider côté serveur, gérer le doublon et survivre à un redémarrage. Aucun email externe n’est envoyé.
+
+Crée docs/brief.md et docs/copy.md. Définis le contrat API proposé : POST /api/waitlist, body {email}, HTTP 201 créé, 200 déjà inscrit, 400 invalide, 503 indisponible ; réponses JSON avec code métier et message. GET /api/health indique seulement l’état du service. Aucune route de liste publique des emails.
+
+Crée docs/recette.md avec succès, doublon, erreur réseau et persistance après redémarrage. Le serveur et les données restent locaux, avec adresses fictives en example.com. Ne code pas. Explique dans le brief ce qui devra être conçu avant une ouverture au public.
+</code></pre>
+<p><strong>Passage à la suite :</strong> le brief distingue l’aperçu du futur produit et le formulaire effectivement fonctionnel.</p>
+<h2 id="etape-2-construire-la-page-et-son-api">Étape 2 — Construire la page et son API</h2>
+<p><strong>Agent : LaunchPage Dev.</strong></p>
+<pre><code class="language-text">MISSION : implémenter LaunchPage selon docs/brief.md, docs/copy.md et docs/recette.md.
+
+Si le dossier est vide hors docs/, utilise React + TypeScript + Vite pour l’interface, un serveur Node local et Vitest pour les tests. Garde les dépendances minimales, compatibles avec le Node installé, et le lockfile. Écoute seulement sur 127.0.0.1. Fais passer /api depuis Vite vers l’API locale pour un parcours simple sans CORS permissif.
+
+Implémente POST /api/waitlist et GET /api/health selon le contrat du brief. Limite le corps JSON, valide son type et l’email côté serveur avec une règle pragmatique documentée, limite sa longueur, retire les espaces périphériques et définis une règle de comparaison cohérente pour les doublons. Traite explicitement les contenus non JSON et les entrées malformées.
+
+Pour la démonstration à processus unique, stocke les entrées dans un fichier data/waitlist.json hors des fichiers servis au navigateur et ignoré par Git. Sérialise les écritures et remplace le fichier via un fichier temporaire pour éviter les mises à jour perdues. Charge les données au démarrage, signale une corruption sans les écraser. Si la sauvegarde échoue, renvoie une erreur et n’annonce pas la réussite. Les tests utilisent un répertoire temporaire, jamais le fichier de la démo.
+
+Côté formulaire : label email, validation, état en cours, bouton temporairement désactivé, succès uniquement après réponse positive, doublon compréhensible, erreur réseau conservant la saisie. Aucun envoi d’email ni service externe. Ne place ni données ni secret dans le bundle frontend. Exemples sous example.com seulement.
+
+Crée npm run dev pour Vite, npm run dev:server pour l’API, npm run typecheck, npm run test:run et npm run build. Exécute les trois vérifications. Documente dans docs/handoff-dev.md les deux commandes à lancer dans deux terminaux, les ports choisis, le chemin des données et les sorties réellement obtenues. Un build frontend réussi ne prouve pas le fonctionnement de l’API.
+
+Le résultat est une démo locale : documente honnêtement les limites du fichier à processus unique. Termine avant l’intervention de QA.
+</code></pre>
+<p><strong>À montrer :</strong> la page, la saisie de <code>demo@example.com</code>, la réponse réelle du serveur et le fichier de données avec cette seule adresse fictive.</p>
+<h2 id="etape-3-verifier-le-parcours-navigateurserveurdisque">Étape 3 — Vérifier le parcours navigateur–serveur–disque</h2>
+<p><strong>Agent : LaunchPage QA.</strong></p>
+<pre><code class="language-text">MISSION : vérifier LaunchPage de bout en bout. Lis le brief, le contrat API et docs/handoff-dev.md. Ne modifie pas l’application ni les dépendances.
+
+Exécute typecheck, test:run et build. Avec l’outillage installé, teste l’API et sa persistance dans un répertoire temporaire isolé. Vérifie : adresse valide, champs vides et types erronés, entrée JSON malformée, corps excessif, doublon, deux inscriptions rapprochées, redémarrage, corruption du fichier et erreur de sauvegarde. Documente les codes réellement renvoyés et les limites non testées.
+
+Si un navigateur est disponible : démarre les deux processus et ouvre la vraie page. Soumets demo@example.com, vérifie l’état de confirmation et la présence sur disque. Soumets de nouveau et vérifie le doublon. Arrête le serveur de test, soumets autre@example.com et constate l’erreur visible sans faux succès. Redémarre le serveur et vérifie que la première adresse est conservée. Ne touche à aucun autre service local.
+
+Vérifie aussi clavier, labels, focus, largeur 390 px, CTA et liens. Aucun témoignage ou compteur inventé ne doit apparaître. Ne reproduis aucune donnée réelle dans le rapport.
+
+Écris docs/qa-1.md avec PASS / FAIL / NON TESTÉ pour chaque critère. Sépare tests unitaires, tests d’API, essai navigateur et inspection du fichier. Pour chaque défaut, donne reproduction, attendu, observé et gravité. Si tu n’as pas de navigateur, remets cette partie en recette manuelle.
+</code></pre>
+<h2 id="etape-4-corriger-et-obtenir-la-recette-finale">Étape 4 — Corriger et obtenir la recette finale</h2>
+<p><strong>Agent : LaunchPage Dev, s’il y a des défauts.</strong></p>
+<pre><code class="language-text">Corrige uniquement les défauts reproductibles de docs/qa-1.md. Reproduis-les avec des données de test, puis corrige. Garde la validation serveur, la gestion des erreurs et la séparation entre données privées et fichiers publics. Exécute typecheck, test:run et build, puis le test d’API concerné. Écris docs/corrections.md et actualise docs/handoff-dev.md avec preuves et limites. Ne déploie pas ce serveur local.
+</code></pre>
+<p><strong>Agent : LaunchPage QA.</strong></p>
+<pre><code class="language-text">Fais la recette finale sur la version corrigée : inscription fictive → confirmation liée à la réponse API → fichier persistant → doublon → redémarrage → données conservées → erreur réseau sans faux succès. Relance les contrôles affectés. Attribue à l’utilisateur les observations manuelles qu’il t’a transmises.
+
+Écris docs/recette-finale.md avec version, critères, états, preuves et limites. PRÊT POUR DÉMO LOCALE exige une chaîne navigateur–API–disque effectivement vérifiée. Si un maillon manque, indique les réserves exactes. La réussite ne vaut pas validation d’un service public.
+</code></pre>
+<h2 id="etape-5-livrer-une-demo-reproductible">Étape 5 — Livrer une démo reproductible</h2>
+<p><strong>Agent : LaunchPage Produit.</strong></p>
+<pre><code class="language-text">Lis le code, package.json, docs/handoff-dev.md et docs/recette-finale.md. Rédige README.md avec prérequis, installation, deux terminaux, commandes, URL locale réellement configurée et arrêt des processus. Explique le fichier de données, l’absence d’envoi d’email et le périmètre à processus unique.
+
+Crée docs/demo-60s.md : montrer l’offre, remplir demo@example.com, soumettre, constater la confirmation, montrer le fichier de données et le test de doublon. Identifie la maquette du futur produit comme un aperçu.
+
+Ajoute docs/prochaine-version.md pour une ouverture publique future : stockage adapté à l’hébergement, HTTPS, protection anti-abus, règles de conservation et consentement, accès administratif protégé, supervision et tests de l’environnement déployé. Ce sont des travaux à spécifier, pas des fonctionnalités déjà livrées.
+
+Termine avec les commandes exactes pour essayer le projet et la décision de recette locale.
+</code></pre>
+<h2 id="etape-6-faire-la-demonstration-finale">Étape 6 — Faire la démonstration finale</h2>
+<ol>
+<li>Ouvre les deux terminaux du README et vérifie les ports annoncés.</li>
+<li>Montre le titre et le CTA de FocusKit.</li>
+<li>Saisis <code>demo@example.com</code> et soumets le formulaire.</li>
+<li>Montre la confirmation puis l’entrée dans le fichier local.</li>
+<li>Renvoie la même adresse et montre le traitement du doublon.</li>
+<li>Redémarre le serveur de démo : l’entrée doit rester présente.</li>
+<li>Termine sur le README et les vérifications effectivement réussies.</li>
+</ol>
+<p><strong>Phrase de fin :</strong> « Le formulaire ne fait pas seulement apparaître une notification : la demande arrive au serveur, elle est validée et elle reste enregistrée après redémarrage. »</p>
+<p>Cette démonstration se termine localement. Un déploiement public constitue une étape supplémentaire à préparer avec un hébergeur et un stockage adaptés.</p></article><div class="pager"><a href="02-clientflow.fr.html">← ClientFlow</a><a href="04-tournage.fr.html">Filmer le résultat →</a></div><footer>Kit local · 29 septembre 2026. Les scénarios décrivent le travail à réaliser ; les résultats sont à constater pendant l’exécution. Crewlo est un fork indépendant de Munder Difflin.</footer></main></div><script>
+document.querySelectorAll('pre').forEach((pre,i)=>{
+  const code=pre.querySelector('code'); if(!code)return;
+  const label=document.createElement('span');label.className='prompt-label';label.textContent='PROMPT À COPIER';pre.prepend(label);
+  const button=document.createElement('button');button.className='copy';button.type='button';button.textContent='Copier';button.setAttribute('aria-label','Copier le prompt '+(i+1));
+  button.addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(code.textContent);button.textContent='Copié';document.getElementById('status').textContent='Prompt copié. Colle-le dans la conversation de l’agent indiqué.';setTimeout(()=>button.textContent='Copier',2200);}
+    catch{const range=document.createRange();range.selectNodeContents(code);const selection=getSelection();selection.removeAllRanges();selection.addRange(range);document.getElementById('status').textContent='Texte sélectionné. Utilise Ctrl+C, ou Cmd+C sur Mac.';}
+  });pre.append(button);
+});
+document.querySelectorAll('table').forEach(table=>{const wrapper=document.createElement('div');wrapper.className='table-scroll';table.before(wrapper);wrapper.append(table);});
+</script></body></html>

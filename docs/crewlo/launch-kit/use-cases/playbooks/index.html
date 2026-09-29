@@ -1,0 +1,183 @@
+<!doctype html>
+<html lang="fr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Crewlo — Commencer · guide pratique</title><meta name="description" content="Trois agents, un dossier, un parcours clair. Agents, prompts à copier et vérifications étape par étape avec Crewlo."><meta name="theme-color" content="#18382d"><link rel="canonical" href="https://hafididrissi.github.io/Crewlo/crewlo/launch-kit/use-cases/playbooks/DEMARRER.fr.html"><link rel="icon" href="https://hafididrissi.github.io/Crewlo/crewlo/favicon.svg" type="image/svg+xml"><style>
+:root{color-scheme:light;--ink:#18382d;--muted:#50695f;--line:#d8e2d9;--paper:#fffefa;--accent:#2d6045;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:#f1f4ed;color:var(--ink)}
+*{box-sizing:border-box}body{margin:0}a{color:#265f43;text-underline-offset:3px}a:hover{color:#123321}button{font:inherit;cursor:pointer}button:disabled{cursor:default;opacity:.5}a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #ad681e;outline-offset:4px}.skip{position:absolute;left:12px;top:-80px;background:white;padding:12px;z-index:20}.skip:focus{top:12px}
+.top{background:#18382d;color:#f6f4e9;padding:20px clamp(20px,4vw,60px);display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}.brand{font-weight:800;letter-spacing:.19em;font-size:15px}.top a{color:#def0bb}.tag{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#def0bb}.layout{max-width:1460px;margin:auto;display:grid;grid-template-columns:270px minmax(0,1fr);gap:48px;padding:36px 36px 80px}aside{position:sticky;top:20px;align-self:start;max-height:calc(100vh - 40px);overflow:auto}nav ul{list-style:none;padding:0;margin:8px 0 25px}nav a{display:block;border-radius:10px;padding:10px 14px;text-decoration:none;margin:3px 0}nav a[aria-current=page]{background:#dce8d3;font-weight:750}nav a:hover{background:#e4ece0}.nav-title{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:750;color:var(--muted)}.toc{font-size:13px}.toc ul{list-style:none;padding-left:12px}.toc>ul{padding-left:0}.toc a{display:block;padding:5px 0;text-decoration:none}.toc ul ul ul{display:none}main{min-width:0;max-width:980px}.intro{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:22px}.intro p{margin:0;color:var(--muted);font-size:14px}.intro a{font-size:13px}.paper{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:clamp(22px,4vw,50px);box-shadow:0 10px 40px #18382d06}h1{font-size:clamp(30px,3.6vw,49px);letter-spacing:-.035em;line-height:1.12;margin:0 0 27px}h2{font-size:25px;line-height:1.25;border-top:1px solid var(--line);padding-top:34px;margin-top:40px;scroll-margin-top:25px}h3{font-size:19px;margin-top:28px;scroll-margin-top:25px}p,li{line-height:1.75;font-size:16px}p{margin:16px 0}li{margin:8px 0}strong{font-weight:740}code{font-family:ui-monospace,Consolas,monospace;font-size:.88em;background:#eaf0e5;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#f0f4ec;border:1px solid #d2dfcd;border-radius:14px;padding:54px 22px 22px;position:relative;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;margin:24px 0}pre code{background:none;padding:0;font-size:14px}.copy{position:absolute;top:12px;right:12px;border:1px solid #bad0ae;background:#fffefa;color:var(--ink);padding:6px 12px;border-radius:8px;font-size:12px}.copy:hover{background:#dce8d3}.prompt-label{position:absolute;left:20px;top:18px;color:#47633d;letter-spacing:.06em;font-size:10px;font-weight:800}.table-scroll{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;padding:12px;border:1px solid var(--line);vertical-align:top;line-height:1.6}th{background:#eaf0e3}td{min-width:140px}footer{margin-top:28px;color:var(--muted);font-size:13px;line-height:1.7}.pager{display:flex;gap:15px;justify-content:space-between;margin-top:28px}.pager a{border:1px solid #c7d7c0;padding:11px 16px;border-radius:12px;text-decoration:none;background:#f8faf4}.status{min-height:24px;font-size:13px;color:var(--muted)}
+@media(max-width:960px){.layout{grid-template-columns:210px minmax(0,1fr);gap:22px;padding:25px 20px}.paper{padding:26px}h1{font-size:35px}}
+@media(max-width:700px){.layout{display:block;padding:20px 14px}aside{position:static;max-height:none;margin-bottom:18px}nav ul{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}nav a{padding:8px 10px;font-size:13px}.toc,.toc-label{display:none}.paper{padding:23px 18px;border-radius:15px}h1{font-size:32px}h2{font-size:22px}p,li{font-size:15px}pre{padding:53px 14px 18px}pre code{font-size:13px}.top{padding:17px 20px}.intro{align-items:flex-start}.pager{flex-wrap:wrap}}
+@media print{.top,aside,.intro,.copy,.pager,.status,.skip{display:none}.layout{display:block;padding:0}main{max-width:none}.paper{border:0;box-shadow:none;padding:0}pre{padding:14px;break-inside:avoid}.prompt-label{display:none}h1{font-size:28px}h2{font-size:21px}p,li{font-size:11pt}.table-scroll{overflow:visible}a{color:inherit}}
+</style></head>
+<body><a class="skip" href="#main">Aller au guide</a><header class="top"><div><a class="brand" href="https://hafididrissi.github.io/Crewlo/">CREWLO</a> &nbsp; / &nbsp; ATELIERS MVP</div><a href="https://hafididrissi.github.io/Crewlo/use-cases.html">Tous les cas d’usage</a><a href="https://github.com/HafidIdrissi/Crewlo/tree/main/docs/crewlo/launch-kit/use-cases/playbooks">Lire sur GitHub</a><a href="crewlo-playbooks-fr.zip" download>Télécharger le kit</a></header>
+<div class="layout"><aside><nav aria-label="Les parcours"><div class="nav-title">Du brief au résultat</div><ul><li><a href="DEMARRER.fr.html" aria-current="page">Commencer</a></li><li><a href="01-taskboard.fr.html">TaskBoard</a></li><li><a href="02-clientflow.fr.html">ClientFlow</a></li><li><a href="03-launchpage.fr.html">LaunchPage</a></li><li><a href="04-tournage.fr.html">Filmer le résultat</a></li></ul></nav><div class="nav-title toc-label">Dans ce guide</div><div class="toc">
+<ul>
+<li><a href="#construire-un-mvp-avec-crewlo-du-premier-agent-a-la-demo">Construire un MVP avec Crewlo, du premier agent à la démo</a><ul>
+<li><a href="#choisir-ton-premier-projet">Choisir ton premier projet</a></li>
+<li><a href="#1-preparer-le-dossier-du-projet">1. Préparer le dossier du projet</a></li>
+<li><a href="#2-creer-les-trois-agents">2. Créer les trois agents</a><ul>
+<li><a href="#role-permanent-de-produit">Rôle permanent de Produit</a></li>
+<li><a href="#role-permanent-de-dev">Rôle permanent de Dev</a></li>
+<li><a href="#role-permanent-de-qa">Rôle permanent de QA</a></li>
+<li><a href="#importer-les-roles-plus-vite">Importer les rôles plus vite</a></li>
+</ul>
+</li>
+<li><a href="#3-envoyer-chaque-prompt-au-bon-agent">3. Envoyer chaque prompt au bon agent</a></li>
+<li><a href="#4-debloquer-les-incidents-courants">4. Débloquer les incidents courants</a></li>
+<li><a href="#5-filmer-un-tutoriel-qui-montre-vraiment-le-travail">5. Filmer un tutoriel qui montre vraiment le travail</a></li>
+<li><a href="#reperes-de-compatibilite">Repères de compatibilité</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</aside>
+<main id="main"><div class="intro"><p>Trois agents, un dossier, un parcours clair.<br>4 prompts copiables</p><a href="DEMARRER.fr.md" download>Version Markdown</a></div><div class="status" id="status" role="status" aria-live="polite"></div><article class="paper"><h1 id="construire-un-mvp-avec-crewlo-du-premier-agent-a-la-demo">Construire un MVP avec Crewlo, du premier agent à la démo</h1>
+<p>Ce kit prolonge les courtes vidéos de cas d’usage par trois parcours exécutables. Tu crées les agents, tu copies leurs missions dans l’ordre, tu ouvres le produit obtenu et tu vérifies le résultat. Les durées ci-dessous sont des budgets de séance proposés, pas des performances mesurées de Crewlo.</p>
+<p>Les guides et scripts sont prêts. Les applications décrites doivent encore être construites et vérifiées avec tes agents : aucun résultat de build, de test ou de collaboration en direct n’est inventé dans ce kit.</p>
+<h2 id="choisir-ton-premier-projet">Choisir ton premier projet</h2>
+<table>
+<thead>
+<tr>
+<th>Parcours</th>
+<th>À la fin, tu peux…</th>
+<th>Équipe</th>
+<th>Budget de séance indicatif</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="01-taskboard.fr.html">TaskBoard</a></td>
+<td>Ajouter, terminer, filtrer et retrouver des tâches après rechargement</td>
+<td>Produit, Dev, QA</td>
+<td>45–90 min</td>
+</tr>
+<tr>
+<td><a href="02-clientflow.fr.html">ClientFlow</a></td>
+<td>Suivre des prospects, changer leur étape et sauvegarder un portefeuille local</td>
+<td>Produit, Dev, QA</td>
+<td>60–120 min</td>
+</tr>
+<tr>
+<td><a href="03-launchpage.fr.html">LaunchPage</a></td>
+<td>Montrer une offre et enregistrer des inscriptions dans un serveur local</td>
+<td>Produit, Dev, QA</td>
+<td>60–120 min</td>
+</tr>
+</tbody>
+</table>
+<p>Pour la première vidéo, choisis <strong>TaskBoard</strong> : on comprend le résultat en quelques secondes et on peut prouver chaque fonction à l’écran. ClientFlow rend la démonstration plus proche d’un usage professionnel. LaunchPage ajoute un vrai échange navigateur–serveur.</p>
+<h2 id="1-preparer-le-dossier-du-projet">1. Préparer le dossier du projet</h2>
+<p>Crée un dossier neuf, distinct du code source de Crewlo, par exemple <code>C:\Projects\crewlo-demos\taskboard</code>. Utilise <code>clientflow</code> ou <code>launchpage</code> pour les autres parcours. Chaque application a son propre dossier.</p>
+<p>Vérifie que le CLI que tu utilises déjà est connecté à ton compte et peut lire un petit fichier de ce dossier. Crewlo ouvre les sessions de ces CLIs ; leur abonnement ou leur consommation reste celui de ton fournisseur. Pour les projets proposés, prévois Node.js et npm disponibles dans le terminal de l’agent. Les agents choisissent des versions de dépendances compatibles avec l’environnement et conservent le fichier de verrouillage obtenu.</p>
+<h2 id="2-creer-les-trois-agents">2. Créer les trois agents</h2>
+<p>Ouvre le formulaire <strong>Create agent</strong>. Les sections actuelles sont <strong>Identity</strong>, <strong>Workspace</strong>, <strong>Engine</strong> et <strong>Briefing</strong>. Les libellés peuvent être traduits selon la langue de l’application.</p>
+<p>Pour chaque rôle :</p>
+<ol>
+<li>Dans <strong>Identity</strong>, donne un nom reconnaissable, par exemple <code>TaskBoard Produit</code>. Le personnage est au choix.</li>
+<li>Dans <strong>Workspace</strong>, sélectionne le dossier de ton application. Les trois agents utilisent exactement ce même dossier. Laisse l’isolation Git désactivée pour ce parcours séquentiel et ne renseigne pas de session à reprendre.</li>
+<li>Dans <strong>Engine</strong>, sélectionne un CLI déjà authentifié et un modèle disponible dans ta configuration. Tu peux utiliser le même fournisseur pour les trois agents.</li>
+<li>Dans <strong>Briefing</strong>, remplis Description et Goal avec le rôle ci-dessous, ou importe sa fiche JSON.</li>
+<li>Clique <strong>Create agent</strong>, puis vérifie que sa session est prête. Crée de préférence chaque agent au moment de sa première mission.</li>
+</ol>
+<table>
+<thead>
+<tr>
+<th>Rôle</th>
+<th>Description</th>
+<th>Responsabilité</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Produit</td>
+<td>Cadre le MVP et prépare sa livraison</td>
+<td>Le brief, les critères d’acceptation, le parcours utilisateur et le README final</td>
+</tr>
+<tr>
+<td>Dev</td>
+<td>Construit le produit et corrige les défauts</td>
+<td>Le code de l’application, son installation et son démarrage</td>
+</tr>
+<tr>
+<td>QA</td>
+<td>Vérifie les comportements et documente les preuves</td>
+<td>Les tests, les anomalies reproductibles et le rapport de recette</td>
+</tr>
+</tbody>
+</table>
+<h3 id="role-permanent-de-produit">Rôle permanent de Produit</h3>
+<pre><code class="language-text">Tu es le responsable produit de ce projet. Travaille seulement sur la mission explicite reçue. Sans mission, réponds que tu es prêt et attends. Lis les fichiers avant de proposer un changement. Transforme le besoin en petit périmètre réalisable, parcours utilisateur et critères d’acceptation observables. Tu peux écrire les briefs, la documentation et le scénario de démo. Ne modifie pas le code de l’application. Réutilise les décisions présentes dans docs/brief.md. Termine chaque mission par les fichiers produits, les choix faits et le prochain transfert. Ne crée pas d’autres agents et ne lance pas de travail récurrent. N’annonce comme exécuté que ce que tu as réellement vérifié.
+</code></pre>
+<h3 id="role-permanent-de-dev">Rôle permanent de Dev</h3>
+<pre><code class="language-text">Tu es le développeur de ce projet. Travaille seulement sur la mission explicite reçue. Sans mission, réponds que tu es prêt et attends. Lis docs/brief.md puis inspecte le dossier. Construis le plus petit produit utilisable qui respecte les critères. Réutilise les outils déjà présents. Tu es le seul propriétaire du code applicatif et des dépendances. Écris un code lisible, traite les erreurs et vérifie tes modifications. À la fin, indique les fichiers changés, les commandes réellement exécutées, leur résultat et comment ouvrir l’application. Consigne le passage de relais dans docs/handoff-dev.md. Ne crée pas d’autres agents, ne lance pas de travail récurrent et n’élargis pas le périmètre.
+</code></pre>
+<h3 id="role-permanent-de-qa">Rôle permanent de QA</h3>
+<pre><code class="language-text">Tu es le responsable qualité de ce projet. Travaille seulement sur la mission explicite reçue. Sans mission, réponds que tu es prêt et attends. Lis docs/brief.md et docs/handoff-dev.md. Vérifie le comportement observable, les erreurs et la persistance avec des données fictives. Tu peux ajouter ou améliorer les tests et écrire les rapports de recette. Ne change pas le code applicatif ni les dépendances : transmets ces corrections au développeur. N’ajoute aucun outil payant. Sépare clairement PASS, FAIL et NON TESTÉ. Pour chaque anomalie, donne les étapes de reproduction, attendu, observé et gravité. Réexécute les contrôles concernés après correction. Ne crée pas d’autres agents et ne lance pas de travail récurrent.
+</code></pre>
+<h3 id="importer-les-roles-plus-vite">Importer les rôles plus vite</h3>
+<p>Dans <strong>Advanced · import an agent setup</strong>, utilise le bouton d’import de fichier avec l’une des fiches : <a href="agents/produit.json">Produit</a>, <a href="agents/dev.json">Dev</a>, <a href="agents/qa.json">QA</a>. L’import préremplit le formulaire ; il reste à choisir le dossier, vérifier Engine, personnaliser le nom et créer l’agent. Les fiches ne fixent ni fournisseur ni modèle : elles reprennent la configuration locale. Elles ne créent pas toute l’équipe automatiquement.</p>
+<h2 id="3-envoyer-chaque-prompt-au-bon-agent">3. Envoyer chaque prompt au bon agent</h2>
+<p>Sélectionne le personnage ou la fiche de l’agent, ouvre sa conversation et vérifie le nom du destinataire dans son compositeur. Colle la mission et envoie-la. Au besoin, son terminal permet d’inspecter les commandes et les demandes d’autorisation.</p>
+<p>Le grand compositeur global peut passer par le coordinateur. Pour ce premier tutoriel, privilégie la conversation de l’agent nommé dans l’étape : tu conserves le contrôle du passage de relais, même si le routage automatique de ton fournisseur n’est pas disponible.</p>
+<p><strong>Ordre : Produit → Dev → QA → Dev si nécessaire → QA → Produit.</strong> Attends la fin d’une mission avant de démarrer la suivante. Cette règle évite les modifications concurrentes dans le dossier partagé. Les prompts disent quels fichiers lire : les agents n’ont pas besoin de partager automatiquement leur historique de conversation.</p>
+<p>Dans chaque guide, le bloc « Passage à la suite » est ton repère. Si le fichier attendu manque, fais terminer cette étape avant d’envoyer le prompt suivant.</p>
+<h2 id="4-debloquer-les-incidents-courants">4. Débloquer les incidents courants</h2>
+<table>
+<thead>
+<tr>
+<th>Ce que tu observes</th>
+<th>Ce que tu fais</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Message en file d’attente</td>
+<td>Vérifie le destinataire, une session occupée, une saisie non envoyée ou un sélecteur ouvert dans son terminal.</td>
+</tr>
+<tr>
+<td>Message delivery paused</td>
+<td>Utilise Resume sur le bureau, puis vérifie que le message a été traité avant de le renvoyer.</td>
+</tr>
+<tr>
+<td>Le fournisseur demande une connexion ou une autorisation</td>
+<td>Termine l’étape correspondante dans le terminal ou l’interface d’approbation, puis reprends la mission.</td>
+</tr>
+<tr>
+<td>« Terminé » mais aucun fichier de livraison</td>
+<td>Demande les chemins exacts et l’écriture du document manquant.</td>
+</tr>
+<tr>
+<td>Un serveur est annoncé mais l’URL ne répond pas</td>
+<td>Demande la sortie réelle du lancement et vérifie que le processus reste actif.</td>
+</tr>
+<tr>
+<td>Port déjà utilisé</td>
+<td>Utilise un autre port local libre et fais corriger le README.</td>
+</tr>
+<tr>
+<td>QA ne peut pas ouvrir un navigateur</td>
+<td>Fais toi-même la recette décrite. Le rapport doit garder NON TESTÉ jusqu’à ton retour.</td>
+</tr>
+<tr>
+<td>L’agent a créé un worktree isolé</td>
+<td>Reviens à un dossier partagé pour ce tutoriel, ou termine une intégration Git explicite avant le relais ; les fichiers d’un worktree ne se partagent pas automatiquement.</td>
+</tr>
+</tbody>
+</table>
+<p>Prompt commun de reprise :</p>
+<pre><code class="language-text">Reprends uniquement l’étape en cours. Relis docs/brief.md et ton dernier document de passage de relais. Dis ce qui existe effectivement dans le dossier, ce qui a été exécuté et ce qui bloque encore. Termine le livrable manquant sans recommencer le projet ni étendre le périmètre. Si une commande échoue, conserve son erreur, corrige sa cause et réessaie le contrôle concerné.
+</code></pre>
+<h2 id="5-filmer-un-tutoriel-qui-montre-vraiment-le-travail">5. Filmer un tutoriel qui montre vraiment le travail</h2>
+<p>Le <a href="04-tournage.fr.html">script de tournage</a> donne le déroulé d’une vidéo de 3 minutes environ, un format court de 60 secondes et une liste de prises à capturer. Enregistre les sessions de Crewlo et l’application issue de ces sessions. Affiche « attente accélérée » quand tu compresses les générations. Les sorties attendues des guides servent de points de contrôle ; elles ne sont pas des réponses à faire passer pour celles des agents.</p>
+<h2 id="reperes-de-compatibilite">Repères de compatibilité</h2>
+<p>Ce kit a été écrit d’après le code local du 29 septembre 2026 : formulaire <code>src/renderer/src/components/AddAgentModal.tsx</code>, schéma d’import <code>src/shared/hire.ts</code>, compositeur <code>src/renderer/src/components/MessageQueueComposer.tsx</code> et README. Les fiches utilisent le format d’import existant <code>munder-difflin/hire@1</code>, conservé par Crewlo.</p>
+<p>Le parcours décrit une coordination manuelle par missions et fichiers. Le bon fonctionnement de l’import, des fournisseurs et de l’exécution complète doit être confirmé dans la session utilisée pour filmer. Les rôles peuvent aussi être employés successivement dans un seul agent si tu veux réduire le nombre de sessions.</p></article><div class="pager"><span></span><a href="01-taskboard.fr.html">TaskBoard →</a></div><footer>Kit local · 29 septembre 2026. Les scénarios décrivent le travail à réaliser ; les résultats sont à constater pendant l’exécution. Crewlo est un fork indépendant de Munder Difflin.</footer></main></div><script>
+document.querySelectorAll('pre').forEach((pre,i)=>{
+  const code=pre.querySelector('code'); if(!code)return;
+  const label=document.createElement('span');label.className='prompt-label';label.textContent='PROMPT À COPIER';pre.prepend(label);
+  const button=document.createElement('button');button.className='copy';button.type='button';button.textContent='Copier';button.setAttribute('aria-label','Copier le prompt '+(i+1));
+  button.addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(code.textContent);button.textContent='Copié';document.getElementById('status').textContent='Prompt copié. Colle-le dans la conversation de l’agent indiqué.';setTimeout(()=>button.textContent='Copier',2200);}
+    catch{const range=document.createRange();range.selectNodeContents(code);const selection=getSelection();selection.removeAllRanges();selection.addRange(range);document.getElementById('status').textContent='Texte sélectionné. Utilise Ctrl+C, ou Cmd+C sur Mac.';}
+  });pre.append(button);
+});
+document.querySelectorAll('table').forEach(table=>{const wrapper=document.createElement('div');wrapper.className='table-scroll';table.before(wrapper);wrapper.append(table);});
+</script></body></html>

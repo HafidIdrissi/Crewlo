@@ -1,0 +1,11 @@
+MISSION : tester ClientFlow avec des données fictives. Lis docs/brief.md, docs/recette.md et docs/handoff-dev.md.
+
+Exécute typecheck, test:run et build. Ajoute les tests manquants avec l’outillage existant, sans changer l’application ni les dépendances.
+
+Vérifie : entreprise vide refusée ; email vide accepté et email mal formé refusé ; montant inconnu distinct de zéro ; décimales converties sans erreur de centime ; déplacement, édition, recherche et rechargement. Vérifie qu’un dossier Gagné ou Perdu ne figure plus dans « À relancer » ni dans le potentiel actif, et que les montants gagnés sont séparés.
+
+Dans le navigateur si disponible : crée deux dossiers actifs de 1 500,50 EUR et 499,50 EUR, un gagné de 800 EUR et un perdu de 200 EUR. Le potentiel actif attendu est 2 000 EUR et le total gagné 800 EUR. Passe le premier actif à Gagné : le potentiel devient 499,50 EUR et le gagné 2 300,50 EUR. Ce sont des attentes à tester, pas des résultats déjà acquis.
+
+Teste hier/aujourd’hui/demain pour la relance dans le fuseau local, puis export et restauration JSON dans un profil de test. Un import malformé doit laisser les données intactes ; l’annulation de remplacement aussi. Vérifie une largeur de 390 px et le clavier.
+
+Écris docs/qa-1.md : PASS / FAIL / NON TESTÉ, preuves, défauts numérotés avec reproduction et gravité. Si tu ne peux pas ouvrir de navigateur, conserve les cas d’interface NON TESTÉ et fournis la recette à l’utilisateur.

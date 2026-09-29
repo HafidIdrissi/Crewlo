@@ -8,7 +8,7 @@
 
 Bring your coding agents into one visual workspace. Send a mission, follow the work, find the reply. A crew of twelve voxel characters makes the studio feel alive, from focused work to coffee breaks.
 
-[Explore the interactive studio](https://hafididrissi.github.io/Crewlo/#crew) · [Read the journal](https://hafididrissi.github.io/Crewlo/blog/) · [Build from source](#build-from-source) · [Windows & macOS packaging](#desktop-packaging)
+[Explore the interactive studio](https://hafididrissi.github.io/Crewlo/#crew) · [Use cases & tutorials](https://hafididrissi.github.io/Crewlo/use-cases.html) · [Read the journal](https://hafididrissi.github.io/Crewlo/blog/) · [Build from source](#build-from-source) · [Windows & macOS packaging](#desktop-packaging)
 
 [![Animated Crewlo studio: a mission reaches Remy, his activity appears, then the reply opens](docs/crewlo/demo/readme-studio.gif)](docs/crewlo/demo/readme-studio.mp4)
 
@@ -63,6 +63,20 @@ The GIFs play directly in the README when your GitHub animation preference allow
 - **Check in from your phone.** Telegram has a verified basic message round trip. Optional Telegram and WhatsApp connections route paired-owner messages to existing connected agents, with replies and channel badges in Conversation; WhatsApp still needs a live account-to-agent test.
 
 Bring the agent CLI you already use: provider presets include Claude Code, Codex, Gemini CLI and others. Your accounts and credentials stay under your control; coordination and remote-messaging support vary by provider.
+
+## Build a small product with your crew
+
+Follow a complete workflow: create **Product, Dev and QA** agents, send the ready-to-copy prompts, pass the work between them and verify the result. The detailed guides are in French.
+
+| Project | What you build | Walkthrough in the repository |
+| --- | --- | --- |
+| TaskBoard | A task manager with statuses, filters and local persistence | [Build TaskBoard](docs/crewlo/launch-kit/use-cases/playbooks/01-taskboard.fr.md) |
+| ClientFlow | A freelance CRM with follow-ups, pipeline stages and JSON backup | [Build ClientFlow](docs/crewlo/launch-kit/use-cases/playbooks/02-clientflow.fr.md) |
+| LaunchPage | A landing page with a form that saves sample signups through a local API | [Build LaunchPage](docs/crewlo/launch-kit/use-cases/playbooks/03-launchpage.fr.md) |
+
+**[Explore the use-case page](https://hafididrissi.github.io/Crewlo/use-cases.html)** · [Create the agents](docs/crewlo/launch-kit/use-cases/playbooks/DEMARRER.fr.md) · [Download the kit](https://hafididrissi.github.io/Crewlo/crewlo/launch-kit/use-cases/playbooks/crewlo-playbooks-fr.zip) · [Film the result](docs/crewlo/launch-kit/use-cases/playbooks/04-tournage.fr.md)
+
+The kit includes **23 prompts and three importable agent roles**. These are workflows to run with your own agents; the guides do not claim completed live MVP builds. [Browse all source guides and role files](docs/crewlo/launch-kit/use-cases/playbooks/).
 
 ## Current status
 

@@ -1,0 +1,3 @@
+Fais la recette finale sur la version corrigée : inscription fictive → confirmation liée à la réponse API → fichier persistant → doublon → redémarrage → données conservées → erreur réseau sans faux succès. Relance les contrôles affectés. Attribue à l’utilisateur les observations manuelles qu’il t’a transmises.
+
+Écris docs/recette-finale.md avec version, critères, états, preuves et limites. PRÊT POUR DÉMO LOCALE exige une chaîne navigateur–API–disque effectivement vérifiée. Si un maillon manque, indique les réserves exactes. La réussite ne vaut pas validation d’un service public.

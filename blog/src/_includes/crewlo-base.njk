@@ -11,7 +11,7 @@
   <meta property="og:type" content="{% if slug %}article{% else %}website{% endif %}">
   <meta property="og:image" content="https://hafididrissi.github.io/Crewlo/crewlo/demo/studio-overview.png">
   <link rel="icon" href="{{ crewloRoot }}crewlo/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="{{ crewloRoot }}crewlo-site.css">
+  <link rel="stylesheet" href="{{ crewloRoot }}crewlo-site.css?v=use-cases-1">
   <link rel="stylesheet" href="{{ crewloRoot }}crewlo-living.css">
   <link rel="stylesheet" href="{{ crewloRoot }}blog/assets/crewlo-journal.css">
   <script src="{{ crewloRoot }}crewlo-site.js" defer></script>
@@ -23,7 +23,7 @@
 <a class="skip" href="#main">Skip to content</a>
 <header class="site-header landing-header"><div class="nav wrap">
   <a class="brand" href="{{ crewloRoot }}index.html" aria-label="Crewlo home"><img src="{{ crewloRoot }}crewlo/favicon.svg" width="32" height="32" alt="">crewlo</a>
-  <nav class="site-nav" id="main-nav" aria-label="Main"><a href="{{ crewloRoot }}index.html#crew">Studio</a><a href="{{ crewloRoot }}blog/" aria-current="{% if not slug %}page{% else %}false{% endif %}">Blog</a><a href="{{ crewloRoot }}project-status.html">Project status</a><a href="{{ crewloRoot }}install.html">Installation</a></nav>
+  <nav class="site-nav" id="main-nav" aria-label="Main"><a href="{{ crewloRoot }}index.html#crew">Studio</a><a href="{{ crewloRoot }}use-cases.html">Use cases</a><a href="{{ crewloRoot }}blog/" aria-current="{% if not slug %}page{% else %}false{% endif %}">Blog</a><a href="{{ crewloRoot }}project-status.html">Project status</a><a href="{{ crewloRoot }}install.html">Installation</a></nav>
   <div class="nav-actions"><a class="button small primary" href="{{ crewloRoot }}index.html#crew">Explore the studio</a><button class="nav-toggle" type="button" aria-expanded="false" aria-controls="main-nav" hidden>Menu</button></div>
 </div></header>
 <main id="main" tabindex="-1">{{ content | safe }}</main>
