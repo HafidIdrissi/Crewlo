@@ -254,20 +254,6 @@ The example above is a template. The current `coffeeUrl` is `https://buymeacoffe
 >
 > #OpenSource #AIAgents #BuildInPublic
 
-### Version française
-
-> Et si tes agents IA partageaient un petit studio voxel ?
->
-> Je construis Crewlo : un espace local pour leur donner une mission et voir qui fait quoi.
->
-> Voici 18 secondes de démo de l'interface, avec des données simulées. Le projet est encore jeune et ouvert aux contributions.
->
-> Testeurs Windows/macOS/Linux, devs React/Electron, profils accessibilité : vos retours sont les bienvenus. Une étoile GitHub aide aussi à faire découvrir le projet.
->
-> https://github.com/HafidIdrissi/crewlo
->
-> #OpenSource #AIAgents #BuildInPublic
-
 Share once in relevant communities that allow project showcases. Ask for specific feedback, answer issues, and show actual improvements in follow-ups. No fake stars, automated outreach, inflated claims, or guaranteed “trending” results.
 
 ## Credits

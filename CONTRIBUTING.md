@@ -4,6 +4,8 @@ Thanks for helping make the studio useful beyond a demo. Crewlo is an early, sou
 
 ## Pick a first contribution
 
+Three small, existing tasks are ready for a first PR: [journal front-matter example (#8)](https://github.com/HafidIdrissi/Crewlo/issues/8), [website browser-check instructions (#9)](https://github.com/HafidIdrissi/Crewlo/issues/9), and [translation contributor guide (#35)](https://github.com/HafidIdrissi/Crewlo/issues/35). Each issue includes starting files and acceptance criteria. No agent account is needed. Comment on the task you choose so contributors can coordinate; [browse all beginner tasks](https://github.com/HafidIdrissi/Crewlo/contribute).
+
 - [Report a bug](https://github.com/HafidIdrissi/Crewlo/issues/new/choose) with steps to reproduce and your OS. Screenshots help, but never include bot tokens, phone numbers, personal chats, prompts or raw terminal logs.
 - [Suggest an idea](https://github.com/HafidIdrissi/Crewlo/discussions) before spending time on a large change.
 - Improve the Windows quick start, accessibility, agent activity labels, responsive layout, or cross-platform testing. A verified, clearly scoped Telegram or WhatsApp test report is useful too; do not post credentials.

@@ -375,7 +375,7 @@ async function mediaControls(page) {
     });
     assert.deepEqual(heroLayout, { sideBySide: true, studioLarger: true, inFirstScreen: true });
     assert.deepEqual(await page.locator('main > section[id]').evaluateAll(sections => sections.map(el => el.id)),
-      ['crew', 'proof', 'agents', 'connect', 'start', 'faq', 'support'], 'Real evidence follows the illustrated studio and precedes presets and messaging');
+      ['crew', 'proof', 'use-cases', 'agents', 'connect', 'start', 'faq', 'support'], 'Real evidence follows the illustrated studio; workshops precede presets and messaging');
     assert.deepEqual(await page.locator('a[href^="#"]').evaluateAll(links => links.flatMap(link => {
       const id = decodeURIComponent(link.getAttribute('href').slice(1));
       return id && !document.getElementById(id) ? [id] : [];

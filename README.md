@@ -8,7 +8,17 @@
 
 Bring your coding agents into one visual workspace. Send a mission, follow the work, find the reply. A crew of twelve voxel characters makes the studio feel alive, from focused work to coffee breaks.
 
-[Explore the interactive studio](https://hafididrissi.github.io/Crewlo/#crew) · [Use cases & tutorials](https://hafididrissi.github.io/Crewlo/use-cases.html) · [Read the journal](https://hafididrissi.github.io/Crewlo/blog/) · [Build from source](#build-from-source) · [Windows & macOS packaging](#desktop-packaging)
+**[Download for Windows](https://github.com/HafidIdrissi/crewlo/releases/download/v0.4.6-preview.2/Crewlo-0.4.6-win-x64-preview-setup.exe)** · **[Download for Mac](#download-for-mac)** · **[Run your first mission](docs/crewlo/FIRST-MISSION.md)**
+
+Free, MIT-licensed desktop workspace for coding-agent CLIs. Bring your own installed, authenticated CLI; provider costs and limits apply. Windows and macOS downloads are early previews: Windows is unsigned and Mac builds are not notarized. [Installation help](https://hafididrissi.github.io/Crewlo/install.html).
+
+| First trial | What to do |
+| --- | --- |
+| 1. Install | Download the preview for your OS and open Crewlo. |
+| 2. Connect | Create one agent, select your CLI and choose a new test folder. |
+| 3. Send a mission | Ask the agent to read one small file and verify its actual reply. [Copy the prompt and fixture](docs/crewlo/FIRST-MISSION.md). |
+
+[Explore the interactive studio](https://hafididrissi.github.io/Crewlo/#crew) · [Use cases & tutorials](https://hafididrissi.github.io/Crewlo/use-cases.html) · [Read the journal](https://hafididrissi.github.io/Crewlo/blog/) · [Build from source](#build-from-source)
 
 [![Animated Crewlo studio: a mission reaches Remy, his activity appears, then the reply opens](docs/crewlo/demo/readme-studio.gif)](docs/crewlo/demo/readme-studio.mp4)
 
@@ -214,6 +224,16 @@ Anonymous usage analytics requires a configured build-time key and can be disabl
 ## Help shape Crewlo
 
 Try the source, [report a reproducible bug](https://github.com/HafidIdrissi/Crewlo/issues/new/choose), [suggest an idea](https://github.com/HafidIdrissi/Crewlo/discussions), or take on one small improvement. Windows/macOS/Linux verification, accessibility, messaging and clearer agent activity are useful places to contribute. Read the [contribution guide](CONTRIBUTING.md) before opening a PR.
+
+Start with one of these existing **good first issues**. They need no provider account:
+
+| Contribution | Starting point |
+| --- | --- |
+| Add a copyable journal front-matter example | [Issue #8](https://github.com/HafidIdrissi/Crewlo/issues/8) · `blog/src/crewlo/` |
+| Explain how to run the website browser checks | [Issue #9](https://github.com/HafidIdrissi/Crewlo/issues/9) · `tools/crewlo-site-check.cjs` |
+| Document translation resources and fallback behavior | [Issue #35](https://github.com/HafidIdrissi/Crewlo/issues/35) · `src/renderer/src/i18n/` |
+
+[Browse beginner tasks](https://github.com/HafidIdrissi/Crewlo/contribute) · [Help test the preview on your own computer](https://github.com/HafidIdrissi/Crewlo/issues/3).
 
 If Crewlo interests you, [give the repository a star](https://github.com/HafidIdrissi/crewlo). Starring happens on GitHub after you sign in; Crewlo never requests a GitHub token or stars automatically.
 

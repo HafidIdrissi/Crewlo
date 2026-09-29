@@ -11,12 +11,23 @@ const version = JSON.parse(read('package.json')).version;
 const release = read('RELEASE.md');
 const problems = [];
 const urls = new Set();
+const workshopArchive = 'https://hafididrissi.github.io/Crewlo/crewlo/launch-kit/use-cases/playbooks/crewlo-playbooks-en.zip';
+const documentationDownloads = new Set();
 const preview = /Not a published release/i.test(release);
 for (const file of ['RELEASE.md', 'README.md', 'docs/index.html', 'docs/install.html', 'docs/project-status.html']) {
   const source = read(file);
   for (const match of source.matchAll(/https:\/\/[^\s<>"')]+/g)) {
     const url = match[0];
     if (!/\.(?:exe|dmg|zip|AppImage)(?:[?#]|$)/i.test(url)) continue;
+    // This owned Pages archive contains workshop documents, not an installer.
+    // Keep the exception exact so unrelated/off-site downloads still fail.
+    if (url === workshopArchive) {
+      if (!fs.existsSync(path.join(root, 'docs/crewlo/launch-kit/use-cases/playbooks/crewlo-playbooks-en.zip'))) {
+        problems.push(`${file}: missing local workshop archive`);
+      }
+      documentationDownloads.add(url);
+      continue;
+    }
     if (!url.startsWith('https://github.com/HafidIdrissi/crewlo/releases/')) {
       problems.push(`${file}: download outside the Crewlo release repository: ${url}`);
       continue;
@@ -37,7 +48,7 @@ for (const match of release.matchAll(/\]\(([^)]+)\)/g)) {
 }
 (async () => {
   if (process.argv.includes('--live')) {
-    for (const url of urls) {
+    for (const url of [...urls, ...documentationDownloads]) {
       try {
         const response = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: AbortSignal.timeout(15000) });
         if (!response.ok) problems.push(`${url}: HTTP ${response.status}`);
