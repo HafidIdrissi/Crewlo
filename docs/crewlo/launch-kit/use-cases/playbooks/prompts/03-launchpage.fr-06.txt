@@ -1,7 +1,0 @@
-Lis le code, package.json, docs/handoff-dev.md et docs/recette-finale.md. Rédige README.md avec prérequis, installation, deux terminaux, commandes, URL locale réellement configurée et arrêt des processus. Explique le fichier de données, l’absence d’envoi d’email et le périmètre à processus unique.
-
-Crée docs/demo-60s.md : montrer l’offre, remplir demo@example.com, soumettre, constater la confirmation, montrer le fichier de données et le test de doublon. Identifie la maquette du futur produit comme un aperçu.
-
-Ajoute docs/prochaine-version.md pour une ouverture publique future : stockage adapté à l’hébergement, HTTPS, protection anti-abus, règles de conservation et consentement, accès administratif protégé, supervision et tests de l’environnement déployé. Ce sont des travaux à spécifier, pas des fonctionnalités déjà livrées.
-
-Termine avec les commandes exactes pour essayer le projet et la décision de recette locale.

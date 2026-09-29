@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Crewlo — TaskBoard · practical guide</title><meta name="description" content="Build a usable task manager. Agent roles, copyable prompts and step-by-step checks with Crewlo."><meta name="theme-color" content="#18382d"><link rel="canonical" href="https://hafididrissi.github.io/Crewlo/crewlo/launch-kit/use-cases/playbooks/01-taskboard.en.html"><link rel="icon" href="https://hafididrissi.github.io/Crewlo/crewlo/favicon.svg" type="image/svg+xml"><style>
+:root{color-scheme:light;--ink:#18382d;--muted:#50695f;--line:#d8e2d9;--paper:#fffefa;--accent:#2d6045;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:#f1f4ed;color:var(--ink)}
+*{box-sizing:border-box}body{margin:0}a{color:#265f43;text-underline-offset:3px}a:hover{color:#123321}button{font:inherit;cursor:pointer}button:disabled{cursor:default;opacity:.5}a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #ad681e;outline-offset:4px}.skip{position:absolute;left:12px;top:-80px;background:white;padding:12px;z-index:20}.skip:focus{top:12px}
+.top{background:#18382d;color:#f6f4e9;padding:20px clamp(20px,4vw,60px);display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}.brand{font-weight:800;letter-spacing:.19em;font-size:15px}.top a{color:#def0bb}.tag{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#def0bb}.layout{max-width:1460px;margin:auto;display:grid;grid-template-columns:270px minmax(0,1fr);gap:48px;padding:36px 36px 80px}aside{position:sticky;top:20px;align-self:start;max-height:calc(100vh - 40px);overflow:auto}nav ul{list-style:none;padding:0;margin:8px 0 25px}nav a{display:block;border-radius:10px;padding:10px 14px;text-decoration:none;margin:3px 0}nav a[aria-current=page]{background:#dce8d3;font-weight:750}nav a:hover{background:#e4ece0}.nav-title{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:750;color:var(--muted)}.toc{font-size:13px}.toc ul{list-style:none;padding-left:12px}.toc>ul{padding-left:0}.toc a{display:block;padding:5px 0;text-decoration:none}.toc ul ul ul{display:none}main{min-width:0;max-width:980px}.intro{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:22px}.intro p{margin:0;color:var(--muted);font-size:14px}.intro a{font-size:13px}.paper{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:clamp(22px,4vw,50px);box-shadow:0 10px 40px #18382d06}h1{font-size:clamp(30px,3.6vw,49px);letter-spacing:-.035em;line-height:1.12;margin:0 0 27px}h2{font-size:25px;line-height:1.25;border-top:1px solid var(--line);padding-top:34px;margin-top:40px;scroll-margin-top:25px}h3{font-size:19px;margin-top:28px;scroll-margin-top:25px}p,li{line-height:1.75;font-size:16px}p{margin:16px 0}li{margin:8px 0}strong{font-weight:740}code{font-family:ui-monospace,Consolas,monospace;font-size:.88em;background:#eaf0e5;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#f0f4ec;border:1px solid #d2dfcd;border-radius:14px;padding:54px 22px 22px;position:relative;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;margin:24px 0}pre code{background:none;padding:0;font-size:14px}.copy{position:absolute;top:12px;right:12px;border:1px solid #bad0ae;background:#fffefa;color:var(--ink);padding:6px 12px;border-radius:8px;font-size:12px}.copy:hover{background:#dce8d3}.prompt-label{position:absolute;left:20px;top:18px;color:#47633d;letter-spacing:.06em;font-size:10px;font-weight:800}.table-scroll{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;padding:12px;border:1px solid var(--line);vertical-align:top;line-height:1.6}th{background:#eaf0e3}td{min-width:140px}footer{margin-top:28px;color:var(--muted);font-size:13px;line-height:1.7}.pager{display:flex;gap:15px;justify-content:space-between;margin-top:28px}.pager a{border:1px solid #c7d7c0;padding:11px 16px;border-radius:12px;text-decoration:none;background:#f8faf4}.status{min-height:24px;font-size:13px;color:var(--muted)}
+@media(max-width:960px){.layout{grid-template-columns:210px minmax(0,1fr);gap:22px;padding:25px 20px}.paper{padding:26px}h1{font-size:35px}}
+@media(max-width:700px){.layout{display:block;padding:20px 14px}aside{position:static;max-height:none;margin-bottom:18px}nav ul{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}nav a{padding:8px 10px;font-size:13px}.toc,.toc-label{display:none}.paper{padding:23px 18px;border-radius:15px}h1{font-size:32px}h2{font-size:22px}p,li{font-size:15px}pre{padding:53px 14px 18px}pre code{font-size:13px}.top{padding:17px 20px}.intro{align-items:flex-start}.pager{flex-wrap:wrap}}
+@media print{.top,aside,.intro,.copy,.pager,.status,.skip{display:none}.layout{display:block;padding:0}main{max-width:none}.paper{border:0;box-shadow:none;padding:0}pre{padding:14px;break-inside:avoid}.prompt-label{display:none}h1{font-size:28px}h2{font-size:21px}p,li{font-size:11pt}.table-scroll{overflow:visible}a{color:inherit}}
+</style></head>
+<body><a class="skip" href="#main">Skip to the guide</a><header class="top"><div><a class="brand" href="https://hafididrissi.github.io/Crewlo/">CREWLO</a> &nbsp; / &nbsp; MVP WORKSHOPS</div><a href="https://hafididrissi.github.io/Crewlo/use-cases.html">All use cases</a><a href="https://github.com/HafidIdrissi/Crewlo/tree/main/docs/crewlo/launch-kit/use-cases/playbooks">Read on GitHub</a><a href="crewlo-playbooks-en.zip" download>Download the kit</a></header>
+<div class="layout"><aside><nav aria-label="Workflows"><div class="nav-title">From brief to result</div><ul><li><a href="GETTING-STARTED.en.html">Get started</a></li><li><a href="01-taskboard.en.html" aria-current="page">TaskBoard</a></li><li><a href="02-clientflow.en.html">ClientFlow</a></li><li><a href="03-launchpage.en.html">LaunchPage</a></li><li><a href="04-filming.en.html">Record the result</a></li></ul></nav><div class="nav-title toc-label">In this guide</div><div class="toc">
+<ul>
+<li><a href="#taskboard-from-an-idea-to-a-usable-application">TaskBoard — from an idea to a usable application</a><ul>
+<li><a href="#step-1-turn-the-idea-into-an-achievable-mission">Step 1 — Turn the idea into an achievable mission</a></li>
+<li><a href="#step-2-build-a-complete-first-version">Step 2 — Build a complete first version</a></li>
+<li><a href="#step-3-get-an-independent-check">Step 3 — Get an independent check</a></li>
+<li><a href="#step-4-fix-what-actually-failed">Step 4 — Fix what actually failed</a></li>
+<li><a href="#step-5-make-a-final-acceptance-decision">Step 5 — Make a final acceptance decision</a></li>
+<li><a href="#step-6-deliver-the-project-and-prepare-its-presentation">Step 6 — Deliver the project and prepare its presentation</a></li>
+<li><a href="#step-7-demonstrate-the-final-result-yourself">Step 7 — Demonstrate the final result yourself</a></li>
+<li><a href="#bonus-request-a-summary-through-telegram">Bonus — Request a summary through Telegram</a></li>
+<li><a href="#extend-the-product-later">Extend the product later</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</aside>
+<main id="main"><div class="intro"><p>Build a usable task manager.<br>7 copyable prompts</p><a href="01-taskboard.en.md" download>Markdown version</a></div><div class="status" id="status" role="status" aria-live="polite"></div><article class="paper"><h1 id="taskboard-from-an-idea-to-a-usable-application">TaskBoard — from an idea to a usable application</h1>
+<p><strong>Story to show:</strong> “I have a simple idea. I create three agents in Crewlo, give them clear responsibilities and test the product they build.”</p>
+<p><strong>Target result:</strong> a local browser application with task creation, three statuses, filters and persistence after reloading. The expected result is interactive: create a real task and find its changes again.</p>
+<p><strong>Team:</strong> <code>TaskBoard Product</code>, <code>TaskBoard Dev</code>, <code>TaskBoard QA</code>. Start with the <a href="GETTING-STARTED.en.html">agent setup guide</a>. Suggested shared folder: <code>C:\Projects\crewlo-demos\taskboard</code>.</p>
+<h2 id="step-1-turn-the-idea-into-an-achievable-mission">Step 1 — Turn the idea into an achievable mission</h2>
+<p><strong>Agent: TaskBoard Product.</strong> Paste this prompt into its conversation.</p>
+<pre><code class="language-text">MISSION: scope TaskBoard, a local personal task manager.
+
+USER: a freelancer wants to know what to work on today.
+JOURNEY: open the app, enter a task, find it under “To do”, move it to “In progress” and then “Done”, filter and reload the page.
+
+V1 SCOPE:
+- Add a task with a required title; reject whitespace-only titles and limit titles to 120 characters.
+- Three statuses: To do, In progress, Done. A task can move back to a previous status.
+- Filter All / To do / In progress / Done, with consistent counts.
+- Delete a task with a simple confirmation.
+- Save to localStorage and restore after reloading.
+- Handle invalid saved data and unavailable storage without a blank screen or a misleading successful-save message.
+- English interface, responsive layout, labeled forms, keyboard navigation and visible focus.
+- Explicit “Load an example” button, only when the list is empty. Never silently insert tasks on startup.
+
+TECHNICAL APPROACH: inspect the folder. If empty, plan React + TypeScript + Vite, simple CSS and Vitest for business rules. Choose versions compatible with the installed Node. No data server, accounts or remote synchronization in V1.
+
+DELIVERABLES: create docs/brief.md with 1) need, 2) scope, 3) Task model {id, title, status, createdAt}, 4) error states, 5) proposed files, 6) numbered acceptance criteria, 7) planned startup and verification commands. Create docs/acceptance.md with the browser steps to run.
+
+Do not code the application. Make simple choices yourself. Finish with a summary of no more than eight lines and the two file paths.
+</code></pre>
+<p><strong>Show:</strong> mission delivery, the selected agent and the actual <code>docs/brief.md</code> file.</p>
+<p><strong>Ready to continue:</strong> the brief covers the three statuses, persistence and verifiable criteria. If the plan adds accounts or a remote database, remove that extension before building.</p>
+<h2 id="step-2-build-a-complete-first-version">Step 2 — Build a complete first version</h2>
+<p><strong>Agent: TaskBoard Dev.</strong> Product has finished; hand over the work.</p>
+<pre><code class="language-text">MISSION: implement the MVP described in docs/brief.md. Also read docs/acceptance.md and inspect existing files before creating anything.
+
+Build a complete working version of TaskBoard. If the folder contains only docs/, initialize the application in that same folder while preserving those documents. Use React + TypeScript + Vite and simple CSS if the brief confirms this approach.
+
+Suggested organization; adapt it if you explain why:
+- src/domain/tasks.ts: types, transitions and filters.
+- src/storage/tasks.ts: storage reading, validation and writing.
+- src/App.tsx and small components: form, counts, filters, cards.
+- src/styles.css: responsive layout, focus and empty states.
+- src/domain/*.test.ts and src/storage/*.test.ts: useful checks.
+
+On the first render, do not save an empty list before loading existing tasks. Report corrupted data; do not overwrite it automatically. Provide an explicitly confirmed reset. If writing fails, keep the in-memory state usable and explain that reloading may lose changes.
+
+Provide npm run dev, npm run build, npm run typecheck and npm run test:run. Install necessary dependencies, keep the lockfile and execute the last three checks. Scripts must exit with an error code on failure; test:run must not stay in watch mode.
+
+Style: light background, readable cards, green accents, three columns on wide screens and an adapted mobile layout. Statuses must be understandable without relying on color. Use only fictional examples and English interface text.
+
+Create docs/handoff-dev.md with changed files, exact commands, actual results, localStorage key, limitations and startup procedure. Give a URL only after actually starting the server; otherwise give the command to run. Finish your work so QA can proceed without concurrent writes.
+</code></pre>
+<p><strong>Show:</strong> a short terminal sequence during the work, then the application at the actual announced URL.</p>
+<p><strong>Ready to continue:</strong> the page opens, a task can be entered and <code>docs/handoff-dev.md</code> exists. A failed build is still work for Dev to complete.</p>
+<h2 id="step-3-get-an-independent-check">Step 3 — Get an independent check</h2>
+<p><strong>Agent: TaskBoard QA.</strong> Send only after Dev has finished.</p>
+<pre><code class="language-text">MISSION: run TaskBoard acceptance checks using docs/brief.md, docs/acceptance.md and docs/handoff-dev.md.
+
+Read the code, then run npm run typecheck, npm run test:run and npm run build. Add useful tests with the installed tools. Check transitions, filters, invalid titles, saved-data reads/writes and corrupted data. A localStorage simulation in a unit test alone does not prove that the application restores state in a real browser.
+
+If you have browser-control tools, run this journey in a fresh test profile:
+1. Check the empty state. Reject a whitespace-only title.
+2. Create “Prepare the demo”, “Test on mobile” and “Write the README”.
+3. Move the first task to In progress and the second to Done.
+4. Check every filter and count, then reload the same URL.
+5. Check that all three tasks and their statuses remain.
+6. Cancel deletion and check the task remains, then confirm deletion and reload.
+7. Check a long title, keyboard navigation and a 390 px viewport.
+8. In this test profile only, check corrupted storage and refused writes; explain how you triggered these cases.
+
+If no browser is available, provide manual steps and mark these entries NOT TESTED. Do not change application code or dependencies.
+
+Write docs/qa-1.md: for each criterion, PASS / FAIL / NOT TESTED, evidence and command or interaction. For a defect, give an ID such as BUG-01, exact steps, expected behavior, observed behavior and severity. Finish with blocking defects and the specific mission to hand to Dev.
+</code></pre>
+<p><strong>Ready to continue:</strong> read the report. Screenshots and terminal output must match this product version. If there are no defects, go to step 5; perform any NOT TESTED checks before final acceptance.</p>
+<h2 id="step-4-fix-what-actually-failed">Step 4 — Fix what actually failed</h2>
+<p><strong>Agent: TaskBoard Dev.</strong> This step is conditional: do not invent a bug to make the video dramatic.</p>
+<pre><code class="language-text">MISSION: fix the actual defects listed in docs/qa-1.md.
+
+Read the report and reproduce each defect before editing its code. For every confirmed BUG, make the smallest focused fix and add or adjust the appropriate regression test. Do not change assertions to conceal a product error. If an observation cannot be reproduced, state your attempts and the missing information.
+
+Run npm run typecheck, npm run test:run and npm run build. Update docs/handoff-dev.md and create docs/fixes.md with each BUG's cause, affected files and rerun checks. Add no features. Finish before handing back to QA.
+</code></pre>
+<p><strong>If the only blocker is a manual check:</strong> perform the steps and send QA your observations with the browser, URL and date. Do not just say “everything works”.</p>
+<h2 id="step-5-make-a-final-acceptance-decision">Step 5 — Make a final acceptance decision</h2>
+<p><strong>Agent: TaskBoard QA.</strong></p>
+<pre><code class="language-text">MISSION: decide whether TaskBoard is ready for a local demonstration.
+
+Reread docs/qa-1.md, docs/handoff-dev.md and docs/fixes.md if it exists. Replay fixed cases, then add → change status → filter → reload → delete. Use tests and browser tools when available. Attribute user-supplied manual checks to the user rather than claiming you executed them yourself.
+
+Write docs/final-acceptance.md with the checked version (commit if available, otherwise date and checked files), each criterion and its status, executed commands and limitations. If code changed after a test, rerun the affected check.
+
+Decision: READY FOR LOCAL DEMO only when all critical criteria have been verified with no blocking defect. Otherwise state READY WITH RESERVATIONS or BLOCKED and list the exact remaining actions. Do not claim “production-ready”.
+</code></pre>
+<p><strong>Ready to continue:</strong> creation, transitions, filters, deletion and persistence must actually work. Green unit tests alone do not complete the demo.</p>
+<h2 id="step-6-deliver-the-project-and-prepare-its-presentation">Step 6 — Deliver the project and prepare its presentation</h2>
+<p><strong>Agent: TaskBoard Product.</strong></p>
+<pre><code class="language-text">MISSION: prepare TaskBoard's local delivery from the actual code, docs/brief.md, docs/handoff-dev.md and docs/final-acceptance.md.
+
+Write README.md: purpose, actual prerequisites, installation from the lockfile, startup, verification commands, data stored in this browser and known limitations. Use scripts actually present in package.json.
+
+Write docs/demo-60s.md with the actions to show: empty state, task entry, move to In progress, filter, reload and persistence. Mention available acceptance evidence and reservations. Do not invent build time, passing-test counts, users or testimonials.
+
+Finish with what works, how to try it and what remains limited. Distinguish a local personal prototype from an application synchronized between users. Write everything in English.
+</code></pre>
+<h2 id="step-7-demonstrate-the-final-result-yourself">Step 7 — Demonstrate the final result yourself</h2>
+<ol>
+<li>Start the app with the README command and open the displayed URL.</li>
+<li>Create “Publish my first Crewlo demo”.</li>
+<li>Move the task to In progress and select that filter.</li>
+<li>Reload: find the task and its status again.</li>
+<li>Move it to Done, then show the Done filter.</li>
+<li>Briefly show the acceptance report and README.</li>
+</ol>
+<p><strong>Closing line:</strong> “Here is the result: an application I can use, with its code, instructions and verification. In Crewlo, each mission and reply stayed with the responsible agent.”</p>
+<p>The product is ready for this demonstration when that journey succeeds. Opening it in the local browser completes the first scenario; public hosting can become a separate episode.</p>
+<h2 id="bonus-request-a-summary-through-telegram">Bonus — Request a summary through Telegram</h2>
+<p>Try this after delivery with an already connected agent. Configure Telegram in Crewlo, finish pairing on the desktop and keep the computer awake. Use <code>/agents</code>, then <code>/agent &lt;id&gt;</code> with TaskBoard Dev's actual listed ID.</p>
+<pre><code class="language-text">Read docs/handoff-dev.md and docs/final-acceptance.md if they exist. In five lines, summarize what works, the checks performed and TaskBoard's limitations. Change nothing. If a file is missing or inaccessible, say so rather than inventing progress. Reply in English.
+</code></pre>
+<p>Compare the reply in Telegram and Conversation before including it in a video. Crewlo's previously verified basic Telegram exchange does not by itself validate this new MVP scenario.</p>
+<h2 id="extend-the-product-later">Extend the product later</h2>
+<p>A second episode can add due dates, search or JSON export. Pick one extension: Product writes its criteria, Dev implements it and QA verifies it. Cross-device synchronization requires a separate scope with a server and access management.</p></article><div class="pager"><a href="GETTING-STARTED.en.html">← Get started</a><a href="02-clientflow.en.html">ClientFlow →</a></div><footer>Local kit · 29 September 2026. These workflows describe work to perform; verify the results during execution. Crewlo is an independent fork of Munder Difflin.</footer></main></div><script>
+document.querySelectorAll('pre').forEach((pre,i)=>{
+  const code=pre.querySelector('code'); if(!code)return;
+  const label=document.createElement('span');label.className='prompt-label';label.textContent='COPYABLE PROMPT';pre.prepend(label);
+  const button=document.createElement('button');button.className='copy';button.type='button';button.textContent='Copy';button.setAttribute('aria-label','Copy prompt '+(i+1));
+  button.addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(code.textContent);button.textContent='Copied';document.getElementById('status').textContent='Prompt copied. Paste it into the named agent’s conversation.';setTimeout(()=>button.textContent='Copy',2200);}
+    catch{const range=document.createRange();range.selectNodeContents(code);const selection=getSelection();selection.removeAllRanges();selection.addRange(range);document.getElementById('status').textContent='Text selected. Use Ctrl+C, or Cmd+C on Mac.';}
+  });pre.append(button);
+});
+document.querySelectorAll('table').forEach(table=>{const wrapper=document.createElement('div');wrapper.className='table-scroll';table.before(wrapper);wrapper.append(table);});
+</script></body></html>

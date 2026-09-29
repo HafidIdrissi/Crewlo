@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Crewlo — ClientFlow · practical guide</title><meta name="description" content="Build a small CRM for a freelancer. Agent roles, copyable prompts and step-by-step checks with Crewlo."><meta name="theme-color" content="#18382d"><link rel="canonical" href="https://hafididrissi.github.io/Crewlo/crewlo/launch-kit/use-cases/playbooks/02-clientflow.en.html"><link rel="icon" href="https://hafididrissi.github.io/Crewlo/crewlo/favicon.svg" type="image/svg+xml"><style>
+:root{color-scheme:light;--ink:#18382d;--muted:#50695f;--line:#d8e2d9;--paper:#fffefa;--accent:#2d6045;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:#f1f4ed;color:var(--ink)}
+*{box-sizing:border-box}body{margin:0}a{color:#265f43;text-underline-offset:3px}a:hover{color:#123321}button{font:inherit;cursor:pointer}button:disabled{cursor:default;opacity:.5}a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #ad681e;outline-offset:4px}.skip{position:absolute;left:12px;top:-80px;background:white;padding:12px;z-index:20}.skip:focus{top:12px}
+.top{background:#18382d;color:#f6f4e9;padding:20px clamp(20px,4vw,60px);display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}.brand{font-weight:800;letter-spacing:.19em;font-size:15px}.top a{color:#def0bb}.tag{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#def0bb}.layout{max-width:1460px;margin:auto;display:grid;grid-template-columns:270px minmax(0,1fr);gap:48px;padding:36px 36px 80px}aside{position:sticky;top:20px;align-self:start;max-height:calc(100vh - 40px);overflow:auto}nav ul{list-style:none;padding:0;margin:8px 0 25px}nav a{display:block;border-radius:10px;padding:10px 14px;text-decoration:none;margin:3px 0}nav a[aria-current=page]{background:#dce8d3;font-weight:750}nav a:hover{background:#e4ece0}.nav-title{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:750;color:var(--muted)}.toc{font-size:13px}.toc ul{list-style:none;padding-left:12px}.toc>ul{padding-left:0}.toc a{display:block;padding:5px 0;text-decoration:none}.toc ul ul ul{display:none}main{min-width:0;max-width:980px}.intro{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:22px}.intro p{margin:0;color:var(--muted);font-size:14px}.intro a{font-size:13px}.paper{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:clamp(22px,4vw,50px);box-shadow:0 10px 40px #18382d06}h1{font-size:clamp(30px,3.6vw,49px);letter-spacing:-.035em;line-height:1.12;margin:0 0 27px}h2{font-size:25px;line-height:1.25;border-top:1px solid var(--line);padding-top:34px;margin-top:40px;scroll-margin-top:25px}h3{font-size:19px;margin-top:28px;scroll-margin-top:25px}p,li{line-height:1.75;font-size:16px}p{margin:16px 0}li{margin:8px 0}strong{font-weight:740}code{font-family:ui-monospace,Consolas,monospace;font-size:.88em;background:#eaf0e5;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#f0f4ec;border:1px solid #d2dfcd;border-radius:14px;padding:54px 22px 22px;position:relative;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;margin:24px 0}pre code{background:none;padding:0;font-size:14px}.copy{position:absolute;top:12px;right:12px;border:1px solid #bad0ae;background:#fffefa;color:var(--ink);padding:6px 12px;border-radius:8px;font-size:12px}.copy:hover{background:#dce8d3}.prompt-label{position:absolute;left:20px;top:18px;color:#47633d;letter-spacing:.06em;font-size:10px;font-weight:800}.table-scroll{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;padding:12px;border:1px solid var(--line);vertical-align:top;line-height:1.6}th{background:#eaf0e3}td{min-width:140px}footer{margin-top:28px;color:var(--muted);font-size:13px;line-height:1.7}.pager{display:flex;gap:15px;justify-content:space-between;margin-top:28px}.pager a{border:1px solid #c7d7c0;padding:11px 16px;border-radius:12px;text-decoration:none;background:#f8faf4}.status{min-height:24px;font-size:13px;color:var(--muted)}
+@media(max-width:960px){.layout{grid-template-columns:210px minmax(0,1fr);gap:22px;padding:25px 20px}.paper{padding:26px}h1{font-size:35px}}
+@media(max-width:700px){.layout{display:block;padding:20px 14px}aside{position:static;max-height:none;margin-bottom:18px}nav ul{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}nav a{padding:8px 10px;font-size:13px}.toc,.toc-label{display:none}.paper{padding:23px 18px;border-radius:15px}h1{font-size:32px}h2{font-size:22px}p,li{font-size:15px}pre{padding:53px 14px 18px}pre code{font-size:13px}.top{padding:17px 20px}.intro{align-items:flex-start}.pager{flex-wrap:wrap}}
+@media print{.top,aside,.intro,.copy,.pager,.status,.skip{display:none}.layout{display:block;padding:0}main{max-width:none}.paper{border:0;box-shadow:none;padding:0}pre{padding:14px;break-inside:avoid}.prompt-label{display:none}h1{font-size:28px}h2{font-size:21px}p,li{font-size:11pt}.table-scroll{overflow:visible}a{color:inherit}}
+</style></head>
+<body><a class="skip" href="#main">Skip to the guide</a><header class="top"><div><a class="brand" href="https://hafididrissi.github.io/Crewlo/">CREWLO</a> &nbsp; / &nbsp; MVP WORKSHOPS</div><a href="https://hafididrissi.github.io/Crewlo/use-cases.html">All use cases</a><a href="https://github.com/HafidIdrissi/Crewlo/tree/main/docs/crewlo/launch-kit/use-cases/playbooks">Read on GitHub</a><a href="crewlo-playbooks-en.zip" download>Download the kit</a></header>
+<div class="layout"><aside><nav aria-label="Workflows"><div class="nav-title">From brief to result</div><ul><li><a href="GETTING-STARTED.en.html">Get started</a></li><li><a href="01-taskboard.en.html">TaskBoard</a></li><li><a href="02-clientflow.en.html" aria-current="page">ClientFlow</a></li><li><a href="03-launchpage.en.html">LaunchPage</a></li><li><a href="04-filming.en.html">Record the result</a></li></ul></nav><div class="nav-title toc-label">In this guide</div><div class="toc">
+<ul>
+<li><a href="#clientflow-a-small-crm-for-a-freelancer">ClientFlow — a small CRM for a freelancer</a><ul>
+<li><a href="#step-1-scope-a-practical-workflow">Step 1 — Scope a practical workflow</a></li>
+<li><a href="#step-2-build-the-crm">Step 2 — Build the CRM</a></li>
+<li><a href="#step-3-check-the-cases-that-matter">Step 3 — Check the cases that matter</a></li>
+<li><a href="#step-4-fix-and-recheck">Step 4 — Fix and recheck</a></li>
+<li><a href="#step-5-prepare-delivery">Step 5 — Prepare delivery</a></li>
+<li><a href="#step-6-show-the-result-from-start-to-finish">Step 6 — Show the result from start to finish</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</aside>
+<main id="main"><div class="intro"><p>Build a small CRM for a freelancer.<br>6 copyable prompts</p><a href="02-clientflow.en.md" download>Markdown version</a></div><div class="status" id="status" role="status" aria-live="polite"></div><article class="paper"><h1 id="clientflow-a-small-crm-for-a-freelancer">ClientFlow — a small CRM for a freelancer</h1>
+<p><strong>Story to show:</strong> “I lose track of prospects between notes and messages. I create a small tool for my business with three Crewlo agents.”</p>
+<p><strong>Target result:</strong> a personal sales-tracking application. Create a prospect, assign a next action, move its record through the pipeline and find the information again after reloading.</p>
+<p><strong>Team:</strong> <code>ClientFlow Product</code>, <code>ClientFlow Dev</code>, <code>ClientFlow QA</code>, using the <a href="GETTING-STARTED.en.html">three roles in the setup guide</a>. Shared folder: <code>C:\Projects\crewlo-demos\clientflow</code>. Agents work in sequence.</p>
+<h2 id="step-1-scope-a-practical-workflow">Step 1 — Scope a practical workflow</h2>
+<p><strong>Agent: ClientFlow Product.</strong></p>
+<pre><code class="language-text">MISSION: scope ClientFlow, a local mini-CRM for a freelancer.
+
+Need: find prospects who need a follow-up without searching a spreadsheet and multiple notebooks.
+
+Scope:
+- Create and edit a prospect: required company, optional contact, optional validated email, optional estimated value, optional next action and follow-up date.
+- Stages: New, Contacted, Proposal, Won, Lost.
+- A view by stage with an explicit control for moving a prospect. Drag-and-drop is not required.
+- Search by company or contact; a “Follow up” filter for active records whose date is today or earlier in the local timezone.
+- Nonnegative EUR amounts stored as integer cents. An empty field means unknown, distinct from zero. Display active potential and won value separately; exclude lost records from potential.
+- Local data survives reloading. Validated JSON backup and restore for manually moving a portfolio.
+- Helpful empty state and sample data loaded only through an explicit action.
+- English interface and documentation.
+
+Fictional examples: Pearl Workshop, Proposal, EUR 1,500; Northern Studio, New, unknown amount; Willow House, Won, EUR 800. No real personal data.
+
+Create docs/brief.md with data model, date/amount rules, screens, acceptance criteria and limitations. Plan React + TypeScript + Vite if the folder is empty, tests compatible with the environment and a ClientFlow-specific localStorage key. No shared accounts, email sending or external synchronization. Create docs/acceptance.md. Do not code.
+</code></pre>
+<p><strong>Ready to continue:</strong> the brief precisely defines active potential, follow-up dates and import behavior. Leaving these rules implicit can produce misleading results.</p>
+<h2 id="step-2-build-the-crm">Step 2 — Build the CRM</h2>
+<p><strong>Agent: ClientFlow Dev.</strong></p>
+<pre><code class="language-text">MISSION: build ClientFlow according to docs/brief.md and docs/acceptance.md.
+
+Inspect the folder first. Preserve docs/ during initialization. Deliver a usable English app with a prospect form, pipeline view, search, follow-ups and indicators that match the brief. Examples are fictional and optional.
+
+Separate business rules from components to test integer-cent amounts, unknown versus zero, transitions and local calendar dates without UTC shifts. Format amounts as EUR for display using an English locale. A record must remain editable after moving or reloading.
+
+JSON export: include a schema version and prospects. Import: limit accepted size and fully validate types, IDs, amounts and stages; reject an invalid file without changing existing data. For a valid import, show a record-count preview and replace only after confirmation. Do not merge implicitly or delete the old portfolio before validation.
+
+Provide deletion confirmation, readable storage errors and an empty state. Make the interface responsive and controls keyboard-accessible. Use dependencies compatible with the installed Node and keep the lockfile.
+
+Provide npm run dev, npm run typecheck, npm run test:run and npm run build. Execute the last three checks. Write docs/handoff-dev.md: structure, storage key, actual commands and output, URL if the server actually started, and limitations. Finish the mission before handing over to QA.
+</code></pre>
+<p><strong>Show:</strong> creating Pearl Workshop, moving it from Contacted to Proposal, entering “Send the proposal”, then using the follow-up filter.</p>
+<h2 id="step-3-check-the-cases-that-matter">Step 3 — Check the cases that matter</h2>
+<p><strong>Agent: ClientFlow QA.</strong></p>
+<pre><code class="language-text">MISSION: test ClientFlow with fictional data. Read docs/brief.md, docs/acceptance.md and docs/handoff-dev.md.
+
+Run typecheck, test:run and build. Add missing tests with existing tools without changing the application or dependencies.
+
+Verify: empty company rejected; empty email accepted and malformed email rejected; unknown amount distinct from zero; decimal amounts converted without cent errors; moving, editing, searching and reloading. Check that Won and Lost records are excluded from “Follow up” and active potential, and that won value is separate.
+
+In the browser if available: create two active records worth EUR 1,500.50 and EUR 499.50, one won record worth EUR 800 and one lost record worth EUR 200. Expected active potential is EUR 2,000 and won total is EUR 800. Move the first active record to Won: potential becomes EUR 499.50 and won value becomes EUR 2,300.50. These are expectations to test, not results already achieved.
+
+Test yesterday/today/tomorrow follow-up dates in the local timezone, then JSON export and restore in a test profile. Malformed imports must leave data intact, as must canceling replacement. Check a 390 px viewport and keyboard navigation.
+
+Write docs/qa-1.md: PASS / FAIL / NOT TESTED, evidence and numbered defects with reproduction and severity. If no browser is available, keep interface cases NOT TESTED and give the user manual acceptance steps.
+</code></pre>
+<h2 id="step-4-fix-and-recheck">Step 4 — Fix and recheck</h2>
+<p><strong>Agent: ClientFlow Dev, only if QA finds defects.</strong></p>
+<pre><code class="language-text">Fix reproducible defects in docs/qa-1.md without adding features. Reproduce first, then fix and add a useful regression test. Preserve existing portfolios and behavioral tests. Run typecheck, test:run and build. Write docs/fixes.md and update docs/handoff-dev.md with causes, changed files, results and limitations. Then hand over to QA.
+</code></pre>
+<p><strong>Agent: ClientFlow QA, after fixes or directly if initial acceptance passes.</strong></p>
+<pre><code class="language-text">Reread docs/qa-1.md, docs/fixes.md if present and docs/handoff-dev.md. Replay affected checks, then create → move → follow up → reload → export → restore. Explicitly attribute user-reported trials to the user. Write docs/final-acceptance.md with the checked version, each criterion, evidence and limitations. Decide READY FOR LOCAL DEMO only when all critical criteria have been verified; otherwise list reservations or blockers.
+</code></pre>
+<h2 id="step-5-prepare-delivery">Step 5 — Prepare delivery</h2>
+<p><strong>Agent: ClientFlow Product.</strong></p>
+<pre><code class="language-text">Read the actual application, package.json, docs/handoff-dev.md and docs/final-acceptance.md. Write README.md with installation, startup, checks, storage, export/restore and limitations. Explain that data stays in the browser used and an export is needed for a portable backup; the app sends no emails and does not synchronize multiple users.
+
+Create docs/demo-60s.md: create Pearl Workshop, add an action, move to Proposal, show the follow-up, reload and export. Present only behavior actually available. Finish with exact instructions for trying the product. Write all copy in English.
+</code></pre>
+<h2 id="step-6-show-the-result-from-start-to-finish">Step 6 — Show the result from start to finish</h2>
+<ol>
+<li>Start with a fresh demonstration profile.</li>
+<li>Create Pearl Workshop, fictional contact “Alex”, value EUR 1,500.</li>
+<li>Add “Send the proposal” and today's follow-up date.</li>
+<li>Move the record to Proposal, then open Follow up.</li>
+<li>Reload: the record and its action should still be present.</li>
+<li>Export JSON and show that a file was actually created.</li>
+<li>Show restoration in another test profile and the acceptance report.</li>
+</ol>
+<p><strong>Closing line:</strong> “I now have my own tracking tool: I know who needs a follow-up, where each deal stands and how to back up my portfolio.”</p>
+<p><strong>Next extension:</strong> for a multi-user CRM, define V2 with access management, a server database and permission checks. It is outside this local demonstration.</p></article><div class="pager"><a href="01-taskboard.en.html">← TaskBoard</a><a href="03-launchpage.en.html">LaunchPage →</a></div><footer>Local kit · 29 September 2026. These workflows describe work to perform; verify the results during execution. Crewlo is an independent fork of Munder Difflin.</footer></main></div><script>
+document.querySelectorAll('pre').forEach((pre,i)=>{
+  const code=pre.querySelector('code'); if(!code)return;
+  const label=document.createElement('span');label.className='prompt-label';label.textContent='COPYABLE PROMPT';pre.prepend(label);
+  const button=document.createElement('button');button.className='copy';button.type='button';button.textContent='Copy';button.setAttribute('aria-label','Copy prompt '+(i+1));
+  button.addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(code.textContent);button.textContent='Copied';document.getElementById('status').textContent='Prompt copied. Paste it into the named agent’s conversation.';setTimeout(()=>button.textContent='Copy',2200);}
+    catch{const range=document.createRange();range.selectNodeContents(code);const selection=getSelection();selection.removeAllRanges();selection.addRange(range);document.getElementById('status').textContent='Text selected. Use Ctrl+C, or Cmd+C on Mac.';}
+  });pre.append(button);
+});
+document.querySelectorAll('table').forEach(table=>{const wrapper=document.createElement('div');wrapper.className='table-scroll';table.before(wrapper);wrapper.append(table);});
+</script></body></html>

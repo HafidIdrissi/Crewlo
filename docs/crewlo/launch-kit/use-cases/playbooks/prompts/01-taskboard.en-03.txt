@@ -1,0 +1,17 @@
+MISSION: run TaskBoard acceptance checks using docs/brief.md, docs/acceptance.md and docs/handoff-dev.md.
+
+Read the code, then run npm run typecheck, npm run test:run and npm run build. Add useful tests with the installed tools. Check transitions, filters, invalid titles, saved-data reads/writes and corrupted data. A localStorage simulation in a unit test alone does not prove that the application restores state in a real browser.
+
+If you have browser-control tools, run this journey in a fresh test profile:
+1. Check the empty state. Reject a whitespace-only title.
+2. Create “Prepare the demo”, “Test on mobile” and “Write the README”.
+3. Move the first task to In progress and the second to Done.
+4. Check every filter and count, then reload the same URL.
+5. Check that all three tasks and their statuses remain.
+6. Cancel deletion and check the task remains, then confirm deletion and reload.
+7. Check a long title, keyboard navigation and a 390 px viewport.
+8. In this test profile only, check corrupted storage and refused writes; explain how you triggered these cases.
+
+If no browser is available, provide manual steps and mark these entries NOT TESTED. Do not change application code or dependencies.
+
+Write docs/qa-1.md: for each criterion, PASS / FAIL / NOT TESTED, evidence and command or interaction. For a defect, give an ID such as BUG-01, exact steps, expected behavior, observed behavior and severity. Finish with blocking defects and the specific mission to hand to Dev.

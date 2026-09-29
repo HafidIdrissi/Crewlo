@@ -1,0 +1,164 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Crewlo — Record the result · practical guide</title><meta name="description" content="A storyboard for a three-minute video. Agent roles, copyable prompts and step-by-step checks with Crewlo."><meta name="theme-color" content="#18382d"><link rel="canonical" href="https://hafididrissi.github.io/Crewlo/crewlo/launch-kit/use-cases/playbooks/04-filming.en.html"><link rel="icon" href="https://hafididrissi.github.io/Crewlo/crewlo/favicon.svg" type="image/svg+xml"><style>
+:root{color-scheme:light;--ink:#18382d;--muted:#50695f;--line:#d8e2d9;--paper:#fffefa;--accent:#2d6045;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:#f1f4ed;color:var(--ink)}
+*{box-sizing:border-box}body{margin:0}a{color:#265f43;text-underline-offset:3px}a:hover{color:#123321}button{font:inherit;cursor:pointer}button:disabled{cursor:default;opacity:.5}a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #ad681e;outline-offset:4px}.skip{position:absolute;left:12px;top:-80px;background:white;padding:12px;z-index:20}.skip:focus{top:12px}
+.top{background:#18382d;color:#f6f4e9;padding:20px clamp(20px,4vw,60px);display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}.brand{font-weight:800;letter-spacing:.19em;font-size:15px}.top a{color:#def0bb}.tag{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#def0bb}.layout{max-width:1460px;margin:auto;display:grid;grid-template-columns:270px minmax(0,1fr);gap:48px;padding:36px 36px 80px}aside{position:sticky;top:20px;align-self:start;max-height:calc(100vh - 40px);overflow:auto}nav ul{list-style:none;padding:0;margin:8px 0 25px}nav a{display:block;border-radius:10px;padding:10px 14px;text-decoration:none;margin:3px 0}nav a[aria-current=page]{background:#dce8d3;font-weight:750}nav a:hover{background:#e4ece0}.nav-title{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:750;color:var(--muted)}.toc{font-size:13px}.toc ul{list-style:none;padding-left:12px}.toc>ul{padding-left:0}.toc a{display:block;padding:5px 0;text-decoration:none}.toc ul ul ul{display:none}main{min-width:0;max-width:980px}.intro{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:22px}.intro p{margin:0;color:var(--muted);font-size:14px}.intro a{font-size:13px}.paper{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:clamp(22px,4vw,50px);box-shadow:0 10px 40px #18382d06}h1{font-size:clamp(30px,3.6vw,49px);letter-spacing:-.035em;line-height:1.12;margin:0 0 27px}h2{font-size:25px;line-height:1.25;border-top:1px solid var(--line);padding-top:34px;margin-top:40px;scroll-margin-top:25px}h3{font-size:19px;margin-top:28px;scroll-margin-top:25px}p,li{line-height:1.75;font-size:16px}p{margin:16px 0}li{margin:8px 0}strong{font-weight:740}code{font-family:ui-monospace,Consolas,monospace;font-size:.88em;background:#eaf0e5;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#f0f4ec;border:1px solid #d2dfcd;border-radius:14px;padding:54px 22px 22px;position:relative;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;margin:24px 0}pre code{background:none;padding:0;font-size:14px}.copy{position:absolute;top:12px;right:12px;border:1px solid #bad0ae;background:#fffefa;color:var(--ink);padding:6px 12px;border-radius:8px;font-size:12px}.copy:hover{background:#dce8d3}.prompt-label{position:absolute;left:20px;top:18px;color:#47633d;letter-spacing:.06em;font-size:10px;font-weight:800}.table-scroll{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;padding:12px;border:1px solid var(--line);vertical-align:top;line-height:1.6}th{background:#eaf0e3}td{min-width:140px}footer{margin-top:28px;color:var(--muted);font-size:13px;line-height:1.7}.pager{display:flex;gap:15px;justify-content:space-between;margin-top:28px}.pager a{border:1px solid #c7d7c0;padding:11px 16px;border-radius:12px;text-decoration:none;background:#f8faf4}.status{min-height:24px;font-size:13px;color:var(--muted)}
+@media(max-width:960px){.layout{grid-template-columns:210px minmax(0,1fr);gap:22px;padding:25px 20px}.paper{padding:26px}h1{font-size:35px}}
+@media(max-width:700px){.layout{display:block;padding:20px 14px}aside{position:static;max-height:none;margin-bottom:18px}nav ul{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}nav a{padding:8px 10px;font-size:13px}.toc,.toc-label{display:none}.paper{padding:23px 18px;border-radius:15px}h1{font-size:32px}h2{font-size:22px}p,li{font-size:15px}pre{padding:53px 14px 18px}pre code{font-size:13px}.top{padding:17px 20px}.intro{align-items:flex-start}.pager{flex-wrap:wrap}}
+@media print{.top,aside,.intro,.copy,.pager,.status,.skip{display:none}.layout{display:block;padding:0}main{max-width:none}.paper{border:0;box-shadow:none;padding:0}pre{padding:14px;break-inside:avoid}.prompt-label{display:none}h1{font-size:28px}h2{font-size:21px}p,li{font-size:11pt}.table-scroll{overflow:visible}a{color:inherit}}
+</style></head>
+<body><a class="skip" href="#main">Skip to the guide</a><header class="top"><div><a class="brand" href="https://hafididrissi.github.io/Crewlo/">CREWLO</a> &nbsp; / &nbsp; MVP WORKSHOPS</div><a href="https://hafididrissi.github.io/Crewlo/use-cases.html">All use cases</a><a href="https://github.com/HafidIdrissi/Crewlo/tree/main/docs/crewlo/launch-kit/use-cases/playbooks">Read on GitHub</a><a href="crewlo-playbooks-en.zip" download>Download the kit</a></header>
+<div class="layout"><aside><nav aria-label="Workflows"><div class="nav-title">From brief to result</div><ul><li><a href="GETTING-STARTED.en.html">Get started</a></li><li><a href="01-taskboard.en.html">TaskBoard</a></li><li><a href="02-clientflow.en.html">ClientFlow</a></li><li><a href="03-launchpage.en.html">LaunchPage</a></li><li><a href="04-filming.en.html" aria-current="page">Record the result</a></li></ul></nav><div class="nav-title toc-label">In this guide</div><div class="toc">
+<ul>
+<li><a href="#record-the-crewlo-workflow-through-to-the-result">Record the Crewlo workflow through to the result</a><ul>
+<li><a href="#target-format">Target format</a></li>
+<li><a href="#prepare-the-recording">Prepare the recording</a></li>
+<li><a href="#main-storyboard-taskboard-in-three-minutes">Main storyboard — TaskBoard in three minutes</a></li>
+<li><a href="#short-version-60-seconds">Short version — 60 seconds</a></li>
+<li><a href="#adapt-the-ending-to-the-other-scenarios">Adapt the ending to the other scenarios</a></li>
+<li><a href="#keep-the-sessions-evidence">Keep the session's evidence</a></li>
+<li><a href="#publish-an-illustration-before-the-recording">Publish an illustration before the recording</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</aside>
+<main id="main"><div class="intro"><p>A storyboard for a three-minute video.<br>0 copyable prompts</p><a href="04-filming.en.md" download>Markdown version</a></div><div class="status" id="status" role="status" aria-live="polite"></div><article class="paper"><h1 id="record-the-crewlo-workflow-through-to-the-result">Record the Crewlo workflow through to the result</h1>
+<h2 id="target-format">Target format</h2>
+<p>A main video of <strong>roughly three minutes</strong>, accompanied by the full guide and copyable prompts. A 60-second edit can link to it. Show actual work in Crewlo, then working interactions in the resulting application.</p>
+<p>Recording starts with a fresh project folder and continues through acceptance. You can record multiple takes and shorten waiting. Edited video duration is not the actual time needed to build the project.</p>
+<h2 id="prepare-the-recording">Prepare the recording</h2>
+<p>Start with TaskBoard. Prepare a demonstration folder, your authenticated CLI, the guide alongside it and a familiar recording tool. Sign in to the provider before recording. Use only fictional tasks from the scenario and frame Crewlo, the editor and browser.</p>
+<p>Use English for Crewlo's visible interface, agent names, prompts, terminal explanations, app copy, captions and narration. Create agents with the kit's roles. You can show Product setup in detail and shorten Dev and QA setup while still showing their names and Goals. Keep full prompts in the companion resource so viewers do not need to transcribe fast-moving screenshots.</p>
+<h2 id="main-storyboard-taskboard-in-three-minutes">Main storyboard — TaskBoard in three minutes</h2>
+<table>
+<thead>
+<tr>
+<th>Edit time</th>
+<th>Action actually recorded</th>
+<th>Suggested text or narration</th>
+<th>Visible evidence</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0:00–0:12</td>
+<td>Briefly show the final app: create a task and change its status</td>
+<td>“Here is TaskBoard. I'll show how to go from a brief in Crewlo to this application.”</td>
+<td>Actual result; label “Final result preview”</td>
+</tr>
+<tr>
+<td>0:12–0:35</td>
+<td>Return to the start. Open Create agent, enter the name, choose the folder and CLI</td>
+<td>“Three roles: Product scopes, Dev builds, QA verifies. They share one folder.”</td>
+<td>Actual form fields and session startup</td>
+</tr>
+<tr>
+<td>0:35–0:50</td>
+<td>Show Goal and the first mission to Product</td>
+<td>“I define the user, features and what will count as finished.”</td>
+<td>TaskBoard step 1 prompt; recipient name</td>
+</tr>
+<tr>
+<td>0:50–1:05</td>
+<td>Open the resulting brief and two criteria</td>
+<td>“The brief defines the statuses and persistence after reloading.”</td>
+<td>Actual docs/brief.md</td>
+</tr>
+<tr>
+<td>1:05–1:30</td>
+<td>Switch to Dev, send the build prompt and show a few commands</td>
+<td>“Dev reads the brief, builds the app and records what was executed.”</td>
+<td>Step 2 prompt, code and terminal; “Waiting sped up” over cuts</td>
+</tr>
+<tr>
+<td>1:30–1:48</td>
+<td>Open the browser and add two tasks</td>
+<td>“Now we can try the product.”</td>
+<td>Actual local URL and interactions</td>
+</tr>
+<tr>
+<td>1:48–2:08</td>
+<td>Switch to QA; show its prompt and report</td>
+<td>“Another agent checks the criteria and separates pass, fail and untested cases.”</td>
+<td>Actual report; no added result counts</td>
+</tr>
+<tr>
+<td>2:08–2:25</td>
+<td>If a defect exists, show reproduction, fix and verification; otherwise show a tested edge case</td>
+<td>“Here is the issue and its fix.” or “Initial acceptance passes; I also check invalid input.”</td>
+<td>No invented bug for the edit</td>
+</tr>
+<tr>
+<td>2:25–2:48</td>
+<td>Create a task, change status, filter and reload</td>
+<td>“The simplest proof: the task and its status remain after reloading.”</td>
+<td>A readable continuous journey without hiding the reload</td>
+</tr>
+<tr>
+<td>2:48–3:00</td>
+<td>Show README and final acceptance, then return to the studio</td>
+<td>“The result, code and verification are ready. The guide includes these agents and prompts.”</td>
+<td>Files from the same project and acceptance decision</td>
+</tr>
+</tbody>
+</table>
+<p>If a reservation remains, replace the closing line with “Here is what works and what still needs fixing.” Keep limitations that help viewers understand the demo.</p>
+<h2 id="short-version-60-seconds">Short version — 60 seconds</h2>
+<table>
+<thead>
+<tr>
+<th>Time</th>
+<th>Shot</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0–6 s</td>
+<td>Actual result: create and complete a task.</td>
+</tr>
+<tr>
+<td>6–15 s</td>
+<td>Three agents, three responsibilities; show the shared folder.</td>
+</tr>
+<tr>
+<td>15–25 s</td>
+<td>Brief sent to Product and resulting document.</td>
+</tr>
+<tr>
+<td>25–36 s</td>
+<td>Dev mission and work excerpt with waiting sped up.</td>
+</tr>
+<tr>
+<td>36–46 s</td>
+<td>QA mission and a check actually executed.</td>
+</tr>
+<tr>
+<td>46–56 s</td>
+<td>Page reload and visible persistence.</td>
+</tr>
+<tr>
+<td>56–60 s</td>
+<td>“Agents, prompts and steps: full guide available.”</td>
+</tr>
+</tbody>
+</table>
+<h2 id="adapt-the-ending-to-the-other-scenarios">Adapt the ending to the other scenarios</h2>
+<p><strong>ClientFlow:</strong> replace task interactions with prospect creation, next action, pipeline movement, follow-up filtering and reload. Show the actual export as additional evidence.</p>
+<p><strong>LaunchPage:</strong> replace task interactions with entering demo@example.com, an actual request, confirmation, local file and duplicate handling. Show the restart in the longer video. A notification animation alone does not demonstrate server-side persistence.</p>
+<h2 id="keep-the-sessions-evidence">Keep the session's evidence</h2>
+<p>In the built project, keep the prompts, docs/brief.md, docs/handoff-dev.md, docs/qa-1.md, docs/fixes.md if present, docs/final-acceptance.md, README.md, code and lockfile. Retain original footage and start/end times if you want to publish actual elapsed work time.</p>
+<p>Write a brief factual summary: environment, actual provider and model, observed time, manual interventions, final behavior and limitations. This lets you describe a creation with Crewlo while distinguishing a proposed scenario from observed execution.</p>
+<h2 id="publish-an-illustration-before-the-recording">Publish an illustration before the recording</h2>
+<p>Use a visible label: “Illustrated workflow — execution still to be recorded”. Existing studio animations can illustrate the flow but do not prove these missions ran. This kit is the session storyboard; a live video must use replies and the product from the actual session.</p></article><div class="pager"><a href="03-launchpage.en.html">← LaunchPage</a><a href="GETTING-STARTED.en.html">Back to the start →</a></div><footer>Local kit · 29 September 2026. These workflows describe work to perform; verify the results during execution. Crewlo is an independent fork of Munder Difflin.</footer></main></div><script>
+document.querySelectorAll('pre').forEach((pre,i)=>{
+  const code=pre.querySelector('code'); if(!code)return;
+  const label=document.createElement('span');label.className='prompt-label';label.textContent='COPYABLE PROMPT';pre.prepend(label);
+  const button=document.createElement('button');button.className='copy';button.type='button';button.textContent='Copy';button.setAttribute('aria-label','Copy prompt '+(i+1));
+  button.addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(code.textContent);button.textContent='Copied';document.getElementById('status').textContent='Prompt copied. Paste it into the named agent’s conversation.';setTimeout(()=>button.textContent='Copy',2200);}
+    catch{const range=document.createRange();range.selectNodeContents(code);const selection=getSelection();selection.removeAllRanges();selection.addRange(range);document.getElementById('status').textContent='Text selected. Use Ctrl+C, or Cmd+C on Mac.';}
+  });pre.append(button);
+});
+document.querySelectorAll('table').forEach(table=>{const wrapper=document.createElement('div');wrapper.className='table-scroll';table.before(wrapper);wrapper.append(table);});
+</script></body></html>

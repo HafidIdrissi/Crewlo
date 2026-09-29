@@ -1,0 +1,39 @@
+1
+00:00:00,000 --> 00:00:03,000
+Your next project starts here.
+One brief. One agent. A result to verify.
+
+2
+00:00:03,000 --> 00:00:11,000
+From brief to MVP.
+Example: a local task manager.
+
+3
+00:00:11,000 --> 00:00:16,000
+One bug. One mission.
+Reproduce the problem before fixing it.
+
+4
+00:00:16,000 --> 00:00:21,000
+Make the result verifiable.
+Useful assertions for the actions that matter.
+
+5
+00:00:21,000 --> 00:00:26,000
+Find where to start.
+Map the code before changing it.
+
+6
+00:00:26,000 --> 00:00:31,000
+Explain what you built.
+A README and a clear getting-started guide.
+
+7
+00:00:31,000 --> 00:00:37,000
+Stay in touch with your agent.
+Message an already connected session.
+
+8
+00:00:37,000 --> 00:00:40,000
+What would you ask Crewlo to do?
+Open source. Your agents. Your accounts.

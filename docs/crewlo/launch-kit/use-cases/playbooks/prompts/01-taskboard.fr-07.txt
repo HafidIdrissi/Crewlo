@@ -1,1 +1,0 @@
-Lis docs/handoff-dev.md et docs/recette-finale.md s’ils existent. Résume en cinq lignes ce qui fonctionne, les contrôles effectués et les limites de TaskBoard. Ne modifie rien. Si un fichier est absent ou inaccessible, dis-le plutôt que d’inventer un avancement.

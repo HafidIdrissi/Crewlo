@@ -1,0 +1,5 @@
+MISSION: fix the actual defects listed in docs/qa-1.md.
+
+Read the report and reproduce each defect before editing its code. For every confirmed BUG, make the smallest focused fix and add or adjust the appropriate regression test. Do not change assertions to conceal a product error. If an observation cannot be reproduced, state your attempts and the missing information.
+
+Run npm run typecheck, npm run test:run and npm run build. Update docs/handoff-dev.md and create docs/fixes.md with each BUG's cause, affected files and rerun checks. Add no features. Finish before handing back to QA.

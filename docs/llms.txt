@@ -21,7 +21,7 @@ Workspace state is local. Agent providers can receive prompts and code; Telegram
 ## Documentation
 
 - [Website](https://hafididrissi.github.io/Crewlo/)
-- [Use cases and MVP tutorials](https://hafididrissi.github.io/Crewlo/use-cases.html): three French walkthroughs with agent roles, 23 prompts and acceptance steps; workflows to execute, not completed live builds.
+- [Use cases and MVP tutorials](https://hafididrissi.github.io/Crewlo/use-cases.html): three English walkthroughs with agent roles, 23 prompts and acceptance steps; workflows to execute, not completed live builds.
 - [Repository and setup](https://github.com/HafidIdrissi/crewlo)
 - [Project status](https://hafididrissi.github.io/Crewlo/project-status.html)
 - [Installation guide](https://hafididrissi.github.io/Crewlo/install.html)

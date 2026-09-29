@@ -66,15 +66,15 @@ Bring the agent CLI you already use: provider presets include Claude Code, Codex
 
 ## Build a small product with your crew
 
-Follow a complete workflow: create **Product, Dev and QA** agents, send the ready-to-copy prompts, pass the work between them and verify the result. The detailed guides are in French.
+Follow a complete workflow: create **Product, Dev and QA** agents, send the ready-to-copy prompts, pass the work between them and verify the result. The detailed guides are in English.
 
 | Project | What you build | Walkthrough in the repository |
 | --- | --- | --- |
-| TaskBoard | A task manager with statuses, filters and local persistence | [Build TaskBoard](docs/crewlo/launch-kit/use-cases/playbooks/01-taskboard.fr.md) |
-| ClientFlow | A freelance CRM with follow-ups, pipeline stages and JSON backup | [Build ClientFlow](docs/crewlo/launch-kit/use-cases/playbooks/02-clientflow.fr.md) |
-| LaunchPage | A landing page with a form that saves sample signups through a local API | [Build LaunchPage](docs/crewlo/launch-kit/use-cases/playbooks/03-launchpage.fr.md) |
+| TaskBoard | A task manager with statuses, filters and local persistence | [Build TaskBoard](docs/crewlo/launch-kit/use-cases/playbooks/01-taskboard.en.md) |
+| ClientFlow | A freelance CRM with follow-ups, pipeline stages and JSON backup | [Build ClientFlow](docs/crewlo/launch-kit/use-cases/playbooks/02-clientflow.en.md) |
+| LaunchPage | A landing page with a form that saves sample signups through a local API | [Build LaunchPage](docs/crewlo/launch-kit/use-cases/playbooks/03-launchpage.en.md) |
 
-**[Explore the use-case page](https://hafididrissi.github.io/Crewlo/use-cases.html)** · [Create the agents](docs/crewlo/launch-kit/use-cases/playbooks/DEMARRER.fr.md) · [Download the kit](https://hafididrissi.github.io/Crewlo/crewlo/launch-kit/use-cases/playbooks/crewlo-playbooks-fr.zip) · [Film the result](docs/crewlo/launch-kit/use-cases/playbooks/04-tournage.fr.md)
+**[Explore the use-case page](https://hafididrissi.github.io/Crewlo/use-cases.html)** · [Create the agents](docs/crewlo/launch-kit/use-cases/playbooks/GETTING-STARTED.en.md) · [Download the kit](https://hafididrissi.github.io/Crewlo/crewlo/launch-kit/use-cases/playbooks/crewlo-playbooks-en.zip) · [Film the result](docs/crewlo/launch-kit/use-cases/playbooks/04-filming.en.md)
 
 The kit includes **23 prompts and three importable agent roles**. These are workflows to run with your own agents; the guides do not claim completed live MVP builds. [Browse all source guides and role files](docs/crewlo/launch-kit/use-cases/playbooks/).
 

@@ -1,0 +1,1 @@
+Fix only reproducible defects in docs/qa-1.md. Reproduce them with test data, then fix. Preserve server validation, error handling and the separation of private data from public files. Run typecheck, test:run and build, then the affected API test. Write docs/fixes.md and update docs/handoff-dev.md with evidence and limitations. Do not deploy this local server.

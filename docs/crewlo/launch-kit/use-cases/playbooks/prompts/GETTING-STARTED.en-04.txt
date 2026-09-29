@@ -1,0 +1,1 @@
+Resume only the current step. Reread docs/brief.md and your latest handoff document. State what actually exists in the folder, what has been executed and what is still blocked. Complete the missing deliverable without restarting the project or expanding its scope. If a command fails, retain the error, fix its cause and retry the affected check.

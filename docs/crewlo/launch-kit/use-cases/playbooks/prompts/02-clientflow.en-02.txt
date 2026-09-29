@@ -1,0 +1,11 @@
+MISSION: build ClientFlow according to docs/brief.md and docs/acceptance.md.
+
+Inspect the folder first. Preserve docs/ during initialization. Deliver a usable English app with a prospect form, pipeline view, search, follow-ups and indicators that match the brief. Examples are fictional and optional.
+
+Separate business rules from components to test integer-cent amounts, unknown versus zero, transitions and local calendar dates without UTC shifts. Format amounts as EUR for display using an English locale. A record must remain editable after moving or reloading.
+
+JSON export: include a schema version and prospects. Import: limit accepted size and fully validate types, IDs, amounts and stages; reject an invalid file without changing existing data. For a valid import, show a record-count preview and replace only after confirmation. Do not merge implicitly or delete the old portfolio before validation.
+
+Provide deletion confirmation, readable storage errors and an empty state. Make the interface responsive and controls keyboard-accessible. Use dependencies compatible with the installed Node and keep the lockfile.
+
+Provide npm run dev, npm run typecheck, npm run test:run and npm run build. Execute the last three checks. Write docs/handoff-dev.md: structure, storage key, actual commands and output, URL if the server actually started, and limitations. Finish the mission before handing over to QA.

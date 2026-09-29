@@ -1,5 +1,0 @@
-MISSION : corriger les défauts réels recensés dans docs/qa-1.md.
-
-Lis le rapport et reproduis chaque défaut avant de modifier son code. Pour chaque BUG confirmé, effectue la correction la plus ciblée et ajoute ou ajuste le test de non-régression approprié. Ne change pas les assertions pour masquer une erreur du produit. Si une observation n’est pas reproductible, indique tes tentatives et les informations manquantes.
-
-Exécute npm run typecheck, npm run test:run et npm run build. Mets à jour docs/handoff-dev.md et crée docs/corrections.md avec, pour chaque BUG, sa cause, les fichiers touchés et les contrôles relancés. N’ajoute aucune fonctionnalité. Termine le travail avant de repasser à QA.

@@ -1,0 +1,3 @@
+Perform final acceptance on the fixed version: fictional signup → confirmation tied to the API response → persistent file → duplicate → restart → retained data → network error without false success. Rerun affected checks. Attribute user-supplied manual observations to the user.
+
+Write docs/final-acceptance.md with version, criteria, statuses, evidence and limitations. READY FOR LOCAL DEMO requires an actually verified browser–API–disk chain. If a link is missing, state exact reservations. Success does not validate a public service.

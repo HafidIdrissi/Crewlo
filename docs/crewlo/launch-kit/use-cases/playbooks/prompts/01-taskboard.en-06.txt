@@ -1,0 +1,7 @@
+MISSION: prepare TaskBoard's local delivery from the actual code, docs/brief.md, docs/handoff-dev.md and docs/final-acceptance.md.
+
+Write README.md: purpose, actual prerequisites, installation from the lockfile, startup, verification commands, data stored in this browser and known limitations. Use scripts actually present in package.json.
+
+Write docs/demo-60s.md with the actions to show: empty state, task entry, move to In progress, filter, reload and persistence. Mention available acceptance evidence and reservations. Do not invent build time, passing-test counts, users or testimonials.
+
+Finish with what works, how to try it and what remains limited. Distinguish a local personal prototype from an application synchronized between users. Write everything in English.

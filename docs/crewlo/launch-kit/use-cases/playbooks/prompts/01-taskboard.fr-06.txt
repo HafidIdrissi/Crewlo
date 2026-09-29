@@ -1,7 +1,0 @@
-MISSION : préparer la livraison locale de TaskBoard à partir du code réel, docs/brief.md, docs/handoff-dev.md et docs/recette-finale.md.
-
-Rédige README.md : à quoi sert l’app, prérequis réellement utilisés, installation depuis le lockfile, lancement, commandes de vérification, données stockées dans ce navigateur et limites connues. Reprends les scripts effectivement présents dans package.json.
-
-Rédige docs/demo-60s.md avec les actions à montrer : état vide, saisie d’une tâche, passage à En cours, filtre, rechargement et persistance. Mentionne les preuves de recette disponibles et les réserves. N’invente ni temps de construction, nombre de tests réussis, utilisateurs ou témoignages.
-
-Termine par un récapitulatif : ce qui fonctionne, comment essayer, ce qui reste limité. Conserve la distinction entre prototype personnel local et application synchronisée entre utilisateurs.

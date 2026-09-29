@@ -1,0 +1,3 @@
+Read the actual application, package.json, docs/handoff-dev.md and docs/final-acceptance.md. Write README.md with installation, startup, checks, storage, export/restore and limitations. Explain that data stays in the browser used and an export is needed for a portable backup; the app sends no emails and does not synchronize multiple users.
+
+Create docs/demo-60s.md: create Pearl Workshop, add an action, move to Proposal, show the follow-up, reload and export. Present only behavior actually available. Finish with exact instructions for trying the product. Write all copy in English.

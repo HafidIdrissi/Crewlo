@@ -1,1 +1,0 @@
-Reprends uniquement l’étape en cours. Relis docs/brief.md et ton dernier document de passage de relais. Dis ce qui existe effectivement dans le dossier, ce qui a été exécuté et ce qui bloque encore. Termine le livrable manquant sans recommencer le projet ni étendre le périmètre. Si une commande échoue, conserve son erreur, corrige sa cause et réessaie le contrôle concerné.

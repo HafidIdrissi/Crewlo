@@ -1,0 +1,20 @@
+MISSION: scope TaskBoard, a local personal task manager.
+
+USER: a freelancer wants to know what to work on today.
+JOURNEY: open the app, enter a task, find it under “To do”, move it to “In progress” and then “Done”, filter and reload the page.
+
+V1 SCOPE:
+- Add a task with a required title; reject whitespace-only titles and limit titles to 120 characters.
+- Three statuses: To do, In progress, Done. A task can move back to a previous status.
+- Filter All / To do / In progress / Done, with consistent counts.
+- Delete a task with a simple confirmation.
+- Save to localStorage and restore after reloading.
+- Handle invalid saved data and unavailable storage without a blank screen or a misleading successful-save message.
+- English interface, responsive layout, labeled forms, keyboard navigation and visible focus.
+- Explicit “Load an example” button, only when the list is empty. Never silently insert tasks on startup.
+
+TECHNICAL APPROACH: inspect the folder. If empty, plan React + TypeScript + Vite, simple CSS and Vitest for business rules. Choose versions compatible with the installed Node. No data server, accounts or remote synchronization in V1.
+
+DELIVERABLES: create docs/brief.md with 1) need, 2) scope, 3) Task model {id, title, status, createdAt}, 4) error states, 5) proposed files, 6) numbered acceptance criteria, 7) planned startup and verification commands. Create docs/acceptance.md with the browser steps to run.
+
+Do not code the application. Make simple choices yourself. Finish with a summary of no more than eight lines and the two file paths.

@@ -1,0 +1,7 @@
+Read the code, package.json, docs/handoff-dev.md and docs/final-acceptance.md. Write README.md with prerequisites, installation, two terminals, commands, actually configured local URL and process shutdown. Explain the data file, absence of email sending and single-process scope.
+
+Create docs/demo-60s.md: show the offer, enter demo@example.com, submit, observe confirmation, show the data file and check duplicates. Label the future-product mockup as a preview.
+
+Add docs/next-version.md for future public access: hosting-appropriate storage, HTTPS, abuse protection, retention and consent rules, protected administrative access, monitoring and tests of the deployed environment. These are work to specify, not features already delivered.
+
+Finish with exact commands for trying the project and the local acceptance decision. Write all copy in English.

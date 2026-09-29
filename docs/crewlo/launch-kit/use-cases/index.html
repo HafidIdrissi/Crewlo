@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Crewlo — Use cases in video</title>
+  <style>
+    :root{color-scheme:dark;font-family:system-ui,sans-serif;background:#102d27;color:#f8f5ec}
+    *{box-sizing:border-box}body{margin:0}main{max-width:1280px;margin:auto;padding:40px 24px}
+    .brand{letter-spacing:.18em;color:#b9ed94;font-weight:750}h1{font-size:clamp(30px,5vw,52px);max-width:900px;line-height:1.1}
+    p{color:#bbcec1;line-height:1.6;max-width:900px}a{color:#b9ed94;text-underline-offset:4px}
+    video{width:100%;display:block;border-radius:20px;background:#0b1f1b}
+    .card{padding:20px;background:#1b3a32;border:1px solid #35574a;border-radius:24px;margin:24px 0}
+    .buttons{display:flex;flex-wrap:wrap;gap:10px;margin:16px 0}button{border:1px solid #35574a;border-radius:30px;background:#244639;color:#f8f5ec;padding:12px 18px;cursor:pointer;font:inherit}
+    button:hover,button:focus-visible{background:#b9ed94;color:#102d27}.grid{display:grid;grid-template-columns:1.6fr 1fr;gap:24px}.grid .card{margin:0}.portrait{max-width:320px;margin:0 auto}
+    small{color:#bbcec1}.downloads{display:flex;gap:20px;flex-wrap:wrap}
+    @media(max-width:800px){.grid{display:block}.grid .card{margin:24px 0}main{padding:28px 16px}}
+    @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+  </style>
+</head>
+<body><main>
+  <div class="brand">CREWLO / DEMO KIT</div>
+  <p><a href="../../../use-cases.html">All use cases</a> · <a href="playbooks/GETTING-STARTED.en.html">Create the agents and follow the full workshops</a></p>
+  <h1>From brief to MVP. And five more missions.</h1>
+  <p>Short, silent English videos with on-screen text. The studio is animated; missions and deliverables illustrate proposed workflows. The MVP mockup represents the intended result. No live execution of these missions is shown.</p>
+  <section class="card" aria-labelledby="all-title">
+    <h2 id="all-title">Six use cases · 40 seconds</h2>
+    <video id="overview" controls preload="metadata" poster="crewlo-use-cases-en-16x9-poster.jpg">
+      <source src="crewlo-use-cases-en-16x9.mp4" type="video/mp4">
+      <p><a href="crewlo-use-cases-en-16x9.mp4">Download the video</a></p>
+    </video>
+    <div class="buttons" aria-label="Choose a use case">
+      <button data-time="3">01 · MVP</button><button data-time="11">02 · Bug</button>
+      <button data-time="16">03 · Tests</button><button data-time="21">04 · Repository</button>
+      <button data-time="26">05 · Documentation</button><button data-time="31">06 · Telegram</button>
+    </div>
+    <div class="downloads"><a href="crewlo-use-cases-en-16x9.mp4" download>Download landscape MP4</a><a href="crewlo-use-cases-en-16x9.srt" download>SRT subtitles</a></div>
+  </section>
+  <div class="grid">
+    <section class="card" aria-labelledby="mvp-title">
+      <h2 id="mvp-title">Build an MVP · 24 seconds</h2>
+      <video controls preload="metadata" poster="crewlo-mvp-en-16x9-poster.jpg"><source src="crewlo-mvp-en-16x9.mp4" type="video/mp4"></video>
+      <p>TaskBoard: scope a task manager, request implementation, then verify the build, tests and behavior.</p>
+      <a href="crewlo-mvp-en-16x9.mp4" download>Download MVP MP4</a>
+    </section>
+    <section class="card" aria-labelledby="vertical-title">
+      <h2 id="vertical-title">Vertical format · 40 seconds</h2>
+      <video class="portrait" controls preload="metadata" poster="crewlo-use-cases-en-9x16-poster.jpg"><source src="crewlo-use-cases-en-9x16.mp4" type="video/mp4"></video>
+      <p>1080 × 1920, for Shorts, Reels and TikTok.</p>
+      <a href="crewlo-use-cases-en-9x16.mp4" download>Download vertical MP4</a>
+    </section>
+  </div>
+  <section class="card"><h2>Ready-to-copy missions</h2><p>Build TaskBoard, ClientFlow or LaunchPage with agent setup, 23 English prompts and acceptance checks.</p><a href="playbooks/GETTING-STARTED.en.html">Open the practical workshops</a> · <a href="USE-CASES.en.md">Read the illustrated-video missions and captions</a></section>
+  <p><small>Crewlo: an independent fork of Munder Difflin. Telegram: basic exchange verified; MVP status checks still need testing. WhatsApp: experimental. Bring your own agent and provider account.</small></p>
+</main><script>
+  const overview=document.getElementById('overview');
+  for(const button of document.querySelectorAll('[data-time]'))button.addEventListener('click',()=>{overview.currentTime=Number(button.dataset.time);overview.play().catch(()=>{});});
+</script></body></html>

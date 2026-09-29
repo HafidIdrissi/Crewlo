@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Crewlo — LaunchPage · practical guide</title><meta name="description" content="Connect a launch page to a local API. Agent roles, copyable prompts and step-by-step checks with Crewlo."><meta name="theme-color" content="#18382d"><link rel="canonical" href="https://hafididrissi.github.io/Crewlo/crewlo/launch-kit/use-cases/playbooks/03-launchpage.en.html"><link rel="icon" href="https://hafididrissi.github.io/Crewlo/crewlo/favicon.svg" type="image/svg+xml"><style>
+:root{color-scheme:light;--ink:#18382d;--muted:#50695f;--line:#d8e2d9;--paper:#fffefa;--accent:#2d6045;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:#f1f4ed;color:var(--ink)}
+*{box-sizing:border-box}body{margin:0}a{color:#265f43;text-underline-offset:3px}a:hover{color:#123321}button{font:inherit;cursor:pointer}button:disabled{cursor:default;opacity:.5}a:focus-visible,button:focus-visible,summary:focus-visible{outline:3px solid #ad681e;outline-offset:4px}.skip{position:absolute;left:12px;top:-80px;background:white;padding:12px;z-index:20}.skip:focus{top:12px}
+.top{background:#18382d;color:#f6f4e9;padding:20px clamp(20px,4vw,60px);display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}.brand{font-weight:800;letter-spacing:.19em;font-size:15px}.top a{color:#def0bb}.tag{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:#def0bb}.layout{max-width:1460px;margin:auto;display:grid;grid-template-columns:270px minmax(0,1fr);gap:48px;padding:36px 36px 80px}aside{position:sticky;top:20px;align-self:start;max-height:calc(100vh - 40px);overflow:auto}nav ul{list-style:none;padding:0;margin:8px 0 25px}nav a{display:block;border-radius:10px;padding:10px 14px;text-decoration:none;margin:3px 0}nav a[aria-current=page]{background:#dce8d3;font-weight:750}nav a:hover{background:#e4ece0}.nav-title{font-size:12px;letter-spacing:.08em;text-transform:uppercase;font-weight:750;color:var(--muted)}.toc{font-size:13px}.toc ul{list-style:none;padding-left:12px}.toc>ul{padding-left:0}.toc a{display:block;padding:5px 0;text-decoration:none}.toc ul ul ul{display:none}main{min-width:0;max-width:980px}.intro{display:flex;justify-content:space-between;gap:15px;align-items:center;margin-bottom:22px}.intro p{margin:0;color:var(--muted);font-size:14px}.intro a{font-size:13px}.paper{background:var(--paper);border:1px solid var(--line);border-radius:22px;padding:clamp(22px,4vw,50px);box-shadow:0 10px 40px #18382d06}h1{font-size:clamp(30px,3.6vw,49px);letter-spacing:-.035em;line-height:1.12;margin:0 0 27px}h2{font-size:25px;line-height:1.25;border-top:1px solid var(--line);padding-top:34px;margin-top:40px;scroll-margin-top:25px}h3{font-size:19px;margin-top:28px;scroll-margin-top:25px}p,li{line-height:1.75;font-size:16px}p{margin:16px 0}li{margin:8px 0}strong{font-weight:740}code{font-family:ui-monospace,Consolas,monospace;font-size:.88em;background:#eaf0e5;padding:2px 5px;border-radius:4px;overflow-wrap:anywhere}pre{background:#f0f4ec;border:1px solid #d2dfcd;border-radius:14px;padding:54px 22px 22px;position:relative;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.65;margin:24px 0}pre code{background:none;padding:0;font-size:14px}.copy{position:absolute;top:12px;right:12px;border:1px solid #bad0ae;background:#fffefa;color:var(--ink);padding:6px 12px;border-radius:8px;font-size:12px}.copy:hover{background:#dce8d3}.prompt-label{position:absolute;left:20px;top:18px;color:#47633d;letter-spacing:.06em;font-size:10px;font-weight:800}.table-scroll{overflow-x:auto;margin:22px 0}table{border-collapse:collapse;width:100%;font-size:14px}th,td{text-align:left;padding:12px;border:1px solid var(--line);vertical-align:top;line-height:1.6}th{background:#eaf0e3}td{min-width:140px}footer{margin-top:28px;color:var(--muted);font-size:13px;line-height:1.7}.pager{display:flex;gap:15px;justify-content:space-between;margin-top:28px}.pager a{border:1px solid #c7d7c0;padding:11px 16px;border-radius:12px;text-decoration:none;background:#f8faf4}.status{min-height:24px;font-size:13px;color:var(--muted)}
+@media(max-width:960px){.layout{grid-template-columns:210px minmax(0,1fr);gap:22px;padding:25px 20px}.paper{padding:26px}h1{font-size:35px}}
+@media(max-width:700px){.layout{display:block;padding:20px 14px}aside{position:static;max-height:none;margin-bottom:18px}nav ul{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:12px}nav a{padding:8px 10px;font-size:13px}.toc,.toc-label{display:none}.paper{padding:23px 18px;border-radius:15px}h1{font-size:32px}h2{font-size:22px}p,li{font-size:15px}pre{padding:53px 14px 18px}pre code{font-size:13px}.top{padding:17px 20px}.intro{align-items:flex-start}.pager{flex-wrap:wrap}}
+@media print{.top,aside,.intro,.copy,.pager,.status,.skip{display:none}.layout{display:block;padding:0}main{max-width:none}.paper{border:0;box-shadow:none;padding:0}pre{padding:14px;break-inside:avoid}.prompt-label{display:none}h1{font-size:28px}h2{font-size:21px}p,li{font-size:11pt}.table-scroll{overflow:visible}a{color:inherit}}
+</style></head>
+<body><a class="skip" href="#main">Skip to the guide</a><header class="top"><div><a class="brand" href="https://hafididrissi.github.io/Crewlo/">CREWLO</a> &nbsp; / &nbsp; MVP WORKSHOPS</div><a href="https://hafididrissi.github.io/Crewlo/use-cases.html">All use cases</a><a href="https://github.com/HafidIdrissi/Crewlo/tree/main/docs/crewlo/launch-kit/use-cases/playbooks">Read on GitHub</a><a href="crewlo-playbooks-en.zip" download>Download the kit</a></header>
+<div class="layout"><aside><nav aria-label="Workflows"><div class="nav-title">From brief to result</div><ul><li><a href="GETTING-STARTED.en.html">Get started</a></li><li><a href="01-taskboard.en.html">TaskBoard</a></li><li><a href="02-clientflow.en.html">ClientFlow</a></li><li><a href="03-launchpage.en.html" aria-current="page">LaunchPage</a></li><li><a href="04-filming.en.html">Record the result</a></li></ul></nav><div class="nav-title toc-label">In this guide</div><div class="toc">
+<ul>
+<li><a href="#launchpage-an-offer-and-a-form-that-actually-saves-signups">LaunchPage — an offer and a form that actually saves signups</a><ul>
+<li><a href="#step-1-define-the-offer-and-journey">Step 1 — Define the offer and journey</a></li>
+<li><a href="#step-2-build-the-page-and-api">Step 2 — Build the page and API</a></li>
+<li><a href="#step-3-verify-browser-server-disk">Step 3 — Verify browser → server → disk</a></li>
+<li><a href="#step-4-fix-and-obtain-final-acceptance">Step 4 — Fix and obtain final acceptance</a></li>
+<li><a href="#step-5-deliver-a-reproducible-demo">Step 5 — Deliver a reproducible demo</a></li>
+<li><a href="#step-6-run-the-final-demonstration">Step 6 — Run the final demonstration</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</aside>
+<main id="main"><div class="intro"><p>Connect a launch page to a local API.<br>6 copyable prompts</p><a href="03-launchpage.en.md" download>Markdown version</a></div><div class="status" id="status" role="status" aria-live="polite"></div><article class="paper"><h1 id="launchpage-an-offer-and-a-form-that-actually-saves-signups">LaunchPage — an offer and a form that actually saves signups</h1>
+<p><strong>Story to show:</strong> “I want to present an idea and verify the signup journey. My agents build the page, form and a small local server.”</p>
+<p><strong>Demo product:</strong> FocusKit, a fictional daily-planning tool. This project is a launch-page prototype, not evidence of market demand.</p>
+<p><strong>Target result:</strong> a responsive page and a form connected to a local server. A fictional signup is saved, duplicates are detected and data survives a server restart.</p>
+<p><strong>Team:</strong> <code>LaunchPage Product</code>, <code>LaunchPage Dev</code>, <code>LaunchPage QA</code>, using the <a href="GETTING-STARTED.en.html">setup guide's roles</a>. Shared folder: <code>C:\Projects\crewlo-demos\launchpage</code>. This scenario uses two local processes: a development server and an API.</p>
+<h2 id="step-1-define-the-offer-and-journey">Step 1 — Define the offer and journey</h2>
+<p><strong>Agent: LaunchPage Product.</strong></p>
+<pre><code class="language-text">MISSION: scope a launch page for FocusKit, a fictional product for freelancers who want to plan their day around three priorities.
+
+Offer: “Three priorities. A clearer day.” Call to action: “Join the waitlist”. The product is in preparation: do not invent availability promises, measured time savings, prices, testimonials or signup counts.
+
+Page: headline, subtitle, concrete problem, three benefits, explicitly labeled illustrated preview, three planned usage steps, FAQ, email form and post-submission state. Use simple English. Make the form accessible, responsive and keyboard-usable.
+
+For a real technical demo, send the email to a local Node API and save it to disk. Do not display success if the API rejects the request or does not respond. Validate on the server, handle duplicates and survive a restart. Send no external emails.
+
+Create docs/brief.md and docs/copy.md. Define the proposed API contract: POST /api/waitlist, body {email}, HTTP 201 created, 200 already registered, 400 invalid, 503 unavailable; JSON responses with business code and message. GET /api/health reports only service health. No public route listing emails.
+
+Create docs/acceptance.md covering success, duplicates, network errors and persistence after restarting. Keep the server and data local, using fictional example.com addresses. Do not code. Explain what must be designed before public access.
+</code></pre>
+<p><strong>Ready to continue:</strong> the brief distinguishes the future-product preview from the form that will actually work.</p>
+<h2 id="step-2-build-the-page-and-api">Step 2 — Build the page and API</h2>
+<p><strong>Agent: LaunchPage Dev.</strong></p>
+<pre><code class="language-text">MISSION: implement LaunchPage according to docs/brief.md, docs/copy.md and docs/acceptance.md.
+
+If the folder is empty apart from docs/, use React + TypeScript + Vite for the interface, a local Node server and Vitest for tests. Keep dependencies minimal, compatible with the installed Node, and retain the lockfile. Bind only to 127.0.0.1. Proxy /api from Vite to the local API for a simple flow without permissive CORS.
+
+Implement POST /api/waitlist and GET /api/health according to the brief's contract. Limit the JSON body, validate its type and the email on the server with a documented pragmatic rule, limit its length, trim surrounding whitespace and define consistent duplicate comparison. Explicitly handle non-JSON content and malformed input.
+
+For the single-process demo, store entries in data/waitlist.json outside browser-served files and ignored by Git. Serialize writes and replace the file through a temporary file to avoid lost updates. Load data on startup and report corruption without overwriting it. If saving fails, return an error instead of success. Tests use a temporary directory, never the demo data file.
+
+Form: email label, validation, loading state, temporarily disabled button, success only after a positive response, clear duplicate message and network errors that retain input. No email sending or external service. Put no data or secrets in the frontend bundle. Use example.com addresses only and English interface text.
+
+Create npm run dev for Vite, npm run dev:server for the API, npm run typecheck, npm run test:run and npm run build. Execute the last three checks. Document in docs/handoff-dev.md the two commands to run in separate terminals, chosen ports, data path and actual output. A successful frontend build does not prove API behavior.
+
+The result is a local demo: honestly document the single-process file's limitations. Finish before QA starts.
+</code></pre>
+<p><strong>Show:</strong> the page, entering <code>demo@example.com</code>, the actual server response and a data file containing only that fictional address.</p>
+<h2 id="step-3-verify-browser-server-disk">Step 3 — Verify browser → server → disk</h2>
+<p><strong>Agent: LaunchPage QA.</strong></p>
+<pre><code class="language-text">MISSION: verify LaunchPage end to end. Read the brief, API contract and docs/handoff-dev.md. Do not modify the application or dependencies.
+
+Run typecheck, test:run and build. With installed tools, test the API and persistence in an isolated temporary directory. Verify: valid address, empty fields and wrong types, malformed JSON, oversized body, duplicates, two closely spaced signups, restart, corrupted file and failed save. Document actual response codes and untested limitations.
+
+If a browser is available: start both processes and open the actual page. Submit demo@example.com, check confirmation and its presence on disk. Submit again and check the duplicate response. Stop the test server, submit another@example.com and observe a visible error without false success. Restart the server and check that the first address remains. Do not touch other local services.
+
+Also check keyboard navigation, labels, focus, a 390 px viewport, CTA and links. There must be no invented testimonials or counters. Include no real personal data in the report.
+
+Write docs/qa-1.md with PASS / FAIL / NOT TESTED for each criterion. Separate unit tests, API tests, browser trials and file inspection. For each defect, give reproduction, expected behavior, observed behavior and severity. If you have no browser, supply that part as manual acceptance steps.
+</code></pre>
+<h2 id="step-4-fix-and-obtain-final-acceptance">Step 4 — Fix and obtain final acceptance</h2>
+<p><strong>Agent: LaunchPage Dev, if defects exist.</strong></p>
+<pre><code class="language-text">Fix only reproducible defects in docs/qa-1.md. Reproduce them with test data, then fix. Preserve server validation, error handling and the separation of private data from public files. Run typecheck, test:run and build, then the affected API test. Write docs/fixes.md and update docs/handoff-dev.md with evidence and limitations. Do not deploy this local server.
+</code></pre>
+<p><strong>Agent: LaunchPage QA.</strong></p>
+<pre><code class="language-text">Perform final acceptance on the fixed version: fictional signup → confirmation tied to the API response → persistent file → duplicate → restart → retained data → network error without false success. Rerun affected checks. Attribute user-supplied manual observations to the user.
+
+Write docs/final-acceptance.md with version, criteria, statuses, evidence and limitations. READY FOR LOCAL DEMO requires an actually verified browser–API–disk chain. If a link is missing, state exact reservations. Success does not validate a public service.
+</code></pre>
+<h2 id="step-5-deliver-a-reproducible-demo">Step 5 — Deliver a reproducible demo</h2>
+<p><strong>Agent: LaunchPage Product.</strong></p>
+<pre><code class="language-text">Read the code, package.json, docs/handoff-dev.md and docs/final-acceptance.md. Write README.md with prerequisites, installation, two terminals, commands, actually configured local URL and process shutdown. Explain the data file, absence of email sending and single-process scope.
+
+Create docs/demo-60s.md: show the offer, enter demo@example.com, submit, observe confirmation, show the data file and check duplicates. Label the future-product mockup as a preview.
+
+Add docs/next-version.md for future public access: hosting-appropriate storage, HTTPS, abuse protection, retention and consent rules, protected administrative access, monitoring and tests of the deployed environment. These are work to specify, not features already delivered.
+
+Finish with exact commands for trying the project and the local acceptance decision. Write all copy in English.
+</code></pre>
+<h2 id="step-6-run-the-final-demonstration">Step 6 — Run the final demonstration</h2>
+<ol>
+<li>Open the two terminals from the README and check the announced ports.</li>
+<li>Show FocusKit's headline and CTA.</li>
+<li>Enter <code>demo@example.com</code> and submit the form.</li>
+<li>Show confirmation, then the entry in the local file.</li>
+<li>Submit the same address and show duplicate handling.</li>
+<li>Restart the demo server: the entry should remain.</li>
+<li>Finish on the README and checks that actually passed.</li>
+</ol>
+<p><strong>Closing line:</strong> “The form does more than show a notification: the request reaches the server, is validated and stays saved after a restart.”</p>
+<p>This demonstration ends locally. Public deployment is an additional step to prepare with suitable hosting and storage.</p></article><div class="pager"><a href="02-clientflow.en.html">← ClientFlow</a><a href="04-filming.en.html">Record the result →</a></div><footer>Local kit · 29 September 2026. These workflows describe work to perform; verify the results during execution. Crewlo is an independent fork of Munder Difflin.</footer></main></div><script>
+document.querySelectorAll('pre').forEach((pre,i)=>{
+  const code=pre.querySelector('code'); if(!code)return;
+  const label=document.createElement('span');label.className='prompt-label';label.textContent='COPYABLE PROMPT';pre.prepend(label);
+  const button=document.createElement('button');button.className='copy';button.type='button';button.textContent='Copy';button.setAttribute('aria-label','Copy prompt '+(i+1));
+  button.addEventListener('click',async()=>{
+    try{await navigator.clipboard.writeText(code.textContent);button.textContent='Copied';document.getElementById('status').textContent='Prompt copied. Paste it into the named agent’s conversation.';setTimeout(()=>button.textContent='Copy',2200);}
+    catch{const range=document.createRange();range.selectNodeContents(code);const selection=getSelection();selection.removeAllRanges();selection.addRange(range);document.getElementById('status').textContent='Text selected. Use Ctrl+C, or Cmd+C on Mac.';}
+  });pre.append(button);
+});
+document.querySelectorAll('table').forEach(table=>{const wrapper=document.createElement('div');wrapper.className='table-scroll';table.before(wrapper);wrapper.append(table);});
+</script></body></html>

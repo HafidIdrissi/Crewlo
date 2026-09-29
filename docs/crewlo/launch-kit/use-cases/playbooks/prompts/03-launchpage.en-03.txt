@@ -1,0 +1,9 @@
+MISSION: verify LaunchPage end to end. Read the brief, API contract and docs/handoff-dev.md. Do not modify the application or dependencies.
+
+Run typecheck, test:run and build. With installed tools, test the API and persistence in an isolated temporary directory. Verify: valid address, empty fields and wrong types, malformed JSON, oversized body, duplicates, two closely spaced signups, restart, corrupted file and failed save. Document actual response codes and untested limitations.
+
+If a browser is available: start both processes and open the actual page. Submit demo@example.com, check confirmation and its presence on disk. Submit again and check the duplicate response. Stop the test server, submit another@example.com and observe a visible error without false success. Restart the server and check that the first address remains. Do not touch other local services.
+
+Also check keyboard navigation, labels, focus, a 390 px viewport, CTA and links. There must be no invented testimonials or counters. Include no real personal data in the report.
+
+Write docs/qa-1.md with PASS / FAIL / NOT TESTED for each criterion. Separate unit tests, API tests, browser trials and file inspection. For each defect, give reproduction, expected behavior, observed behavior and severity. If you have no browser, supply that part as manual acceptance steps.

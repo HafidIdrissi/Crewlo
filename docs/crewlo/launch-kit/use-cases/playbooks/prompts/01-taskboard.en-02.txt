@@ -1,0 +1,18 @@
+MISSION: implement the MVP described in docs/brief.md. Also read docs/acceptance.md and inspect existing files before creating anything.
+
+Build a complete working version of TaskBoard. If the folder contains only docs/, initialize the application in that same folder while preserving those documents. Use React + TypeScript + Vite and simple CSS if the brief confirms this approach.
+
+Suggested organization; adapt it if you explain why:
+- src/domain/tasks.ts: types, transitions and filters.
+- src/storage/tasks.ts: storage reading, validation and writing.
+- src/App.tsx and small components: form, counts, filters, cards.
+- src/styles.css: responsive layout, focus and empty states.
+- src/domain/*.test.ts and src/storage/*.test.ts: useful checks.
+
+On the first render, do not save an empty list before loading existing tasks. Report corrupted data; do not overwrite it automatically. Provide an explicitly confirmed reset. If writing fails, keep the in-memory state usable and explain that reloading may lose changes.
+
+Provide npm run dev, npm run build, npm run typecheck and npm run test:run. Install necessary dependencies, keep the lockfile and execute the last three checks. Scripts must exit with an error code on failure; test:run must not stay in watch mode.
+
+Style: light background, readable cards, green accents, three columns on wide screens and an adapted mobile layout. Statuses must be understandable without relying on color. Use only fictional examples and English interface text.
+
+Create docs/handoff-dev.md with changed files, exact commands, actual results, localStorage key, limitations and startup procedure. Give a URL only after actually starting the server; otherwise give the command to run. Finish your work so QA can proceed without concurrent writes.

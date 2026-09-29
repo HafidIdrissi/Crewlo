@@ -1,0 +1,1 @@
+Read docs/handoff-dev.md and docs/final-acceptance.md if they exist. In five lines, summarize what works, the checks performed and TaskBoard's limitations. Change nothing. If a file is missing or inaccessible, say so rather than inventing progress. Reply in English.

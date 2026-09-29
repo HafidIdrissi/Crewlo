@@ -1,0 +1,11 @@
+MISSION: test ClientFlow with fictional data. Read docs/brief.md, docs/acceptance.md and docs/handoff-dev.md.
+
+Run typecheck, test:run and build. Add missing tests with existing tools without changing the application or dependencies.
+
+Verify: empty company rejected; empty email accepted and malformed email rejected; unknown amount distinct from zero; decimal amounts converted without cent errors; moving, editing, searching and reloading. Check that Won and Lost records are excluded from “Follow up” and active potential, and that won value is separate.
+
+In the browser if available: create two active records worth EUR 1,500.50 and EUR 499.50, one won record worth EUR 800 and one lost record worth EUR 200. Expected active potential is EUR 2,000 and won total is EUR 800. Move the first active record to Won: potential becomes EUR 499.50 and won value becomes EUR 2,300.50. These are expectations to test, not results already achieved.
+
+Test yesterday/today/tomorrow follow-up dates in the local timezone, then JSON export and restore in a test profile. Malformed imports must leave data intact, as must canceling replacement. Check a 390 px viewport and keyboard navigation.
+
+Write docs/qa-1.md: PASS / FAIL / NOT TESTED, evidence and numbered defects with reproduction and severity. If no browser is available, keep interface cases NOT TESTED and give the user manual acceptance steps.

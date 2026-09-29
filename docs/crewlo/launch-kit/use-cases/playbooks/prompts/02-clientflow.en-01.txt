@@ -1,0 +1,17 @@
+MISSION: scope ClientFlow, a local mini-CRM for a freelancer.
+
+Need: find prospects who need a follow-up without searching a spreadsheet and multiple notebooks.
+
+Scope:
+- Create and edit a prospect: required company, optional contact, optional validated email, optional estimated value, optional next action and follow-up date.
+- Stages: New, Contacted, Proposal, Won, Lost.
+- A view by stage with an explicit control for moving a prospect. Drag-and-drop is not required.
+- Search by company or contact; a “Follow up” filter for active records whose date is today or earlier in the local timezone.
+- Nonnegative EUR amounts stored as integer cents. An empty field means unknown, distinct from zero. Display active potential and won value separately; exclude lost records from potential.
+- Local data survives reloading. Validated JSON backup and restore for manually moving a portfolio.
+- Helpful empty state and sample data loaded only through an explicit action.
+- English interface and documentation.
+
+Fictional examples: Pearl Workshop, Proposal, EUR 1,500; Northern Studio, New, unknown amount; Willow House, Won, EUR 800. No real personal data.
+
+Create docs/brief.md with data model, date/amount rules, screens, acceptance criteria and limitations. Plan React + TypeScript + Vite if the folder is empty, tests compatible with the environment and a ClientFlow-specific localStorage key. No shared accounts, email sending or external synchronization. Create docs/acceptance.md. Do not code.

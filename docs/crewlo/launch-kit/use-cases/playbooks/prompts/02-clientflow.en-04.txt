@@ -1,0 +1,1 @@
+Fix reproducible defects in docs/qa-1.md without adding features. Reproduce first, then fix and add a useful regression test. Preserve existing portfolios and behavioral tests. Run typecheck, test:run and build. Write docs/fixes.md and update docs/handoff-dev.md with causes, changed files, results and limitations. Then hand over to QA.

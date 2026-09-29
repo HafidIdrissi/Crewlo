@@ -1,7 +1,0 @@
-MISSION : décider si TaskBoard est prêt pour une démonstration locale.
-
-Relis docs/qa-1.md, docs/handoff-dev.md et docs/corrections.md si ce fichier existe. Rejoue les cas corrigés, puis le parcours ajouter → changer le statut → filtrer → recharger → supprimer. Utilise les tests et ton navigateur si disponibles. Les contrôles manuels transmis par l’utilisateur doivent être attribués à l’utilisateur, sans prétendre les avoir exécutés toi-même.
-
-Écris docs/recette-finale.md avec la version contrôlée (commit s’il existe, sinon date et fichiers contrôlés), chaque critère et son état, les commandes exécutées et les limites. Si l’état du code a changé depuis un test, refais le contrôle concerné.
-
-Décision : PRÊT POUR DÉMO LOCALE seulement si tous les critères critiques ont été vérifiés, sans défaut bloquant. Sinon indique PRÊT SOUS RÉSERVES ou BLOQUÉ et la liste exacte des actions restantes. N’annonce pas « production-ready ».

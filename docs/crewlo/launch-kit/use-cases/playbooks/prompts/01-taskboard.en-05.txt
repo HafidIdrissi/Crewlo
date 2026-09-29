@@ -1,0 +1,7 @@
+MISSION: decide whether TaskBoard is ready for a local demonstration.
+
+Reread docs/qa-1.md, docs/handoff-dev.md and docs/fixes.md if it exists. Replay fixed cases, then add → change status → filter → reload → delete. Use tests and browser tools when available. Attribute user-supplied manual checks to the user rather than claiming you executed them yourself.
+
+Write docs/final-acceptance.md with the checked version (commit if available, otherwise date and checked files), each criterion and its status, executed commands and limitations. If code changed after a test, rerun the affected check.
+
+Decision: READY FOR LOCAL DEMO only when all critical criteria have been verified with no blocking defect. Otherwise state READY WITH RESERVATIONS or BLOCKED and list the exact remaining actions. Do not claim “production-ready”.

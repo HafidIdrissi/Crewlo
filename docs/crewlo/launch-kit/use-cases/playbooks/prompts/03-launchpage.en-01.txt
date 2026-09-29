@@ -1,0 +1,11 @@
+MISSION: scope a launch page for FocusKit, a fictional product for freelancers who want to plan their day around three priorities.
+
+Offer: “Three priorities. A clearer day.” Call to action: “Join the waitlist”. The product is in preparation: do not invent availability promises, measured time savings, prices, testimonials or signup counts.
+
+Page: headline, subtitle, concrete problem, three benefits, explicitly labeled illustrated preview, three planned usage steps, FAQ, email form and post-submission state. Use simple English. Make the form accessible, responsive and keyboard-usable.
+
+For a real technical demo, send the email to a local Node API and save it to disk. Do not display success if the API rejects the request or does not respond. Validate on the server, handle duplicates and survive a restart. Send no external emails.
+
+Create docs/brief.md and docs/copy.md. Define the proposed API contract: POST /api/waitlist, body {email}, HTTP 201 created, 200 already registered, 400 invalid, 503 unavailable; JSON responses with business code and message. GET /api/health reports only service health. No public route listing emails.
+
+Create docs/acceptance.md covering success, duplicates, network errors and persistence after restarting. Keep the server and data local, using fictional example.com addresses. Do not code. Explain what must be designed before public access.

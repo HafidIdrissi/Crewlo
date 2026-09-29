@@ -1,0 +1,13 @@
+MISSION: implement LaunchPage according to docs/brief.md, docs/copy.md and docs/acceptance.md.
+
+If the folder is empty apart from docs/, use React + TypeScript + Vite for the interface, a local Node server and Vitest for tests. Keep dependencies minimal, compatible with the installed Node, and retain the lockfile. Bind only to 127.0.0.1. Proxy /api from Vite to the local API for a simple flow without permissive CORS.
+
+Implement POST /api/waitlist and GET /api/health according to the brief's contract. Limit the JSON body, validate its type and the email on the server with a documented pragmatic rule, limit its length, trim surrounding whitespace and define consistent duplicate comparison. Explicitly handle non-JSON content and malformed input.
+
+For the single-process demo, store entries in data/waitlist.json outside browser-served files and ignored by Git. Serialize writes and replace the file through a temporary file to avoid lost updates. Load data on startup and report corruption without overwriting it. If saving fails, return an error instead of success. Tests use a temporary directory, never the demo data file.
+
+Form: email label, validation, loading state, temporarily disabled button, success only after a positive response, clear duplicate message and network errors that retain input. No email sending or external service. Put no data or secrets in the frontend bundle. Use example.com addresses only and English interface text.
+
+Create npm run dev for Vite, npm run dev:server for the API, npm run typecheck, npm run test:run and npm run build. Execute the last three checks. Document in docs/handoff-dev.md the two commands to run in separate terminals, chosen ports, data path and actual output. A successful frontend build does not prove API behavior.
+
+The result is a local demo: honestly document the single-process file's limitations. Finish before QA starts.
