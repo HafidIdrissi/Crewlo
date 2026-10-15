@@ -13,7 +13,8 @@
     "media": "node scripts/build-media-manifest.mjs",
     "preview:sunroom": "node scripts/run-theme.mjs --clean=../docs/blog-preview-sunroom --theme=sunroom --preview=1 --base=/blog-preview-sunroom --out=../docs/blog-preview-sunroom",
     "preview:press": "node scripts/run-theme.mjs --clean=../docs/blog-preview-press --theme=press --preview=1 --base=/blog-preview-press --out=../docs/blog-preview-press",
-    "previews": "npm run preview:sunroom && npm run preview:press"
+    "previews": "npm run preview:sunroom && npm run preview:press",
+    "test:launcher": "node --test"
   },
   "devDependencies": {
     "@11ty/eleventy": "^3.0.0",
