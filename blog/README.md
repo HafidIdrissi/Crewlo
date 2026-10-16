@@ -23,6 +23,18 @@ npm run build
 Commit the source, generated `../docs/blog/` files and `../docs/sitemap.xml`
 together. CI checks that a fresh build reproduces the committed output.
 
+## Theme Previews
+
+To preview different themes or generate isolated preview builds across platforms (including Windows cmd/PowerShell and POSIX shells):
+
+- **Build Sunroom theme preview:** `npm run preview:sunroom` (outputs to `../docs/blog-preview-sunroom`)
+- **Build Press theme preview:** `npm run preview:press` (outputs to `../docs/blog-preview-press`)
+- **Build both theme previews:** `npm run previews`
+- **Run development server with Press theme:** `npm run dev:press` (runs on port 8089)
+- **Run default development server:** `npm run dev` (runs on port 8088)
+
+To stop a running development server (`dev` or `dev:press`), press `Ctrl+C` in your terminal.
+
 ## Add an article
 
 Create a Markdown file in `src/crewlo/` with `title`, `description`, `slug`,
